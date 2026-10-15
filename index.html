@@ -1,0 +1,911 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14532D">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Б-56">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Бугуруслан всё в одном месте</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap">
+<style>
+/* Layout: фиксированный светлый вид по макету. Тёмно-зелёный бренд, золотой акцент, одна колонка до 480px. */
+:root {
+  --bg: #F2F7F3;
+  --ink: #0B2417;
+  --green: #14532D;
+  --line: #CFE0D5;
+  --rule: #E1EFE4;
+  --muted: #4D6657;
+  --gold: #FFD166;
+  --mint: #DCEFE2;
+  --white: #FFFFFF;
+  --font: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); }
+a { color: inherit; text-decoration: none; }
+button, input { font-family: inherit; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--green); outline-offset: 2px; }
+label:focus-within { outline: 3px solid var(--green); outline-offset: 2px; }
+
+.app { max-width: 480px; margin: 0 auto; min-height: 100%; padding-inline: 20px; padding-block: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+.app.home { padding-block-start: 28px; gap: 20px; }
+.row { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.back { flex: none; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 14px; background: var(--white); border: 1px solid var(--line); }
+h1 { margin: 0; font-size: 24px; font-weight: 800; }
+h2 { margin: 0; font-size: 18px; font-weight: 800; }
+.sub { font-size: 14px; color: var(--muted); }
+
+.hero { display: flex; flex-direction: column; gap: 10px; }
+.hero .row { gap: 14px; }
+.hero h1 { font-size: 26px; line-height: 1.12; }
+.hero p { margin: 0; font-size: 15px; line-height: 1.4; color: var(--muted); }
+
+.search { display: flex; align-items: center; gap: 12px; height: 48px; padding: 0 16px; background: var(--white); border: 1px solid var(--line); border-radius: 14px; }
+.home .search { height: 52px; }
+.search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-size: 16px; color: var(--ink); }
+.search input::placeholder { color: #6C8473; }
+
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.tile { display: flex; align-items: center; gap: 8px; min-height: 64px; padding: 8px 10px; background: var(--white); color: var(--ink); border: 1px solid var(--line); border-radius: 16px; text-align: left; cursor: pointer; }
+.tile.on { background: var(--green); color: var(--white); border-color: var(--green); }
+.tile .ic { display: flex; align-items: center; justify-content: center; flex: none; width: 30px; height: 30px; border-radius: 9px; background: var(--mint); }
+.tile.on .ic { background: rgba(255,255,255,.2); }
+.tile .tx { font-size: 13px; font-weight: 800; line-height: 1.2; min-width: 0; overflow-wrap: break-word; hyphens: auto; -webkit-hyphens: auto; }
+@media (max-width: 389px) { .tile .tx { font-size: 12px; } }
+@media (max-width: 369px) { .tile .tx { font-size: 11.5px; } }
+
+.list { display: flex; flex-direction: column; gap: 12px; }
+.org { display: flex; flex-direction: column; gap: 10px; padding: 16px; background: var(--white); border: 1px solid var(--line); border-radius: 18px; }
+.org.rec { border: 2px solid var(--gold); }
+.stars { display: inline-flex; gap: 2px; align-items: center; }
+.stars svg { display: block; }
+.banner { display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; background: #FFF7DD; border: 2px solid var(--gold); border-radius: 18px; }
+.banner b { font-size: 17px; font-weight: 800; }
+.banner span { font-size: 15px; line-height: 1.4; }
+.banner a { align-self: flex-start; margin-top: 4px; padding: 8px 14px; border-radius: 12px; background: var(--green); color: #fff; font-size: 15px; font-weight: 800; }
+.org .nm { font-size: 18px; font-weight: 800; overflow-wrap: anywhere; }
+.org .cat { font-size: 12px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+.line { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); min-width: 0; }
+.line svg { flex: none; }
+.line span { min-width: 0; overflow-wrap: anywhere; }
+.tags { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.tag { padding: 4px 10px; border-radius: 999px; font-size: 13px; font-weight: 800; }
+.tag.gold { background: var(--gold); color: var(--ink); }
+.tag.mint { background: var(--mint); color: var(--green); }
+
+.empty { padding: 20px 16px; background: var(--white); border: 1px dashed var(--line); border-radius: 18px; display: flex; flex-direction: column; gap: 6px; }
+.empty b { font-size: 17px; font-weight: 800; }
+.empty span { font-size: 14px; line-height: 1.4; color: var(--muted); }
+
+.photo { display: flex; align-items: center; justify-content: center; height: 130px; border-radius: 18px; background: #DDEFE2; border: 1px dashed #8FBF9B; color: #2F6B45; font-size: 15px; font-weight: 700; text-align: center; padding: 0 12px; }
+.title-block { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.title-block h1 { font-size: 26px; line-height: 1.15; overflow-wrap: anywhere; }
+.panel { display: flex; flex-direction: column; gap: 14px; padding: 16px; background: var(--white); border: 1px solid var(--line); border-radius: 18px; }
+.panel .it { display: flex; align-items: flex-start; gap: 12px; font-size: 16px; }
+.panel .it svg { flex: none; margin-top: 1px; }
+.panel .it span { min-width: 0; overflow-wrap: anywhere; }
+.phone-t { font-variant-numeric: tabular-nums; }
+.pricelink { display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 12px 16px; background: var(--white); border: 2px solid var(--green); border-radius: 16px; }
+.pricelink .t { display: flex; flex-direction: column; gap: 2px; }
+.pricelink .t b { font-size: 17px; font-weight: 800; }
+.pricelink .t span { font-size: 13px; color: var(--muted); }
+.web h2 { font-size: 16px; margin-bottom: 10px; }
+.quotes { display: flex; flex-direction: column; gap: 10px; }
+.q { margin: 0; padding: 12px 14px; background: var(--white); border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 12px; }
+.q p { margin: 0 0 6px; font-size: 15px; line-height: 1.45; }
+.q cite { font-size: 13px; font-style: normal; font-weight: 700; color: var(--muted); }
+.web .links { display: flex; flex-wrap: wrap; gap: 10px; }
+.web a { display: flex; align-items: center; min-height: 44px; padding: 0 16px; border-radius: 12px; background: var(--white); border: 1px solid var(--line); font-size: 15px; font-weight: 700; color: var(--green); }
+.actions { margin-top: auto; display: flex; gap: 12px; }
+.btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; height: 56px; border-radius: 16px; font-size: 17px; font-weight: 800; border: 2px solid var(--green); }
+.btn.fill { background: var(--green); color: var(--white); }
+.btn.line2 { background: var(--white); color: var(--green); }
+
+.prices { display: flex; flex-direction: column; background: var(--white); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+.prices .pr { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px; border-bottom: 1px solid var(--rule); }
+.prices .pr:last-child { border-bottom: 0; }
+.prices .pr span:first-child { font-size: 16px; font-weight: 700; min-width: 0; overflow-wrap: anywhere; }
+.prices .pr span:last-child { font-size: 16px; font-weight: 800; color: var(--green); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.note { font-size: 13px; line-height: 1.4; color: var(--muted); }
+.foot { margin-top: auto; text-align: center; font-size: 13px; color: var(--muted); }
+
+.owner { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 16px; background: var(--ink); color: var(--white); border-radius: 18px; }
+.owner .tt { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.owner b { font-size: 16px; font-weight: 800; line-height: 1.25; }
+.owner span { font-size: 14px; line-height: 1.35; color: #BFD3C6; }
+.owner button { flex: none; min-height: 44px; padding: 0 16px; border: 0; border-radius: 12px; background: var(--gold); color: var(--ink); font-size: 15px; font-weight: 800; cursor: pointer; }
+.owner button:focus-visible { outline-color: var(--white); }
+.steps { display: flex; flex-direction: column; gap: 12px; }
+.steps p { margin: 0; font-size: 16px; line-height: 1.45; }
+.contact { padding: 14px 16px; border-radius: 14px; background: var(--mint); color: var(--green); font-weight: 800; overflow-wrap: anywhere; }
+.install { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 16px; background: var(--mint); border: 1px solid #BFDCC8; border-radius: 18px; }
+.install .tt { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.install b { font-size: 16px; font-weight: 800; line-height: 1.25; }
+.install span { font-size: 14px; line-height: 1.35; color: var(--muted); }
+.install button { flex: none; min-height: 44px; padding: 0 16px; border: 0; border-radius: 12px; background: var(--green); color: var(--white); font-size: 15px; font-weight: 800; cursor: pointer; }
+.seg { display: flex; gap: 8px; }
+.seg button { flex: 1; min-height: 48px; border: 1px solid var(--line); border-radius: 12px; background: var(--white); color: var(--ink); font-size: 16px; font-weight: 800; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--green); color: var(--white); border-color: var(--green); }
+.how { display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 0; list-style: none; counter-reset: s; }
+.how li { display: flex; gap: 12px; align-items: flex-start; padding: 14px; background: var(--white); border: 1px solid var(--line); border-radius: 16px; font-size: 16px; line-height: 1.4; }
+.how li::before { counter-increment: s; content: counter(s); flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--green); color: var(--white); font-weight: 800; font-size: 15px; display: flex; align-items: center; justify-content: center; }
+.how li div { min-width: 0; overflow-wrap: anywhere; }
+.how .ic { display: inline-flex; vertical-align: -6px; }
+.bigbtn { display: flex; align-items: center; justify-content: center; width: 100%; height: 56px; border-radius: 16px; font-size: 17px; font-weight: 800; border: 2px solid var(--green); background: var(--green); color: var(--white); cursor: pointer; }
+.sheet-bg { position: fixed; inset: 0; background: rgba(11, 36, 23, .55); display: flex; align-items: flex-end; justify-content: center; z-index: 20; }
+.sheet { width: 100%; max-width: 480px; background: var(--white); border-radius: 24px 24px 0 0; padding: 24px 20px calc(24px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 12px; }
+.sheet h2 { font-size: 22px; }
+.sheet p { margin: 0; font-size: 15px; line-height: 1.4; color: var(--muted); }
+.sheet .opt { min-height: 60px; border-radius: 16px; border: 2px solid var(--green); background: var(--white); color: var(--green); font-size: 17px; font-weight: 800; cursor: pointer; padding: 0 16px; }
+.sheet .opt.fill { background: var(--green); color: var(--white); }
+.sheet .skip { border: 0; background: none; color: var(--muted); font-size: 14px; min-height: 44px; cursor: pointer; text-decoration: underline; }
+[hidden] { display: none !important; }
+.gal { position: relative; }
+.gal-s { display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory; border-radius: 18px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.gal-s::-webkit-scrollbar { display: none; }
+.gal-s img { flex: 0 0 100%; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; scroll-snap-align: start; border-radius: 18px; background: var(--mint); }
+.gal-n { position: absolute; right: 10px; bottom: 10px; padding: 3px 10px; border-radius: 999px; background: rgba(11,36,23,.7); color: #fff; font-size: 13px; font-weight: 700; }
+.top-blocks { display: flex; flex-direction: column; gap: 10px; }
+.top-blocks[data-empty] { display: none; }
+.idpill { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 48px; padding: 8px 14px; border-radius: 14px; background: var(--ink); color: var(--white); border: 0; font-size: 15px; cursor: pointer; text-align: left; width: 100%; }
+.idpill b { white-space: nowrap; color: var(--gold); font-size: 16px; letter-spacing: .03em; }
+.ncar { display: flex; flex-direction: column; gap: 8px; }
+.ntrack { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; border-radius: 18px; }
+.ntrack::-webkit-scrollbar { display: none; }
+.nslide { position: relative; flex: 0 0 100%; scroll-snap-align: center; min-height: 200px; border: 0; border-radius: 18px; overflow: hidden; padding: 0; cursor: pointer; text-align: left; color: #fff; background: var(--green); display: flex; align-items: flex-end; }
+.nslide.n-gold { background: #8a6a00; }
+.nslide.n-mint { background: #1f7a52; }
+.nslide .nbg { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.nslide.has-img { flex-direction: column; align-items: stretch; min-height: 0; }
+.nslide.has-img .nbg { position: relative; inset: auto; width: 100%; aspect-ratio: 16 / 9; flex: none; }
+.nslide.has-img .nsh { display: none; }
+.nslide.has-img .ntx { padding: 12px 16px 14px; }
+.nslide.has-img .ntt { text-shadow: none; font-size: 18px; }
+.nslide .nsh { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.78) 0%, rgba(0,0,0,.35) 55%, rgba(0,0,0,.05) 100%); }
+.nslide .ntx { position: relative; width: 100%; padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 6px; }
+.nslide .ntag { align-self: flex-start; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 800; background: var(--gold); color: var(--ink); }
+.nslide .ntt { font-size: 20px; font-weight: 800; line-height: 1.2; overflow-wrap: anywhere; text-shadow: 0 1px 3px rgba(0,0,0,.4); }
+.nslide .nto { font-size: 14px; opacity: .92; }
+.ndots { display: flex; justify-content: center; align-items: center; gap: 7px; min-height: 14px; }
+.ndots i { width: 8px; height: 8px; border-radius: 50%; background: #B9C7BF; transition: width .2s, background .2s; }
+.ndots i.on { width: 22px; border-radius: 6px; background: var(--green); }
+.nall { align-self: center; background: none; border: 0; color: var(--green); font-weight: 800; font-size: 15px; min-height: 40px; cursor: pointer; }
+.nimg { width: 100%; max-height: 220px; object-fit: cover; border-radius: 12px; display: block; margin-bottom: 8px; }
+.newscard { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; background: var(--white); border: 2px solid var(--gold); border-radius: 18px; text-align: left; cursor: pointer; width: 100%; color: var(--ink); }
+.nc-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+.nc-t { font-size: 17px; font-weight: 800; line-height: 1.25; overflow-wrap: anywhere; }
+.nc-m { font-size: 14px; color: var(--green); font-weight: 700; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #D93025; margin-left: 6px; vertical-align: middle; }
+.nt { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 800; background: #E6EBE8; color: var(--ink); }
+.nt.gold { background: var(--gold); }
+.nt.mint { background: var(--mint); color: var(--green); }
+.nitem { display: flex; flex-direction: column; gap: 8px; padding: 16px; background: var(--white); border: 1px solid var(--line); border-radius: 18px; }
+.nitem .nm2 { font-size: 18px; font-weight: 800; line-height: 1.25; overflow-wrap: anywhere; }
+.nitem p { margin: 0; font-size: 15px; line-height: 1.45; color: var(--ink); overflow-wrap: anywhere; white-space: pre-line; }
+.nitem .meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 13px; color: var(--muted); }
+.idbox { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 22px 16px; background: var(--ink); color: var(--white); border-radius: 18px; text-align: center; }
+.idbig { font-size: 34px; font-weight: 800; color: var(--gold); letter-spacing: .04em; }
+.chk { display: flex; flex-direction: column; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.chk li { display: flex; gap: 10px; align-items: flex-start; font-size: 16px; line-height: 1.4; }
+.chk li::before { content: "✓"; flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--mint); color: var(--green); font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.ownlinks { display: flex; flex-direction: column; gap: 10px; }
+.ownlinks a { display: flex; align-items: center; justify-content: center; min-height: 54px; border-radius: 16px; font-size: 17px; font-weight: 800; border: 2px solid var(--green); background: var(--white); color: var(--green); }
+.ownlinks a.fill { background: var(--green); color: var(--white); }
+.fld:focus-within { outline: none; }
+.fld { display: flex; flex-direction: column; gap: 6px; }
+.fld b { font-size: 15px; font-weight: 800; }
+.fld span { font-size: 13px; color: var(--muted); }
+.fld input, .fld textarea { width: 100%; min-height: 52px; padding: 12px 14px; border: 2px solid var(--line); border-radius: 14px; font: inherit; font-size: 16px; background: var(--white); color: var(--ink); }
+.fld textarea { min-height: 120px; resize: vertical; }
+.fld input:focus, .fld textarea:focus { outline: 3px solid var(--green); outline-offset: 1px; border-color: var(--green); }
+.faq { display: flex; flex-direction: column; gap: 8px; }
+.faq details { background: var(--white); border: 1px solid var(--line); border-radius: 14px; padding: 0 14px; }
+.faq summary { min-height: 52px; display: flex; align-items: center; font-size: 16px; font-weight: 800; cursor: pointer; }
+.faq p { margin: 0 0 14px; font-size: 15px; line-height: 1.45; }
+.formmsg { padding: 12px 14px; border-radius: 14px; background: var(--mint); color: var(--green); font-weight: 800; font-size: 15px; }
+.formmsg.err { background: #FDECEA; color: #8A1C12; }
+.help-link { display: block; width: 100%; min-height: 44px; border: 0; background: none; color: var(--muted); font-size: 14px; text-decoration: underline; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<div class="app" id="app"></div>
+
+<script>
+/* ===== ДАННЫЕ: сюда добавляются настоящие организации. cat = id раздела из CATS ===== */
+var ITEMS = [
+  { id: 11, cat: "uslugi", name: "Сайты и приложения", about: "Сайты, меню с заказом в WhatsApp, карточки в 2ГИС и Яндекс Картах. Покажу готовый вариант до оплаты.", wa: "https://wa.me/79228572099", tg: "https://t.me/+79228572099", addr: "ул. Коммунистическая, 22", note: "Вход перед 1 подъездом, со стороны ул. Чапаевской", phone: "+7 (922) 857-20-99", hours: "10:00–18:00, суббота и воскресенье выходной", rec: true,
+    priceNote: "Покажу готовый вариант до оплаты. Детали уточняйте по телефону или в WhatsApp.",
+    price: [["Сайт-визитка (одна страница)", "3 500 ₽"], ["Сайт из нескольких страниц", "9 000 ₽"], ["Каталог товаров для магазина (до 50 товаров, сам меняет цены)", "6 000 ₽"], ["Меню по QR для кафе", "5 000 ₽"], ["Меню с заказом и бронью стола", "8 000 ₽"], ["Приложение под задачу (запись, расчёт, учёт)", "от 8 000 ₽"], ["Бот в Telegram для заявок и заказов", "4 000 ₽"], ["Карта лояльности («5-я покупка со скидкой»)", "1 500 ₽"], ["Учёт остатков («Осталось 3 шт.»)", "2 500 ₽"], ["Карточка на Яндекс Картах", "1 500 ₽"], ["QR-карточка для отзывов", "500 ₽"], ["Макет визитки с QR", "500 ₽"], ["Печать визиток: лист А4 (10 шт.)", "150 ₽"], ["Поддержка и обновления, в месяц", "500 ₽"]] },
+  { id: 10, cat: "okna", name: "Светлый дом: окна, двери, жалюзи", about: "Окна, двери, балконы, жалюзи. Бесплатный замер, рассрочка без банка.", addr: "ул. Коммунистическая, 22", note: "Вход перед 1 подъездом, со стороны ул. Чапаевской", phone: "+7 (922) 857-20-99", hours: "10:00–18:00, суббота и воскресенье выходной", rec: true,
+    site: "https://svetly-dom-buguruslan.netlify.app", wa: "https://wa.me/79228572099", tg: "https://t.me/+79228572099",
+    priceNote: "Цены указаны «от». Точную стоимость назовём после бесплатного замера.",
+    price: [["Пластиковые окна", "от 5 000 ₽"], ["Двери ПВХ", "от 13 500 ₽"], ["Балконы и лоджии", "от 56 000 ₽"], ["Жалюзи, за м²", "от 1 500 ₽"], ["Рулонные шторы", "от 1 800 ₽"], ["Москитные сетки", "от 950 ₽"], ["Откосы", "от 600 ₽"], ["Подоконники и отливы", "от 500 ₽"], ["Ремонт и регулировка", "от 400 ₽"]] },
+  { id: 1, cat: "avto", name: "Автосервис «Пример»", addr: "ул. Примерная, 1", phone: "+7 (000) 000-00-00", hours: "[укажите]", rec: true,
+    price: [["Диагностика", "000 ₽"], ["Замена масла", "000 ₽"], ["Шиномонтаж", "000 ₽"], ["Замена колодок", "000 ₽"], ["Развал-схождение", "000 ₽"]],
+    site: "", vk: "", tg: "" },
+  { id: 2, cat: "avto", name: "Автосервис «Пример 2»", addr: "ул. Примерная, 2", phone: "+7 (000) 000-00-00", hours: "[укажите]" },
+  { id: 3, cat: "avto", name: "Автосервис «Пример 3»", addr: "ул. Примерная, 3", phone: "+7 (000) 000-00-00", hours: "[укажите]" }
+];
+
+var P = {
+  pin: '<path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/>',
+  phone: '<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  left: '<path d="m15 18-6-6 6-6"/>',
+  right: '<path d="m9 18 6-6-6-6"/>',
+  list: '<path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M3 6h.01"/><path d="M3 12h.01"/><path d="M3 18h.01"/>',
+  route: '<path d="m3 11 19-9-9 19-2-8z"/>'
+};
+var CATS = [
+  { id: "avto", name: "Автосервисы", p: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>' },
+  { id: "moyki", name: "Автомойки", p: '<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>' },
+  { id: "zapchasti", name: "Автозапчасти", p: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/>' },
+  { id: "produkty", name: "Продукты", p: '<circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>' },
+  { id: "odezhda", name: "Одежда и обувь", p: '<path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/>' },
+  { id: "remont", name: "Ремонт и стройка", p: '<path d="M2 18h20"/><path d="M4 18v-3a8 8 0 0 1 16 0v3"/><path d="M12 7v4"/>' },
+  { id: "okna", name: "Окна, двери, жалюзи", p: '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 3v18"/><path d="M3 12h18"/>' },
+  { id: "turizm", name: "Путешествия и туризм", p: '<path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>' },
+  { id: "shtory", name: "Шторы и текстиль", p: '<path d="M3 4h18"/><path d="M5 4v16c3 0 5-3 5-8V4"/><path d="M19 4v16c-3 0-5-3-5-8V4"/>' },
+  { id: "mebel", name: "Мебель", p: '<path d="M20 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><path d="M2 11a2 2 0 0 1 4 0v3h12v-3a2 2 0 0 1 4 0v5a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M4 18v2"/><path d="M20 18v2"/>' },
+  { id: "tehnika", name: "Техника", p: '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>' },
+  { id: "remont-tehniki", name: "Ремонт техники", p: '<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>' },
+  { id: "kliniki", name: "Клиники", p: '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8"/><path d="M8 12h8"/>' },
+  { id: "krasota", name: "Красота", p: '<circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.12 15.88"/><path d="M14.47 14.48 20 20"/><path d="M8.12 8.12 12 12"/>' },
+  { id: "fitnes", name: "Фитнес и спорт", p: '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>' },
+  { id: "kafe", name: "Кафе и рестораны", p: '<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/>' },
+  { id: "cvety", name: "Цветы и подарки", p: '<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/>' },
+  { id: "prazdniki", name: "Праздники", p: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>' },
+  { id: "detyam", name: "Детям", p: '<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01"/><path d="M15 9h.01"/>' },
+  { id: "gruz", name: "Грузоперевозки", p: '<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>' },
+  { id: "nedvizhimost", name: "Недвижимость", p: '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>' },
+  { id: "banki", name: "Банки и финансы", p: '<path d="M3 22h18"/><path d="M6 18v-7"/><path d="M10 18v-7"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M12 2 20 7H4z"/>' },
+  { id: "yuristy", name: "Юристы и бухгалтеры", p: '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h8"/>' },
+  { id: "gostinicy", name: "Гостиницы", p: '<path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/>' },
+  { id: "foto", name: "Фото и печать", p: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/>' },
+  { id: "dosug", name: "Досуг", p: P.pin },
+  { id: "uslugi", name: "Услуги", p: '<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>' },
+  { id: "drugoe", name: "Другое", p: '<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>' },
+  { id: "kursy", name: "Курсы", p: '<path d="M22 10v6"/><path d="M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>' },
+  { id: "konditery", name: "Кондитеры", p: '<path d="M20 21v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8"/><path d="M4 16s.5-1 2-1 2.5 2 4 2 2.5-2 4-2 2.5 2 4 2 2-1 2-1"/><path d="M2 21h20"/><path d="M7 8v3"/><path d="M12 8v3"/><path d="M17 8v3"/><path d="M7 4h.01"/><path d="M12 4h.01"/><path d="M17 4h.01"/>' },
+  { id: "bani", name: "Бани, сауны, коттеджи", p: '<path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/>' },
+  { id: "video", name: "Фотограф и видеосъёмка", p: '<path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/>' },
+  { id: "magaziny", name: "Магазины разные", p: '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>' },
+  { id: "rynok-gorod", name: "Городской рынок", p: '<path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M2 7h20"/><path d="M9 22v-5h6v5"/>' },
+  { id: "rynok-yug", name: "Южный рынок", p: '<path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M2 7h20"/><path d="M9 22v-5h6v5"/>' },
+  { id: "baza-shirokaya", name: "База «Широкая»", p: '<path d="M22 8.35V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8.35A2 2 0 0 1 3.26 6.5l8-3.2a2 2 0 0 1 1.48 0l8 3.2A2 2 0 0 1 22 8.35Z"/><path d="M6 18h12"/><path d="M6 14h12"/>' },
+  { id: "baza-kontrakt", name: "База «Контракт»", p: '<path d="M22 8.35V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8.35A2 2 0 0 1 3.26 6.5l8-3.2a2 2 0 0 1 1.48 0l8 3.2A2 2 0 0 1 22 8.35Z"/><path d="M6 18h12"/><path d="M6 14h12"/>' }
+];
+/* Плитки идут по алфавиту; «Другое» всегда последним */
+try {
+  var _col = new Intl.Collator("ru");
+  var _last = CATS.filter(function (c) { return c.id === "drugoe"; });
+  CATS = CATS.filter(function (c) { return c.id !== "drugoe"; }).sort(function (a, b) { return _col.compare(a.name, b.name); }).concat(_last);
+} catch (e) {}
+
+function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+function norm(s) { return String(s).toLowerCase().replace(/ё/g, "е"); }
+function ico(p, size, color) { return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="' + color + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + "</svg>"; }
+function catById(id) { for (var i = 0; i < CATS.length; i++) if (CATS[i].id === id) return CATS[i]; return null; }
+function itemById(id) { for (var i = 0; i < ITEMS.length; i++) if (ITEMS[i].id === id) return ITEMS[i]; return null; }
+function itemsOf(catId) { return ITEMS.filter(function (it) { return [].concat(it.cat).indexOf(catId) !== -1; }); }
+function telHref(p) { return "tel:" + String(p).replace(/[^\d+]/g, ""); }
+
+var app = document.getElementById("app");
+var state = { route: "home", stack: [] };
+
+function parse(r) {
+  if (r.indexOf("cat-") === 0) return { v: "cat", id: r.slice(4) };
+  if (r.indexOf("card-") === 0) return { v: "card", id: Number(r.slice(5)) };
+  if (r.indexOf("price-") === 0) return { v: "price", id: Number(r.slice(6)) };
+  if (r === "owner") return { v: "owner" };
+  if (r === "install") return { v: "install" };
+  if (r === "news") return { v: "news" };
+  if (r === "id") return { v: "id" };
+  if (r === "help") return { v: "help" };
+  if (r === "ask") return { v: "ask" };
+  if (r === "apply") return { v: "apply" };
+  return { v: "home" };
+}
+function valid(r) {
+  var p = parse(r);
+  if (p.v === "cat") return !!catById(p.id);
+  if (p.v === "card" || p.v === "price") { var it = itemById(p.id); return !!it && (p.v === "card" || !!it.price); }
+  return true;
+}
+
+/* ---------- куски разметки ---------- */
+function backBtn(label) {
+  return '<a class="back" href="#back" data-back="1" aria-label="' + esc(label) + '">' + ico(P.left, 22, "#0B2417") + "</a>";
+}
+function searchBox(placeholder, label) {
+  return '<label class="search">' + ico(P.search, 22, "#14532D") +
+    '<input id="q" type="search" placeholder="' + esc(placeholder) + '" aria-label="' + esc(label) + '" autocomplete="off"></label>';
+}
+function starsHtml(arr) {
+  arr = [].concat(arr || []).map(Number);
+  var s = "", n = 0;
+  for (var i = 1; i <= 5; i++) { var on = arr.indexOf(i) !== -1; if (on) n++; s += '<svg width="20" height="20" viewBox="0 0 24 24" fill="' + (on ? "#14532D" : "none") + '" stroke="#14532D" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'; }
+  return '<span class="stars" role="img" aria-label="Звёзд: ' + n + ' из 5">' + s + "</span>";
+}
+var BANNERS = {};
+function bannerHtml(catId) {
+  var b = BANNERS[catId]; if (!b || !(b.title || b.text)) return "";
+  var link = /^https:\/\//.test(b.url || "") ? '<a href="' + esc(b.url) + '" target="_blank" rel="noopener">Подробнее</a>' : "";
+  return '<div class="banner">' + (b.title ? "<b>" + esc(b.title) + "</b>" : "") + (b.text ? "<span>" + esc(b.text) + "</span>" : "") + link + "</div>";
+}
+function orgCard(it, showCat) {
+  var tags = "";
+  if (it.rec || it.price) {
+    tags = '<div class="tags">' + (it.rec ? '<span class="tag gold">Рекомендуем</span>' : "") + (it.price ? '<span class="tag mint">Есть прайс-лист</span>' : "") + "</div>";
+  }
+  var c = showCat ? catById([].concat(it.cat)[0]) : null;
+  return '<a class="org' + (it.rec ? " rec" : "") + '" href="#card-' + it.id + '" data-go="card-' + it.id + '">' + tags +
+    (c ? '<div class="cat">' + esc(c.name) + "</div>" : "") +
+    '<div class="nm">' + esc(it.name) + "</div>" + starsHtml(it.stars) +
+    '<div class="line">' + ico(P.pin, 18, "#14532D") + "<span>" + esc(it.addr) + "</span></div>" +
+    '<div class="line">' + ico(P.phone, 18, "#14532D") + '<span class="phone-t">' + esc(it.phone) + "</span></div></a>";
+}
+function tiles() {
+  /* сначала разделы, где уже есть заведения (зелёные), потом пустые; внутри групп порядок по алфавиту, «Другое» в конце */
+  var _on = [], _off = [], _dr = null;
+  CATS.forEach(function (c) { if (itemsOf(c.id).length > 0) _on.push(c); else if (c.id === "drugoe") _dr = c; else _off.push(c); });
+  var _ord = _on.concat(_off); if (_dr) _ord.push(_dr);
+  return '<div class="grid">' + _ord.map(function (c) {
+    var on = itemsOf(c.id).length > 0;
+    return '<button type="button" class="tile' + (on ? " on" : "") + '" lang="ru" data-go="cat-' + c.id + '"><span class="ic">' + ico(c.p, 18, on ? "#FFFFFF" : "#14532D") + '</span><span class="tx">' + esc(c.name) + "</span></button>";
+  }).join("") + "</div>";
+}
+function emptyBlock(title, text) { return '<div class="empty"><b>' + esc(title) + "</b><span>" + esc(text) + "</span></div>"; }
+
+/* ---------- экраны ---------- */
+function viewHome() {
+  return '<div class="app home">' +
+    '<div class="hero"><div class="row">' +
+    '<svg width="68" height="80" viewBox="0 0 64 76" role="img" aria-label="Значок приложения: Б-56" style="flex:none">' +
+    '<path d="M32 2C16 2 4 14 4 29c0 20 28 45 28 45s28-25 28-45C60 14 48 2 32 2z" fill="#14532D"></path>' +
+    '<circle cx="32" cy="29" r="19" fill="#FFFFFF" stroke="#FFD166" stroke-width="3"></circle>' +
+    '<text x="32" y="34" text-anchor="middle" font-family="Manrope, system-ui, sans-serif" font-size="14" font-weight="800" fill="#14532D">Б-56</text></svg>' +
+    "<h1>Бугуруслан всё в одном месте</h1></div>" +
+    "<p>Магазины, сервисы и услуги города. Адрес и телефон под рукой.</p></div>" +
+    searchBox("Найти: автосервис, кафе, окна", "Поиск по городу") +
+    homeTop() +
+    '<div class="list" id="results"></div>' +
+    installBanner() +
+    '<div class="owner"><div class="tt"><b>Вы владелец бизнеса?</b><span>Добавим вашу карточку в приложение</span></div>' +
+    '<button type="button" data-go="owner">Узнать как</button></div>' +
+    '<button type="button" class="help-link" data-go="help">Техподдержка</button></div>';
+}
+function homeResults(q) {
+  q = norm(q).trim();
+  if (!q) return '<h2>Что ищете?</h2>' + tiles();
+  var found = ITEMS.filter(function (it) {
+    var names = [].concat(it.cat).map(function (id) { var c = catById(id); return c ? c.name : ""; }).join(" ");
+    return norm(it.name + " " + (it.about || "") + " " + it.addr + " " + names).indexOf(q) !== -1;
+  });
+  if (found.length) return '<h2>Найдено: ' + found.length + "</h2>" + found.map(function (it) { return orgCard(it, true); }).join("");
+  return emptyBlock("Ничего не нашли", "Попробуйте другое слово или выберите раздел ниже.") + "<h2>Разделы</h2>" + tiles();
+}
+
+function viewCat(c) {
+  return '<div class="app"><div class="row">' + backBtn("Назад на главную") + "<h1>" + esc(c.name) + "</h1></div>" +
+    bannerHtml(c.id) +
+    searchBox("Название или адрес", "Поиск в разделе " + c.name) +
+    '<div class="list" id="results"></div>' +
+    '<div class="foot">Названия и данные пока условные</div></div>';
+}
+function catResults(c, q) {
+  q = norm(q).trim();
+  var all = itemsOf(c.id);
+  if (!all.length) return emptyBlock("Здесь пока никого нет", "Организации этого раздела скоро появятся.");
+  var found = all.filter(function (it) { return !q || norm(it.name + " " + it.addr).indexOf(q) !== -1; });
+  if (!found.length) return emptyBlock("Ничего не нашли", "Попробуйте другое слово.");
+  return found.map(function (it) { return orgCard(it, false); }).join("");
+}
+
+function photosBlock(it) {
+  var ph = it.photos || [];
+  if (!ph.length) return "";
+  return '<div class="gal"><div class="gal-s" id="gal" tabindex="0" aria-label="Фото: ' + esc(it.name) + '">' + ph.map(function (u, i) {
+    return '<img src="' + esc(u) + '" alt="' + esc(it.name) + ', фото ' + (i + 1) + '" loading="' + (i ? "lazy" : "eager") + '" referrerpolicy="no-referrer">';
+  }).join("") + "</div>" + (ph.length > 1 ? '<div class="gal-n" id="galn">1 / ' + ph.length + "</div>" : "") + "</div>";
+}
+function viewCard(it) {
+  var c = catById([].concat(it.cat)[0]);
+  var web = "";
+  var links = [["Отзывы на Яндекс Картах", it.reviews], ["WhatsApp", it.wa], ["Сайт", it.site], ["ВКонтакте", it.vk], ["Telegram", it.tg]].filter(function (l) { return l[1]; });
+  if (links.length) {
+    web = '<div class="web"><h2>Мы в интернете</h2><div class="links">' + links.map(function (l) {
+      return '<a href="' + esc(l[1]) + '" target="_blank" rel="noopener">' + l[0] + "</a>";
+    }).join("") + "</div></div>";
+  }
+  var quotes = it.quotes && it.quotes.length ? '<div class="web"><h2>Что говорят клиенты</h2><div class="quotes">' + it.quotes.map(function (q) {
+    return '<blockquote class="q"><p>' + esc(q[1]) + "</p>" + (q[0] ? "<cite>" + esc(q[0]) + "</cite>" : "") + "</blockquote>";
+  }).join("") + "</div></div>" : "";
+  var price = it.price ? '<a class="pricelink" href="#price-' + it.id + '" data-go="price-' + it.id + '">' + ico(P.list, 24, "#14532D") +
+    '<span class="t"><b>Прайс-лист</b><span>Услуги и цены</span></span>' + '<span style="margin-left:auto;display:flex">' + ico(P.right, 22, "#14532D") + "</span></a>" : "";
+  var map = "https://yandex.ru/maps/?text=" + encodeURIComponent("Бугуруслан, " + it.addr);
+  return '<div class="app"><div class="row">' + backBtn("Назад к списку") + '<div class="sub" style="font-size:15px;font-weight:700">' + esc(c ? c.name : "") + "</div></div>" +
+    photosBlock(it) +
+    '<div class="title-block">' + (it.rec ? '<span class="tag gold">Рекомендуем</span>' : "") + "<h1>" + esc(it.name) + "</h1>" + starsHtml(it.stars) + (it.about ? '<div class="sub" style="font-size:15px;line-height:1.4">' + esc(it.about) + "</div>" : "") + "</div>" +
+    '<div class="panel">' +
+    '<div class="it">' + ico(P.pin, 22, "#14532D") + "<span>г. Бугуруслан" + (it.addr === "Бугуруслан" ? "" : ", " + esc(it.addr)) + (it.note ? '<br><small style="font-size:14px;color:#4D6657">' + esc(it.note) + "</small>" : "") + "</span></div>" +
+    (it.hours ? '<div class="it">' + ico(P.clock, 22, "#14532D") + "<span>Часы работы: " + esc(it.hours) + "</span></div>" : "") +
+    '<div class="it">' + ico(P.phone, 22, "#14532D") + '<span class="phone-t">' + esc(it.phone) + "</span></div></div>" +
+    price + quotes + web +
+    '<div class="actions"><a class="btn fill" href="' + telHref(it.phone) + '">' + ico(P.phone, 20, "#FFFFFF") + "<span>Позвонить</span></a>" +
+    (it.addr === "Бугуруслан" ? "" : '<a class="btn line2" href="' + esc(map) + '" target="_blank" rel="noopener">' + ico(P.route, 20, "#14532D") + "<span>Маршрут</span></a>") + "</div></div>";
+}
+
+function viewPrice(it) {
+  return '<div class="app"><div class="row">' + backBtn("Назад к карточке") +
+    '<div style="display:flex;flex-direction:column;gap:2px;min-width:0"><h1>Прайс-лист</h1><div class="sub">' + esc(it.name) + "</div></div></div>" +
+    '<div class="prices">' + it.price.map(function (r) { return '<div class="pr"><span>' + esc(r[0]) + "</span><span>" + esc(r[1]) + "</span></div>"; }).join("") + "</div>" +
+    '<div class="note">' + esc(it.priceNote || "Услуги и цены условные. Точную стоимость уточняйте по телефону.") + "</div>" +
+    '<div style="margin-top:auto"><a class="btn fill" href="' + telHref(it.phone) + '">' + ico(P.phone, 20, "#FFFFFF") + "<span>Позвонить</span></a></div></div>";
+}
+
+var TG_OWNERS = "https://t.me/+mwODMyQdyGo0MjUy", TG_CHANNEL = "https://t.me/buguruslan_vse_v_odnom", MAX_CHANNEL = "https://max.ru/join/anMxoQFaUXjteGXII_6PE3HktwSo7UJ_JnMA-E6HEAs";
+var OWNER = { phone: "+7 (922) 857-20-99", wa: "https://wa.me/79228572099", tg: "https://t.me/+79228572099" };
+function viewOwner() {
+  var items = [
+    "Карточка в каталоге: название, адрес, телефон, часы работы",
+    "Прайс-лист и значок «Рекомендуем»",
+    "Ссылки на ваш сайт, WhatsApp, Telegram, ВКонтакте",
+    "Ваши акции и новости в окне новостей приложения",
+    "Участие в розыгрышах и рассылках для жителей",
+    "Фото ваших работ в карточке (скоро)"
+  ];
+  return '<div class="app"><div class="row">' + backBtn("Назад на главную") + "<h1>Владельцам бизнеса</h1></div>" +
+    '<div class="panel"><h2>Что вы получите</h2><ul class="chk">' + items.map(function (t) { return "<li><span>" + esc(t) + "</span></li>"; }).join("") + "</ul></div>" +
+    '<button type="button" class="bigbtn" data-go="apply">Оставить заявку</button>' +
+    '<div class="ownlinks"><a href="' + TG_OWNERS + '" target="_blank" rel="noopener">Группа для владельцев в Telegram</a></div>' +
+    '<button type="button" class="help-link" data-go="help">Техподдержка и частые вопросы</button>' +
+    '<div class="note">Оставьте заявку, мы ответим в течение рабочего дня.</div>' +
+    '<div class="foot">© 2026 «Бугуруслан всё в одном месте» · Б-56. Все права защищены</div></div>';
+}
+
+var FAQ = [
+  ["Как поставить приложение на телефон?", "Нажмите «Установить» на главном экране и следуйте подсказке. Значок «Б-56» появится среди ваших приложений."],
+  ["Где мой номер участника для розыгрыша?", "Откройте приложение с его значка на экране телефона. Номер появится на главном экране. Сохраните его: сделайте снимок экрана или запишите."],
+  ["Потерял номер участника. Что делать?", "Пока приложение стоит на телефоне, номер можно посмотреть снова на главном экране. Если приложение удалено, напишите нам через кнопку «Написать»."],
+  ["Как добавить мой бизнес в приложение?", "Откройте «Владельцам бизнеса» на главном экране и нажмите «Оставить заявку»."],
+  ["Как изменить данные в моей карточке?", "Напишите нам через кнопку «Написать» и укажите, что изменить: телефон, часы работы, цены."],
+  ["Как узнать результаты розыгрыша?", "Итоги объявляем в окне «Новости и акции» и в нашем Telegram-канале."]
+];
+function field(id, label, hint, tag, ph) {
+  var inp = tag === "textarea" ? '<textarea id="' + id + '" maxlength="1000" placeholder="' + esc(ph || "") + '"></textarea>' : '<input id="' + id + '" maxlength="100" autocomplete="off" placeholder="' + esc(ph || "") + '">';
+  return '<label class="fld" for="' + id + '"><b>' + esc(label) + "</b>" + (hint ? "<span>" + esc(hint) + "</span>" : "") + inp + "</label>";
+}
+function viewHelp() {
+  return '<div class="app"><div class="row">' + backBtn("Назад") + "<h1>Техподдержка</h1></div>" +
+    '<div class="faq">' + FAQ.map(function (q) { return "<details><summary>" + esc(q[0]) + "</summary><p>" + esc(q[1]) + "</p></details>"; }).join("") + "</div>" +
+    '<button type="button" class="bigbtn" data-go="ask">Написать</button>' +
+    '<div class="note">Отвечаем в течение рабочего дня (с 10:00 до 18:00, кроме субботы и воскресенья).</div>' +
+    '<div class="ownlinks"><a href="' + TG_CHANNEL + '" target="_blank" rel="noopener">Наш Telegram-канал с новостями</a><a href="' + MAX_CHANNEL + '" target="_blank" rel="noopener">Наш канал в Максе</a></div>' +
+    '<div class="foot">© 2026 «Бугуруслан всё в одном месте» · Б-56. Все права защищены</div></div>';
+}
+function viewForm(kind) {
+  var owner = kind === "owner";
+  return '<div class="app"><div class="row">' + backBtn("Назад") + "<h1>" + (owner ? "Заявка владельца" : "Написать нам") + "</h1></div>" +
+    '<div class="panel" id="formbox">' +
+    (owner ? field("f_biz", "Название вашего бизнеса", "", "input", "Например: Автосервис «Мотор»") : "") +
+    field("f_name", "Ваше имя", "можно не писать", "input", "") +
+    field("f_contact", "Телефон или Telegram", "чтобы мы могли ответить", "input", "+7 ... или @имя") +
+    field("f_msg", owner ? "Что нужно сделать" : "Ваш вопрос", owner ? "можно коротко или оставить пустым" : "", "textarea", "") +
+    '<div id="f_res" role="status"></div>' +
+    '<button type="button" class="bigbtn" data-send="' + kind + '">Отправить</button></div>' +
+    '<div class="note">Отвечаем в течение рабочего дня. Телефон нужен только для ответа вам.</div>' +
+    '<div class="foot">© 2026 «Бугуруслан всё в одном месте» · Б-56. Все права защищены</div></div>';
+}
+function sendTicket(kind, btn) {
+  function v(id) { var e = document.getElementById(id); return e ? e.value.trim() : ""; }
+  var res = document.getElementById("f_res"), contact = v("f_contact"), msg = v("f_msg");
+  function show(t, err) { res.className = "formmsg" + (err ? " err" : ""); res.textContent = t; }
+  if (!contact) { show("Напишите телефон или Telegram, чтобы мы могли ответить.", true); return; }
+  if (kind !== "owner" && !msg) { show("Напишите ваш вопрос.", true); return; }
+  var body = { a: "ticket_add", kind: kind, name: v("f_name"), contact: contact, biz: v("f_biz"), msg: msg, pid: getId() };
+  function done() {
+    track(kind === "owner" ? "owner_request" : "support_send");
+    var box = document.getElementById("formbox");
+    if (box) box.innerHTML = '<div class="formmsg">Спасибо! Мы получили ваше сообщение и ответим в течение рабочего дня.</div>';
+  }
+  btn.disabled = true; btn.textContent = "Отправляем…";
+  if (!API) { setTimeout(done, 300); return; }
+  apiPost(body).then(function (r) {
+    if (r && r.ok) done();
+    else { btn.disabled = false; btn.textContent = "Отправить"; show((r && r.err) || "Не получилось отправить. Попробуйте ещё раз.", true); }
+  }, function () { btn.disabled = false; btn.textContent = "Отправить"; show("Нет связи. Проверьте интернет и попробуйте ещё раз.", true); });
+}
+
+/* ---------- связь с сервером, новости, номер участника ---------- */
+var API = "https://script.google.com/macros/s/AKfycbyRiGD8kP3YnhLAa_FDMo_iwgBYz6Ld5zBhYERvGnK7sBLXAfRRuBSYR6HKCmobh0HeSQ/exec"; /* сюда вставляется адрес сервера (Google Apps Script). Пусто = пробный режим */
+var DEMO = !API;
+var DEMO_NEWS = [
+  { id: "20261013100003", date: "2026-10-13", type: "Розыгрыш", title: "Розыгрыш призов среди пользователей приложения", text: "Ваш номер участника — на главном экране. Сохраните его! Итоги объявим здесь.", org: "", until: "" },
+  { id: "20261013100002", date: "2026-10-12", type: "Акция", title: "Салон красоты «Красотка» дарит скидку 10%", text: "На все услуги до конца месяца. Назовите запись из приложения «Б-56».", org: "Салон красоты «Красотка»", until: "2026-10-31" },
+  { id: "20261013100001", date: "2026-10-10", type: "Новость", title: "В приложении появились новые разделы", text: "Кондитеры, бани и сауны, фото и видео, курсы.", org: "", until: "" }
+];
+var SEND = { card_open: 1, price_open: 1, call_click: 1, route_click: 1, link_click: 1, owner_info: 1, owner_contact: 1, news_open: 1, qr_open: 1, install: 1, open_from_icon: 1, role_resident: 1, role_owner: 1, install_howto: 1, owner_request: 1, support_open: 1, support_send: 1 };
+var evq = [], newsData = [], memRole = "", memId = "";
+
+function sget(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function sset(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+function flushEv() {
+  if (!API || !evq.length) return;
+  var list = evq.splice(0, 30);
+  try { fetch(API, { method: "POST", mode: "no-cors", keepalive: true, headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ a: "evs", list: list }) }).catch(function () {}); } catch (e) {}
+}
+function track(t, o) {
+  if (!SEND[t] || !API) return;
+  evq.push({ t: t, org: (o && o.org) || "", id: getId() });
+  if (evq.length >= 10) flushEv();
+}
+function visitParams() {}
+setInterval(flushEv, 15000);
+document.addEventListener("visibilitychange", function () { if (document.hidden) flushEv(); });
+
+function withTimeout(url, opt) {
+  var ctl = typeof AbortController !== "undefined" ? new AbortController() : null;
+  var t = setTimeout(function () { if (ctl) ctl.abort(); }, 10000);
+  if (ctl) opt.signal = ctl.signal;
+  return fetch(url, opt).then(function (r) { clearTimeout(t); return r.json(); });
+}
+function apiGet(a) { return withTimeout(API + "?a=" + encodeURIComponent(a), { method: "GET" }); }
+function apiPost(o) { return withTimeout(API, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(o) }); }
+
+function getRole() { return sget("b56_role") || memRole || ""; }
+function getId() { return sget("b56_id") || memId || ""; }
+function fmtDate(d) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(d || ""); return m ? m[3] + "." + m[2] + "." + m[1] : ""; }
+
+function loadNews() {
+  if (DEMO) { newsData = DEMO_NEWS; return; }
+  try { var c = JSON.parse(sget("b56_news") || "[]"); if (c && c.length) newsData = c; } catch (e) {}
+  apiGet("news").then(function (r) {
+    if (r && r.ok && r.items) { newsData = r.items; sset("b56_news", JSON.stringify(r.items)); refreshNewsUi(); }
+  }, function () {});
+}
+function loadBanners() {
+  if (DEMO) { BANNERS = { okna: { title: "Пример плашки раздела", text: "Здесь администратор может написать важное для этого раздела.", url: "" } }; return; }
+  try { var c = JSON.parse(sget("b56_banners") || "null"); if (c) BANNERS = c; } catch (e) {}
+  apiGet("banners").then(function (r) {
+    if (!r || !r.ok || !r.items) return;
+    var m = {}; r.items.forEach(function (b) { m[b.cat] = b; });
+    var j = JSON.stringify(m); if (j === JSON.stringify(BANNERS)) return;
+    BANNERS = m; sset("b56_banners", j);
+    var q = document.getElementById("q");
+    if (parse(state.route).v === "cat" && !(q && q.value)) render();
+  }, function () {});
+}
+function loadPlaces() {
+  if (DEMO) return;
+  try { var c = JSON.parse(sget("b56_places") || "null"); if (c && c.length) ITEMS = c; } catch (e) {}
+  apiGet("places").then(function (r) {
+    if (!r || !r.ok || !r.items) return;
+    var j = JSON.stringify(r.items);
+    if (j === JSON.stringify(ITEMS)) return;
+    ITEMS = r.items; sset("b56_places", j);
+    var q = document.getElementById("q");
+    if (q && q.value) return;
+    if (!valid(state.route)) state.route = "home";
+    render();
+  }, function () {});
+}
+function refreshNewsUi() {
+  var t = document.getElementById("top");
+  if (t) { t.innerHTML = topInner(); if (topInner()) t.removeAttribute("data-empty"); else t.setAttribute("data-empty", "1"); carSetup(); }
+  if (parse(state.route).v === "news") render();
+}
+function hasUnseen() { return newsData.length > 0 && String(newsData[0].id) > String(sget("b56_seen") || memSeen); }
+var memSeen = "";
+function markSeen() { if (newsData.length) { memSeen = String(newsData[0].id); sset("b56_seen", memSeen); } }
+function tagClass(t) { return t === "Акция" ? "gold" : (t === "Розыгрыш" ? "mint" : ""); }
+
+function safeImg(u) { return /^https:\/\//.test(u || "") ? u : ""; }
+function newsCard() {
+  if (!newsData.length) return "";
+  var list = newsData.slice(0, 5), unseen = hasUnseen();
+  var slides = list.map(function (n, i) {
+    var im = safeImg(n.img), cls = n.type === "Акция" ? " n-gold" : (n.type === "Розыгрыш" ? " n-mint" : "");
+    return '<button type="button" class="nslide' + (im ? " has-img" : "") + cls + '" data-go="news">' + (im ? '<span class="nbg" style="background-image:url(&quot;' + esc(im) + '&quot;)"></span><span class="nsh"></span>' : "") +
+      '<span class="ntx"><span class="ntag">' + esc(n.type) + (i === 0 && unseen ? " · новое" : "") + '</span><span class="ntt">' + esc(n.title) + "</span>" + (n.org ? '<span class="nto">' + esc(n.org) + "</span>" : "") + "</span></button>";
+  }).join("");
+  var dots = list.length > 1 ? '<div class="ndots">' + list.map(function (n, i) { return "<i" + (i === 0 ? ' class="on"' : "") + "></i>"; }).join("") + "</div>" : "";
+  return '<div class="ncar"><div class="ntrack" id="ntrack">' + slides + "</div>" + dots + '<button type="button" class="nall" data-go="news">Все новости и акции (' + newsData.length + ") →</button></div>";
+}
+var carTimer = 0, carPause = 0;
+function carSetup() {
+  if (carTimer) { clearInterval(carTimer); carTimer = 0; }
+  var tr = document.getElementById("ntrack");
+  if (!tr || tr.children.length < 2) return;
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce) return;
+  carTimer = setInterval(function () {
+    var t = document.getElementById("ntrack");
+    if (!t) { clearInterval(carTimer); carTimer = 0; return; }
+    if (Date.now() < carPause || document.hidden) return;
+    var w = t.clientWidth + 10, i = Math.round(t.scrollLeft / w), n = t.children.length;
+    t.scrollTo({ left: ((i + 1) % n) * w, behavior: "smooth" });
+  }, 5000);
+}
+document.addEventListener("scroll", function (e) {
+  var t = e.target;
+  if (!t || t.id !== "ntrack") return;
+  var w = t.clientWidth + 10, i = Math.round(t.scrollLeft / w), d = t.parentNode.querySelectorAll(".ndots i");
+  for (var k = 0; k < d.length; k++) d[k].className = k === i ? "on" : "";
+}, true);
+document.addEventListener("touchstart", function (e) { if (e.target.closest && e.target.closest("#ntrack")) carPause = Date.now() + 10000; }, true);
+document.addEventListener("pointerdown", function (e) { if (e.target.closest && e.target.closest("#ntrack")) carPause = Date.now() + 10000; }, true);
+function idPill() {
+  var id = getId();
+  if (!id) return "";
+  return '<button type="button" class="idpill" data-go="id"><span>Ваш номер участника</span><b>' + esc(id) + "</b></button>";
+}
+function topInner() { return idPill() + newsCard(); }
+function homeTop() { var i = topInner(); return '<div id="top" class="top-blocks"' + (i ? "" : " data-empty") + ">" + i + "</div>"; }
+
+function newsItem(n) {
+  var im = safeImg(n.img);
+  return '<div class="nitem">' + (im ? '<img class="nimg" src="' + esc(im) + '" alt="" loading="lazy">' : "") + '<div class="meta"><span class="nt ' + tagClass(n.type) + '">' + esc(n.type) + "</span><span>" + esc(fmtDate(n.date)) + "</span>" + (n.until ? "<span>до " + esc(fmtDate(n.until)) + "</span>" : "") + "</div>" +
+    '<div class="nm2">' + esc(n.title) + "</div>" + (n.org ? '<div class="nc-m">' + esc(n.org) + "</div>" : "") + (n.text ? "<p>" + esc(n.text) + "</p>" : "") + "</div>";
+}
+function viewNews() {
+  markSeen();
+  return '<div class="app"><div class="row">' + backBtn("Назад на главную") + "<h1>Новости и акции</h1></div>" +
+    (newsData.length ? newsData.map(newsItem).join("") : emptyBlock("Пока новостей нет", "Здесь появятся акции и объявления заведений города.")) +
+    '<div class="foot">© 2026 «Бугуруслан всё в одном месте» · Б-56. Все права защищены</div></div>';
+}
+function viewId() {
+  var id = getId();
+  return '<div class="app"><div class="row">' + backBtn("Назад на главную") + "<h1>Ваш номер участника</h1></div>" +
+    (id ? '<div class="idbox"><span>Ваш номер</span><div class="idbig">' + esc(id) + "</div></div>" +
+      '<button type="button" class="bigbtn" data-copyid="1">Скопировать номер</button>' +
+      '<div class="note">Сохраните номер: сделайте снимок экрана или запишите. Он нужен для розыгрыша призов. Потеряете — приложение покажет его здесь снова, пока оно стоит на телефоне.</div>'
+      : emptyBlock("Номера пока нет", "Он выдаётся, когда приложение установлено на экран телефона и открыто с него.")) +
+    '<button type="button" class="help-link" data-go="help">Техподдержка</button>' +
+    '<div class="foot">© 2026 «Бугуруслан всё в одном месте» · Б-56. Все права защищены</div></div>';
+}
+function isInstalled() { return isStandalone() || DEMO; }
+function newToken() {
+  var t = sget("b56_tok");
+  if (t) return t;
+  try { var a = new Uint8Array(12); crypto.getRandomValues(a); t = Array.prototype.map.call(a, function (x) { return ("0" + x.toString(16)).slice(-2); }).join(""); }
+  catch (e) { t = String(Date.now()) + Math.random().toString(36).slice(2, 10); }
+  sset("b56_tok", t);
+  return t;
+}
+function showIdModal(id) {
+  if (document.getElementById("idm")) return;
+  var el = document.createElement("div");
+  el.className = "sheet-bg"; el.id = "idm";
+  el.innerHTML = '<div class="sheet" role="dialog" aria-modal="true" aria-label="Ваш номер участника"><h2>Ваш номер участника</h2><div class="idbox"><div class="idbig">' + esc(id) + "</div></div>" +
+    "<p>Сохраните его: сделайте снимок экрана. Номер нужен для розыгрыша призов.</p>" +
+    '<button type="button" class="opt fill" data-copyid="1">Скопировать номер</button><button type="button" class="opt" data-idok="1">Понятно, сохранила</button></div>';
+  document.body.appendChild(el);
+}
+function ensureId() {
+  if (getId() || !isInstalled()) return;
+  if (DEMO) { memId = "Б56-48213"; showIdModal(memId); refreshNewsUi(); return; }
+  apiPost({ a: "reg", token: newToken(), role: getRole(), plat: detectPlat(), src: sget("b56_src") || qrSource() }).then(function (r) {
+    if (r && r.ok && r.id) { sset("b56_id", r.id); memId = r.id; showIdModal(r.id); refreshNewsUi(); }
+  }, function () {});
+}
+function currentOrg() {
+  var p = parse(state.route);
+  if (p.v === "card" || p.v === "price") return (itemById(p.id) || {}).name || "";
+  return "";
+}
+function isStandalone() {
+  try { return (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true; } catch (e) { return false; }
+}
+function qrSource() {
+  try { var p = new URLSearchParams(location.search).get("p"); return p === "android" || p === "iphone" ? p : ""; } catch (e) { return ""; }
+}
+function detectPlat() {
+  var s = qrSource();
+  if (s) return s;
+  return /iPhone|iPad|iPod/i.test(navigator.userAgent || "") ? "iphone" : "android";
+}
+var deferredPrompt = null;
+state.plat = detectPlat();
+
+function trackRoute(r) {
+  var p = parse(r);
+  if (p.v === "card") track("card_open", { org: (itemById(p.id) || {}).name });
+  else if (p.v === "price") track("price_open", { org: (itemById(p.id) || {}).name });
+  else if (p.v === "owner") track("owner_info");
+  else if (p.v === "news") track("news_open");
+  else if (p.v === "install") track("install_howto");
+  else if (p.v === "help") track("support_open");
+}
+
+function installBanner() {
+  if (isStandalone()) return "";
+  return '<div class="install"><div class="tt"><b>Поставьте приложение на телефон</b><span>Значок «Б-56» на экране и номер для розыгрыша призов</span></div>' +
+    '<button type="button" data-go="install">Установить</button></div>';
+}
+function viewInstall() {
+  var ios = state.plat === "iphone", steps, top = "";
+  var seg = '<div class="seg" role="group" aria-label="Тип телефона">' +
+    '<button type="button" data-plat="android" aria-pressed="' + (!ios) + '">Android</button>' +
+    '<button type="button" data-plat="iphone" aria-pressed="' + ios + '">iPhone</button></div>';
+  if (ios) {
+    steps = [
+      "Откройте эту страницу в браузере <b>Safari</b> (значок синего компаса). Если ссылка пришла в Telegram, ВКонтакте или WhatsApp, нажмите там <b>«Открыть в Safari»</b> (или скопируйте ссылку и вставьте в Safari).",
+      'Нажмите внизу экрана кнопку <b>«Поделиться»</b> (квадрат со стрелкой вверх) <span class="ic">' + ico('<path d="M12 3v12"/><path d="m8 7 4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/>', 24, "#14532D") + "</span>.",
+      "Прокрутите меню вниз и выберите <b>«На экран „Домой“»</b>.",
+      "Нажмите <b>«Добавить»</b> в правом верхнем углу. Значок «Б-56» появится на экране телефона."
+    ];
+  } else {
+    if (deferredPrompt) top = '<button type="button" class="bigbtn" data-install="1">Установить приложение</button>';
+    steps = [
+      "Если вы открыли ссылку в Telegram, ВКонтакте или WhatsApp, нажмите там три точки <b>⋮</b> и выберите <b>«Открыть в браузере»</b> (или скопируйте ссылку кнопкой ниже и вставьте в браузер).",
+      "Подойдёт любой обычный браузер: <b>Chrome, Яндекс Браузер, Samsung Internet, Opera, Firefox</b>.",
+      "Нажмите в браузере кнопку меню: три точки <b>⋮</b> (у Samsung Internet три полоски <b>≡</b>).",
+      "Выберите <b>«Установить приложение»</b> или <b>«Добавить на главный экран»</b>. В разных браузерах название чуть отличается.",
+      "Подтвердите. Значок «Б-56» появится на экране телефона."
+    ];
+  }
+  return '<div class="app"><div class="row">' + backBtn("Назад") + "<h1>Установить приложение</h1></div>" + seg + top +
+    '<ol class="how">' + steps.map(function (t) { return "<li><div>" + t + "</div></li>"; }).join("") + "</ol>" +
+    '<button type="button" class="bigbtn" style="background:#fff;color:#14532D" data-copylink="1">Скопировать ссылку на приложение</button>' +
+    '<div class="note">Приложение работает как обычное: значок на экране, открывается сразу, без магазина приложений. Не получается установить? Можно пользоваться и без установки, просто открывайте ссылку в браузере. Установка нужна для номера участника розыгрыша.</div>' +
+    '<div class="foot">© 2026 «Бугуруслан всё в одном месте» · Б-56. Все права защищены</div></div>';
+}
+
+var roleAsked = false;
+function askRole() {
+  if (roleAsked || sget("b56_role")) return;
+  roleAsked = true;
+  var el = document.createElement("div");
+  el.className = "sheet-bg"; el.id = "role";
+  el.innerHTML = '<div class="sheet" role="dialog" aria-modal="true" aria-label="Кто вы"><h2>Кто вы?</h2><p>Один вопрос, чтобы показать вам нужное.</p>' +
+    '<button type="button" class="opt fill" data-role="resident">Я житель Бугуруслана</button>' +
+    '<button type="button" class="opt" data-role="owner">Я владелец бизнеса</button>' +
+    '<button type="button" class="skip" data-role="skip">Пропустить</button></div>';
+  document.body.appendChild(el);
+}
+function setRole(v) {
+  var el = document.getElementById("role");
+  if (el) el.remove();
+  memRole = v;
+  sset("b56_role", v);
+  if (v === "resident" || v === "owner") track("role_" + v);
+  if (v === "owner") go("owner");
+  ensureId();
+}
+
+/* ---------- показ и переходы ---------- */
+function render() {
+  var r = parse(state.route), html, results = null;
+  if (r.v === "cat") { var c = catById(r.id); html = viewCat(c); results = function (q) { return catResults(c, q); }; }
+  else if (r.v === "card") html = viewCard(itemById(r.id));
+  else if (r.v === "price") html = viewPrice(itemById(r.id));
+  else if (r.v === "owner") html = viewOwner();
+  else if (r.v === "install") html = viewInstall();
+  else if (r.v === "news") html = viewNews();
+  else if (r.v === "id") html = viewId();
+  else if (r.v === "help") html = viewHelp();
+  else if (r.v === "ask") html = viewForm("ask");
+  else if (r.v === "apply") html = viewForm("owner");
+  else { html = viewHome(); results = homeResults; }
+  app.outerHTML = html;
+  app = document.querySelector(".app");
+  app.id = "app";
+  if (results) {
+    var box = document.getElementById("results"), q = document.getElementById("q");
+    box.innerHTML = results("");
+    q.addEventListener("input", function () { box.innerHTML = results(q.value); var tp = document.getElementById("top"); if (tp) tp.hidden = !!q.value.trim(); });
+  }
+  document.title = "Бугуруслан всё в одном месте";
+  bindGallery();
+  carSetup();
+  if (r.v === "home") askRole();
+  try { window.scrollTo(0, 0); } catch (e) {}
+}
+function bindGallery() {
+  var g = document.getElementById("gal"), n = document.getElementById("galn");
+  if (!g || !n) return;
+  g.addEventListener("scroll", function () {
+    var i = Math.round(g.scrollLeft / Math.max(1, g.clientWidth));
+    n.textContent = (i + 1) + " / " + g.children.length;
+  });
+}
+function setHash(r) { try { if (location.hash.slice(1) !== r) location.hash = r; } catch (e) {} }
+function go(r) {
+  if (!valid(r) || r === state.route) return;
+  trackRoute(r);
+  state.stack.push(state.route);
+  state.route = r;
+  setHash(r);
+  render();
+}
+function back() {
+  state.route = state.stack.length ? state.stack.pop() : "home";
+  setHash(state.route);
+  render();
+}
+
+document.addEventListener("click", function (e) {
+  if (e.target.closest("[data-idok]")) { var m = document.getElementById("idm"); if (m) m.remove(); return; }
+  var sd = e.target.closest("[data-send]");
+  if (sd) { sendTicket(sd.getAttribute("data-send"), sd); return; }
+  var cl = e.target.closest("[data-copylink]");
+  if (cl) { var u = "https://buguruslan56.ru"; try { navigator.clipboard.writeText(u).then(function () { cl.textContent = "Ссылка скопирована ✓"; }, function () { cl.textContent = u; }); } catch (er) { cl.textContent = u; } return; }
+  var cp = e.target.closest("[data-copyid]");
+  if (cp) { try { navigator.clipboard.writeText(getId()).then(function () { cp.textContent = "Скопировано ✓"; }, function () {}); } catch (er) {} return; }
+  var ro = e.target.closest("[data-role]");
+  if (ro) { setRole(ro.getAttribute("data-role")); return; }
+  var pl = e.target.closest("[data-plat]");
+  if (pl) { state.plat = pl.getAttribute("data-plat"); render(); return; }
+  var ins = e.target.closest("[data-install]");
+  if (ins && deferredPrompt) {
+    track("install_click");
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function () { deferredPrompt = null; render(); }, function () {});
+    return;
+  }
+  var b = e.target.closest("[data-back]");
+  if (b) { e.preventDefault(); back(); return; }
+  var g = e.target.closest("[data-go]");
+  if (g) { e.preventDefault(); go(g.getAttribute("data-go")); return; }
+  var a = e.target.closest("a[href]");
+  if (a) {
+    var h = a.getAttribute("href") || "", org = currentOrg();
+    if (a.hasAttribute("data-k")) track("owner_contact");
+    else if (h.indexOf("tel:") === 0) track("call_click", { org: org });
+    else if (h.indexOf("yandex.ru/maps") !== -1) track("route_click", { org: org });
+    else if (a.closest(".web")) track("link_click", { org: org });
+  }
+});
+window.addEventListener("hashchange", function () {
+  var r = location.hash.slice(1) || "home";
+  if (r === state.route) return;
+  if (!valid(r)) r = "home";
+  if (state.stack.length && state.stack[state.stack.length - 1] === r) state.stack.pop(); else if (r !== "home") state.stack.push(state.route);
+  state.route = r;
+  render();
+});
+
+window.addEventListener("beforeinstallprompt", function (e) {
+  e.preventDefault();
+  deferredPrompt = e;
+  if (parse(state.route).v === "install") render();
+});
+window.addEventListener("appinstalled", function () { sset("b56_inst", "1"); track("install"); });
+
+(function start() {
+  var r = "home";
+  try { r = location.hash.slice(1) || "home"; } catch (e) {}
+  loadPlaces();
+  loadBanners();
+  state.route = valid(r) ? r : "home";
+  var src = qrSource();
+  if (src) { if (!sget("b56_src")) sset("b56_src", src); track("qr_open"); }
+  if (isStandalone()) {
+    track("open_from_icon");
+    if (!sget("b56_inst")) { sset("b56_inst", "1"); track("install"); }
+  } else if (src && state.route === "home") {
+    state.stack = ["home"];
+    state.route = "install";
+  }
+  loadNews();
+  render();
+  if (getRole()) ensureId();
+})();
+</script>
+
+
+</body>
+</html>
