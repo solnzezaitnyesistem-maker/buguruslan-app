@@ -37,7 +37,7 @@ button, input { font-family: inherit; }
 a:focus-visible, button:focus-visible { outline: 3px solid var(--green); outline-offset: 2px; }
 label:focus-within { outline: 3px solid var(--green); outline-offset: 2px; }
 
-.app { max-width: 480px; margin: 0 auto; min-height: 100%; padding-inline: 20px; padding-block: 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+.app { max-width: 480px; margin: 0 auto; min-height: 100%; padding-inline: 20px; padding-block: 20px 96px; display: flex; flex-direction: column; gap: 16px; }
 .app.home { padding-block-start: 28px; gap: 20px; }
 .row { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .back { flex: none; display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 14px; background: var(--white); border: 1px solid var(--line); }
@@ -119,6 +119,10 @@ h2 { margin: 0; font-size: 18px; font-weight: 800; }
 .note { font-size: 13px; line-height: 1.4; color: var(--muted); }
 .foot { margin-top: auto; text-align: center; font-size: 13px; color: var(--muted); }
 
+.soon { margin-top: 16px; padding: 16px; border: 2px dashed var(--ink); border-radius: 18px; background: #F1F7F3; display: flex; flex-direction: column; gap: 4px; }
+.soon .badge { align-self: flex-start; padding: 3px 10px; border-radius: 999px; background: var(--gold); color: var(--ink); font-size: 12px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+.soon b { font-size: 17px; font-weight: 800; line-height: 1.25; color: var(--ink); }
+.soon span { font-size: 14px; line-height: 1.4; color: #3F5A49; }
 .owner { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 16px; background: var(--ink); color: var(--white); border-radius: 18px; }
 .owner .tt { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .owner b { font-size: 16px; font-weight: 800; line-height: 1.25; }
@@ -215,11 +219,39 @@ h2 { margin: 0; font-size: 18px; font-weight: 800; }
 .formmsg { padding: 12px 14px; border-radius: 14px; background: var(--mint); color: var(--green); font-weight: 800; font-size: 15px; }
 .formmsg.err { background: #FDECEA; color: #8A1C12; }
 .help-link { display: block; width: 100%; min-height: 44px; border: 0; background: none; color: var(--muted); font-size: 14px; text-decoration: underline; cursor: pointer; }
+
+:root { --tb: 62px; }
+.tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; background: var(--white); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom); }
+.tabbar .in { max-width: 480px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.tabbar button { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; height: var(--tb); padding: 6px 2px; border: 0; background: none; color: var(--muted); font-size: 12px; font-weight: 700; cursor: pointer; }
+.tabbar button.on { color: var(--green); }
+.tabbar button.on::before { content: ""; position: absolute; top: 0; left: 28%; right: 28%; height: 3px; border-radius: 0 0 3px 3px; background: var(--green); }
+.tabbar .nd { position: absolute; top: 8px; left: calc(50% + 6px); width: 9px; height: 9px; border-radius: 50%; background: #D93025; border: 2px solid var(--white); box-sizing: content-box; }
+button.soon { width: 100%; text-align: left; font: inherit; cursor: pointer; }
+.soon.big { margin-top: 0; padding: 22px 18px; gap: 10px; }
+.soon.big b { font-size: 22px; }
+.soon.big span { font-size: 16px; }
+.app.news-full { padding: 0; gap: 0; max-width: 480px; min-height: 0; }
+.nfs { height: calc(100vh - var(--tb)); height: calc(100dvh - var(--tb) - env(safe-area-inset-bottom)); overflow-y: auto; scroll-snap-type: y mandatory; overscroll-behavior: contain; }
+.nfs-i { height: 100%; scroll-snap-align: start; scroll-snap-stop: always; display: flex; flex-direction: column; background: var(--white); }
+.nfs-i .pic { flex: 1 1 0; min-height: 0; background-size: cover; background-position: center; background-color: var(--green); display: flex; align-items: flex-start; padding: 14px; }
+.nfs-i .pic.no { position: relative; background: linear-gradient(160deg, #14532D, #1f7a52); align-items: center; justify-content: center; }
+.nfs-i .pic.no .ntag { position: absolute; top: 14px; left: 14px; }
+.nfs-i.noimg .tx h2 { display: none; }
+.nfs-i .pic.no b { color: #fff; font-size: 30px; line-height: 1.15; text-align: center; padding: 0 12px; overflow-wrap: anywhere; }
+.nfs-i .ntag { padding: 4px 12px; border-radius: 999px; background: var(--gold); color: var(--ink); font-size: 13px; font-weight: 800; white-space: nowrap; align-self: flex-start; }
+.nfs-i .tx { flex: none; max-height: 46%; overflow-y: auto; padding: 16px 20px 22px; display: flex; flex-direction: column; gap: 8px; }
+.nfs-i .tx h2 { margin: 0; font-size: 22px; line-height: 1.2; overflow-wrap: anywhere; }
+.nfs-i .tx .nc-m { font-size: 15px; color: var(--muted); font-weight: 700; }
+.nfs-i .tx p { margin: 0; font-size: 16px; line-height: 1.45; overflow-wrap: anywhere; }
+.nfs-i .tx .meta { font-size: 13px; color: var(--muted); display: flex; gap: 10px; }
+.nfs-i .hint { align-self: center; font-size: 12px; color: var(--muted); }
 </style>
 </head>
 <body>
 
 <div class="app" id="app"></div>
+<nav class="tabbar" id="tabbar" aria-label="Разделы приложения"></nav>
 
 <script>
 /* ===== ДАННЫЕ: сюда добавляются настоящие организации. cat = id раздела из CATS ===== */
@@ -261,7 +293,7 @@ var CATS = [
   { id: "mebel", name: "Мебель", p: '<path d="M20 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v3"/><path d="M2 11a2 2 0 0 1 4 0v3h12v-3a2 2 0 0 1 4 0v5a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/><path d="M4 18v2"/><path d="M20 18v2"/>' },
   { id: "tehnika", name: "Техника", p: '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>' },
   { id: "remont-tehniki", name: "Ремонт техники", p: '<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>' },
-  { id: "kliniki", name: "Клиники", p: '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8"/><path d="M8 12h8"/>' },
+  { id: "stomat", name: "Стоматология", p: '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8"/><path d="M8 12h8"/>' },
   { id: "krasota", name: "Красота", p: '<circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.12 15.88"/><path d="M14.47 14.48 20 20"/><path d="M8.12 8.12 12 12"/>' },
   { id: "fitnes", name: "Фитнес и спорт", p: '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>' },
   { id: "kafe", name: "Кафе и рестораны", p: '<path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/>' },
@@ -313,6 +345,7 @@ function parse(r) {
   if (r === "install") return { v: "install" };
   if (r === "news") return { v: "news" };
   if (r === "id") return { v: "id" };
+  if (r === "board") return { v: "board" };
   if (r === "help") return { v: "help" };
   if (r === "ask") return { v: "ask" };
   if (r === "apply") return { v: "apply" };
@@ -383,6 +416,7 @@ function viewHome() {
     homeTop() +
     '<div class="list" id="results"></div>' +
     installBanner() +
+    '<button type="button" class="soon" data-tab="board"><span class="badge">Скоро</span><b>Доска объявлений Бугуруслана</b><span>Продать, купить, найти мастера или отдать в хорошие руки. Запуск совсем скоро.</span></button>' +
     '<div class="owner"><div class="tt"><b>Вы владелец бизнеса?</b><span>Добавим вашу карточку в приложение</span></div>' +
     '<button type="button" data-go="owner">Узнать как</button></div>' +
     '<button type="button" class="help-link" data-go="help">Техподдержка</button></div>';
@@ -478,11 +512,10 @@ function viewOwner() {
 
 var FAQ = [
   ["Как поставить приложение на телефон?", "Нажмите «Установить» на главном экране и следуйте подсказке. Значок «Б-56» появится среди ваших приложений."],
-  ["Где мой номер участника для розыгрыша?", "Откройте приложение с его значка на экране телефона. Номер появится на главном экране. Сохраните его: сделайте снимок экрана или запишите."],
+  ["Где мой номер участника?", "Откройте приложение с его значка на экране телефона. Номер появится на главном экране. Сохраните его: сделайте снимок экрана или запишите."],
   ["Потерял номер участника. Что делать?", "Пока приложение стоит на телефоне, номер можно посмотреть снова на главном экране. Если приложение удалено, напишите нам через кнопку «Написать»."],
   ["Как добавить мой бизнес в приложение?", "Откройте «Владельцам бизнеса» на главном экране и нажмите «Оставить заявку»."],
   ["Как изменить данные в моей карточке?", "Напишите нам через кнопку «Написать» и укажите, что изменить: телефон, часы работы, цены."],
-  ["Как узнать результаты розыгрыша?", "Итоги объявляем в окне «Новости и акции» и в нашем Telegram-канале."]
 ];
 function field(id, label, hint, tag, ph) {
   var inp = tag === "textarea" ? '<textarea id="' + id + '" maxlength="1000" placeholder="' + esc(ph || "") + '"></textarea>' : '<input id="' + id + '" maxlength="100" autocomplete="off" placeholder="' + esc(ph || "") + '">';
@@ -494,6 +527,13 @@ function viewHelp() {
     '<button type="button" class="bigbtn" data-go="ask">Написать</button>' +
     '<div class="note">Отвечаем в течение рабочего дня (с 10:00 до 18:00, кроме субботы и воскресенья).</div>' +
     '<div class="ownlinks"><a href="' + TG_CHANNEL + '" target="_blank" rel="noopener">Наш Telegram-канал с новостями</a><a href="' + MAX_CHANNEL + '" target="_blank" rel="noopener">Наш канал в Максе</a></div>' +
+    '<div class="owner"><div class="tt"><b>Вы владелец бизнеса?</b><span>Добавим вашу карточку в приложение</span></div><button type="button" data-go="owner">Узнать как</button></div>' +
+    '<div class="foot">© 2026 «Бугуруслан всё в одном месте» · Б-56. Все права защищены</div></div>';
+}
+function viewBoard() {
+  return '<div class="app"><div class="row"><h1>Доска объявлений</h1></div>' +
+    '<div class="soon big"><span class="badge">Скоро</span><b>Доска объявлений Бугуруслана</b><span>Продать, купить, найти мастера или отдать в хорошие руки. Объявления жителей города в одном месте.</span><span>Запуск совсем скоро. Узнайте первыми в нашем канале:</span></div>' +
+    '<div class="ownlinks"><a href="' + TG_CHANNEL + '" target="_blank" rel="noopener">Наш Telegram-канал</a><a href="' + MAX_CHANNEL + '" target="_blank" rel="noopener">Наш канал в Максе</a></div>' +
     '<div class="foot">© 2026 «Бугуруслан всё в одном месте» · Б-56. Все права защищены</div></div>';
 }
 function viewForm(kind) {
@@ -662,16 +702,22 @@ function newsItem(n) {
 }
 function viewNews() {
   markSeen();
-  return '<div class="app"><div class="row">' + backBtn("Назад на главную") + "<h1>Новости и акции</h1></div>" +
-    (newsData.length ? newsData.map(newsItem).join("") : emptyBlock("Пока новостей нет", "Здесь появятся акции и объявления заведений города.")) +
-    '<div class="foot">© 2026 «Бугуруслан всё в одном месте» · Б-56. Все права защищены</div></div>';
+  if (!newsData.length) return '<div class="app"><div class="row"><h1>Новости и акции</h1></div>' + emptyBlock("Пока новостей нет", "Здесь появятся акции и объявления заведений города.") + "</div>";
+  var n = newsData.length;
+  return '<div class="app news-full"><div class="nfs" id="nfs">' + newsData.map(function (it, i) {
+    var im = safeImg(it.img);
+    return '<section class="nfs-i' + (im ? "" : " noimg") + '"><div class="pic' + (im ? "" : " no") + '"' + (im ? ' style="background-image:url(&quot;' + esc(im) + '&quot;)"' : "") + '><span class="ntag">' + esc(it.type) + " · " + (i + 1) + " из " + n + "</span>" + (im ? "" : "<b>" + esc(it.title) + "</b>") + "</div>" +
+      '<div class="tx"><h2>' + esc(it.title) + "</h2>" + (it.org ? '<div class="nc-m">' + esc(it.org) + "</div>" : "") + (it.text ? "<p>" + esc(it.text) + "</p>" : "") +
+      '<div class="meta"><span>' + esc(fmtDate(it.date)) + "</span>" + (it.until ? "<span>до " + esc(fmtDate(it.until)) + "</span>" : "") + "</div>" +
+      (i < n - 1 ? '<div class="hint">Листайте вверх ↑</div>' : "") + "</div></section>";
+  }).join("") + "</div></div>";
 }
 function viewId() {
   var id = getId();
   return '<div class="app"><div class="row">' + backBtn("Назад на главную") + "<h1>Ваш номер участника</h1></div>" +
     (id ? '<div class="idbox"><span>Ваш номер</span><div class="idbig">' + esc(id) + "</div></div>" +
       '<button type="button" class="bigbtn" data-copyid="1">Скопировать номер</button>' +
-      '<div class="note">Сохраните номер: сделайте снимок экрана или запишите. Он нужен для розыгрыша призов. Потеряете — приложение покажет его здесь снова, пока оно стоит на телефоне.</div>'
+      '<div class="note">Сохраните номер: сделайте снимок экрана или запишите. Он ваш личный номер в приложении. Потеряете — приложение покажет его здесь снова, пока оно стоит на телефоне.</div>'
       : emptyBlock("Номера пока нет", "Он выдаётся, когда приложение установлено на экран телефона и открыто с него.")) +
     '<button type="button" class="help-link" data-go="help">Техподдержка</button>' +
     '<div class="foot">© 2026 «Бугуруслан всё в одном месте» · Б-56. Все права защищены</div></div>';
@@ -690,7 +736,7 @@ function showIdModal(id) {
   var el = document.createElement("div");
   el.className = "sheet-bg"; el.id = "idm";
   el.innerHTML = '<div class="sheet" role="dialog" aria-modal="true" aria-label="Ваш номер участника"><h2>Ваш номер участника</h2><div class="idbox"><div class="idbig">' + esc(id) + "</div></div>" +
-    "<p>Сохраните его: сделайте снимок экрана. Номер нужен для розыгрыша призов.</p>" +
+    "<p>Сохраните его: сделайте снимок экрана. Это ваш личный номер в приложении.</p>" +
     '<button type="button" class="opt fill" data-copyid="1">Скопировать номер</button><button type="button" class="opt" data-idok="1">Понятно, сохранила</button></div>';
   document.body.appendChild(el);
 }
@@ -732,7 +778,7 @@ function trackRoute(r) {
 
 function installBanner() {
   if (isStandalone()) return "";
-  return '<div class="install"><div class="tt"><b>Поставьте приложение на телефон</b><span>Значок «Б-56» на экране и номер для розыгрыша призов</span></div>' +
+  return '<div class="install"><div class="tt"><b>Поставьте приложение на телефон</b><span>Значок «Б-56» на экране телефона. Нужное всегда под рукой</span></div>' +
     '<button type="button" data-go="install">Установить</button></div>';
 }
 function viewInstall() {
@@ -787,6 +833,22 @@ function setRole(v) {
 }
 
 /* ---------- показ и переходы ---------- */
+var TABS = [
+  ["home", "Главная", '<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>'],
+  ["news", "Новости", '<path d="M18 16v-5a6 6 0 0 0-12 0v5l-2 2h16z"/><path d="M10 21h4"/>'],
+  ["board", "Объявления", '<path d="M20 12l-8 8-9-9V3h8z"/><circle cx="7.5" cy="7.5" r="1.2"/>'],
+  ["help", "Помощь", '<path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.5A8 8 0 1 1 21 12z"/>']
+];
+function tabOf(v) { return v === "news" ? "news" : v === "board" ? "board" : (v === "help" || v === "ask" || v === "owner" || v === "apply") ? "help" : "home"; }
+function renderTabs() {
+  var el = document.getElementById("tabbar");
+  if (!el) return;
+  var cur = tabOf(parse(state.route).v), unseen = false;
+  try { unseen = hasUnseen(); } catch (e) {}
+  el.innerHTML = '<div class="in">' + TABS.map(function (t) {
+    return '<button type="button" data-tab="' + t[0] + '" class="' + (t[0] === cur ? "on" : "") + '"' + (t[0] === cur ? ' aria-current="page"' : "") + ">" + ico(t[2], 24, "currentColor") + "<span>" + t[1] + "</span>" + (t[0] === "news" && unseen && cur !== "news" ? '<i class="nd" aria-label="Есть новое"></i>' : "") + "</button>";
+  }).join("") + "</div>";
+}
 function render() {
   var r = parse(state.route), html, results = null;
   if (r.v === "cat") { var c = catById(r.id); html = viewCat(c); results = function (q) { return catResults(c, q); }; }
@@ -795,6 +857,7 @@ function render() {
   else if (r.v === "owner") html = viewOwner();
   else if (r.v === "install") html = viewInstall();
   else if (r.v === "news") html = viewNews();
+  else if (r.v === "board") html = viewBoard();
   else if (r.v === "id") html = viewId();
   else if (r.v === "help") html = viewHelp();
   else if (r.v === "ask") html = viewForm("ask");
@@ -811,6 +874,7 @@ function render() {
   document.title = "Бугуруслан всё в одном месте";
   bindGallery();
   carSetup();
+  renderTabs();
   if (r.v === "home") askRole();
   try { window.scrollTo(0, 0); } catch (e) {}
 }
@@ -839,6 +903,13 @@ function back() {
 
 document.addEventListener("click", function (e) {
   if (e.target.closest("[data-idok]")) { var m = document.getElementById("idm"); if (m) m.remove(); return; }
+  var tb = e.target.closest("[data-tab]");
+  if (tb) {
+    e.preventDefault();
+    var tr = tb.getAttribute("data-tab");
+    if (tr === state.route) { try { window.scrollTo(0, 0); } catch (er) {} return; }
+    trackRoute(tr); state.stack = tr === "home" ? [] : ["home"]; state.route = tr; setHash(tr); render(); return;
+  }
   var sd = e.target.closest("[data-send]");
   if (sd) { sendTicket(sd.getAttribute("data-send"), sd); return; }
   var cl = e.target.closest("[data-copylink]");
