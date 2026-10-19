@@ -235,6 +235,10 @@ button.soon { width: 100%; text-align: left; font: inherit; cursor: pointer; }
 .nfs { height: calc(100vh - var(--tb)); height: calc(100dvh - var(--tb) - env(safe-area-inset-bottom)); overflow-y: auto; scroll-snap-type: y mandatory; overscroll-behavior: contain; }
 .nfs-i { height: 100%; scroll-snap-align: start; scroll-snap-stop: always; display: flex; flex-direction: column; background: var(--white); }
 .nfs-i .pic { flex: 1 1 0; min-height: 0; background-size: cover; background-position: center; background-color: var(--green); display: flex; align-items: flex-start; padding: 14px; }
+.nfs-i .pic:not(.no) { position: relative; overflow: hidden; }
+.nfs-i .pic:not(.no)::before { content: ""; position: absolute; inset: -24px; background: var(--im) center / cover no-repeat; filter: blur(20px) brightness(.7); }
+.nfs-i .pic:not(.no)::after { content: ""; position: absolute; inset: 0; background: var(--im) center / contain no-repeat; }
+.nfs-i .pic .ntag { position: relative; z-index: 2; }
 .nfs-i .pic.no { position: relative; background: linear-gradient(160deg, #14532D, #1f7a52); align-items: center; justify-content: center; }
 .nfs-i .pic.no .ntag { position: absolute; top: 14px; left: 14px; }
 .nfs-i.noimg .tx h2 { display: none; }
@@ -302,7 +306,6 @@ var CATS = [
   { id: "detyam", name: "Детям", p: '<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01"/><path d="M15 9h.01"/>' },
   { id: "gruz", name: "Грузоперевозки", p: '<path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/>' },
   { id: "nedvizhimost", name: "Недвижимость", p: '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>' },
-  { id: "banki", name: "Банки и финансы", p: '<path d="M3 22h18"/><path d="M6 18v-7"/><path d="M10 18v-7"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M12 2 20 7H4z"/>' },
   { id: "yuristy", name: "Юристы и бухгалтеры", p: '<path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h8"/>' },
   { id: "gostinicy", name: "Гостиницы", p: '<path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/>' },
   { id: "foto", name: "Фото и печать", p: '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/>' },
@@ -437,7 +440,7 @@ function viewCat(c) {
     bannerHtml(c.id) +
     searchBox("Название или адрес", "Поиск в разделе " + c.name) +
     '<div class="list" id="results"></div>' +
-    '<div class="foot">Названия и данные пока условные</div></div>';
+    '<div class="foot">© 2026 «Бугуруслан всё в одном месте» · Б-56. Все права защищены</div></div>';
 }
 function catResults(c, q) {
   q = norm(q).trim();
@@ -496,9 +499,8 @@ function viewOwner() {
   var items = [
     "Карточка в каталоге: название, адрес, телефон, часы работы",
     "Прайс-лист и значок «Рекомендуем»",
-    "Ссылки на ваш сайт, WhatsApp, Telegram, ВКонтакте",
-    "Ваши акции и новости в окне новостей приложения",
-    "Участие в розыгрышах и рассылках для жителей",
+    "Ссылки на ваш сайт, Telegram, ВКонтакте",
+    "Ваши новости в окне новостей приложения",
     "Фото ваших работ в карточке (скоро)"
   ];
   return '<div class="app"><div class="row">' + backBtn("Назад на главную") + "<h1>Владельцам бизнеса</h1></div>" +
@@ -706,7 +708,7 @@ function viewNews() {
   var n = newsData.length;
   return '<div class="app news-full"><div class="nfs" id="nfs">' + newsData.map(function (it, i) {
     var im = safeImg(it.img);
-    return '<section class="nfs-i' + (im ? "" : " noimg") + '"><div class="pic' + (im ? "" : " no") + '"' + (im ? ' style="background-image:url(&quot;' + esc(im) + '&quot;)"' : "") + '><span class="ntag">' + esc(it.type) + " · " + (i + 1) + " из " + n + "</span>" + (im ? "" : "<b>" + esc(it.title) + "</b>") + "</div>" +
+    return '<section class="nfs-i' + (im ? "" : " noimg") + '"><div class="pic' + (im ? "" : " no") + '"' + (im ? ' style="--im:url(&quot;' + esc(im) + '&quot;)"' : "") + '><span class="ntag">' + esc(it.type) + " · " + (i + 1) + " из " + n + "</span>" + (im ? "" : "<b>" + esc(it.title) + "</b>") + "</div>" +
       '<div class="tx"><h2>' + esc(it.title) + "</h2>" + (it.org ? '<div class="nc-m">' + esc(it.org) + "</div>" : "") + (it.text ? "<p>" + esc(it.text) + "</p>" : "") +
       '<div class="meta"><span>' + esc(fmtDate(it.date)) + "</span>" + (it.until ? "<span>до " + esc(fmtDate(it.until)) + "</span>" : "") + "</div>" +
       (i < n - 1 ? '<div class="hint">Листайте вверх ↑</div>' : "") + "</div></section>";
