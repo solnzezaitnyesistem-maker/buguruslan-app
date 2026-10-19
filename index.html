@@ -161,6 +161,9 @@ h2 { margin: 0; font-size: 18px; font-weight: 800; }
 .gal-s { display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x mandatory; border-radius: 18px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
 .gal-s::-webkit-scrollbar { display: none; }
 .gal-s img { flex: 0 0 100%; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; scroll-snap-align: start; border-radius: 18px; background: var(--mint); }
+.gal-b { position: absolute; top: 50%; transform: translateY(-50%); width: 40px; height: 40px; border: 0; border-radius: 50%; background: rgba(11,36,23,.6); color: #fff; font-size: 28px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0 0 3px; }
+.gal-p { left: 8px; }
+.gal-x { right: 8px; }
 .gal-n { position: absolute; right: 10px; bottom: 10px; padding: 3px 10px; border-radius: 999px; background: rgba(11,36,23,.7); color: #fff; font-size: 13px; font-weight: 700; }
 .top-blocks { display: flex; flex-direction: column; gap: 10px; }
 .top-blocks[data-empty] { display: none; }
@@ -462,7 +465,7 @@ function photosBlock(it) {
   if (!ph.length) return "";
   return '<div class="gal"><div class="gal-s" id="gal" tabindex="0" aria-label="Фото: ' + esc(it.name) + '">' + ph.map(function (u, i) {
     return '<img src="' + esc(u) + '" alt="' + esc(it.name) + ', фото ' + (i + 1) + '" loading="' + (i ? "lazy" : "eager") + '" referrerpolicy="no-referrer">';
-  }).join("") + "</div>" + (ph.length > 1 ? '<div class="gal-n" id="galn">1 / ' + ph.length + "</div>" : "") + "</div>";
+  }).join("") + "</div>" + (ph.length > 1 ? '<button class="gal-b gal-p" id="galp" type="button" aria-label="Предыдущее фото">&#8249;</button><button class="gal-b gal-x" id="galx" type="button" aria-label="Следующее фото">&#8250;</button><div class="gal-n" id="galn">1 / ' + ph.length + "</div>" : "") + "</div>";
 }
 function viewCard(it) {
   var c = catById([].concat(it.cat)[0]);
@@ -893,6 +896,15 @@ function bindGallery() {
     var i = Math.round(g.scrollLeft / Math.max(1, g.clientWidth));
     n.textContent = (i + 1) + " / " + g.children.length;
   });
+  function step(d) {
+    var i = Math.round(g.scrollLeft / Math.max(1, g.clientWidth)) + d, k = g.children.length;
+    i = (i + k) % k;
+    g.scrollTo({ left: g.children[i].offsetLeft - g.children[0].offsetLeft, behavior: "smooth" });
+  }
+  var bp = document.getElementById("galp"), bx = document.getElementById("galx");
+  if (bp) bp.addEventListener("click", function () { step(-1); });
+  if (bx) bx.addEventListener("click", function () { step(1); });
+  g.addEventListener("keydown", function (e) { if (e.key === "ArrowLeft") { step(-1); e.preventDefault(); } else if (e.key === "ArrowRight") { step(1); e.preventDefault(); } });
 }
 function setHash(r) { try { if (location.hash.slice(1) !== r) location.hash = r; } catch (e) {} }
 function go(r) {
