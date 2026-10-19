@@ -74,6 +74,7 @@ h2 { margin: 0; font-size: 18px; font-weight: 800; }
 .banner span { font-size: 15px; line-height: 1.4; }
 .bn-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
 .bn-btns a { margin-top: 0 !important; }
+.nfs-i .bn-btns a { padding: 10px 14px; border-radius: 12px; background: var(--green); color: #fff; font-size: 15px; font-weight: 800; text-decoration: none; }
 .banner a { align-self: flex-start; margin-top: 4px; padding: 8px 14px; border-radius: 12px; background: var(--green); color: #fff; font-size: 15px; font-weight: 800; }
 .org .nm { font-size: 18px; font-weight: 800; overflow-wrap: anywhere; }
 .org .cat { font-size: 12px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
@@ -377,11 +378,12 @@ function starsHtml(arr) {
   for (var i = 1; i <= 5; i++) { var on = arr.indexOf(i) !== -1; if (on) n++; s += '<svg width="20" height="20" viewBox="0 0 24 24" fill="' + (on ? "#14532D" : "none") + '" stroke="#14532D" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'; }
   return '<span class="stars" role="img" aria-label="Звёзд: ' + n + ' из 5">' + s + "</span>";
 }
+function writeBtns() { return '<div class="bn-btns"><a href="https://t.me/+79228572099" target="_blank" rel="noopener">Написать в Telegram</a><a href="https://max.ru/u/f9LHodD0cOKRmm6zQe7htfB4vuNkJ9rkBDoMbNKp_xQk4fv2uD5sTsZ4S24" target="_blank" rel="noopener">Написать в MAX</a></div>'; }
 var BANNERS = {};
 function bannerHtml(catId) {
   var b = BANNERS[catId]; if (!b || !(b.title || b.text)) return "";
   var u = String(b.url || "").trim(), wr = /^(написать|напишите)$/i.test(u) || (!u && /напишите нам/i.test((b.title || "") + " " + (b.text || "")));
-  var link = wr ? '<div class="bn-btns"><a href="https://t.me/+79228572099" target="_blank" rel="noopener">Написать в Telegram</a><a href="https://max.ru/u/f9LHodD0cOKRmm6zQe7htfB4vuNkJ9rkBDoMbNKp_xQk4fv2uD5sTsZ4S24" target="_blank" rel="noopener">Написать в MAX</a></div>'
+  var link = wr ? writeBtns()
     : (/^https:\/\//.test(u) ? '<a href="' + esc(u) + '" target="_blank" rel="noopener">Подробнее</a>' : "");
   return '<div class="banner">' + (b.title ? "<b>" + esc(b.title) + "</b>" : "") + (b.text ? "<span>" + esc(b.text) + "</span>" : "") + link + "</div>";
 }
@@ -713,7 +715,7 @@ function viewNews() {
   return '<div class="app news-full"><div class="nfs" id="nfs">' + newsData.map(function (it, i) {
     var im = safeImg(it.img);
     return '<section class="nfs-i' + (im ? "" : " noimg") + '"><div class="pic' + (im ? "" : " no") + '"' + (im ? ' style="--im:url(&quot;' + esc(im) + '&quot;)"' : "") + '><span class="ntag">' + esc(it.type) + " · " + (i + 1) + " из " + n + "</span>" + (im ? "" : "<b>" + esc(it.title) + "</b>") + "</div>" +
-      '<div class="tx"><h2>' + esc(it.title) + "</h2>" + (it.org ? '<div class="nc-m">' + esc(it.org) + "</div>" : "") + (it.text ? "<p>" + esc(it.text) + "</p>" : "") +
+      '<div class="tx"><h2>' + esc(it.title) + "</h2>" + (it.org ? '<div class="nc-m">' + esc(it.org) + "</div>" : "") + (it.text ? "<p>" + esc(it.text) + "</p>" : "") + (/напишите нам/i.test((it.title || "") + " " + (it.text || "")) ? writeBtns() : "") +
       '<div class="meta"><span>' + esc(fmtDate(it.date)) + "</span>" + (it.until ? "<span>до " + esc(fmtDate(it.until)) + "</span>" : "") + "</div>" +
       (i < n - 1 ? '<div class="hint">Листайте вверх ↑</div>' : "") + "</div></section>";
   }).join("") + "</div></div>";
