@@ -72,6 +72,8 @@ h2 { margin: 0; font-size: 18px; font-weight: 800; }
 .banner { display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; background: #FFF7DD; border: 2px solid var(--gold); border-radius: 18px; }
 .banner b { font-size: 17px; font-weight: 800; }
 .banner span { font-size: 15px; line-height: 1.4; }
+.bn-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.bn-btns a { margin-top: 0 !important; }
 .banner a { align-self: flex-start; margin-top: 4px; padding: 8px 14px; border-radius: 12px; background: var(--green); color: #fff; font-size: 15px; font-weight: 800; }
 .org .nm { font-size: 18px; font-weight: 800; overflow-wrap: anywhere; }
 .org .cat { font-size: 12px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
@@ -378,7 +380,9 @@ function starsHtml(arr) {
 var BANNERS = {};
 function bannerHtml(catId) {
   var b = BANNERS[catId]; if (!b || !(b.title || b.text)) return "";
-  var link = /^https:\/\//.test(b.url || "") ? '<a href="' + esc(b.url) + '" target="_blank" rel="noopener">Подробнее</a>' : "";
+  var u = String(b.url || "").trim(), wr = /^(написать|напишите)$/i.test(u) || (!u && /напишите нам/i.test((b.title || "") + " " + (b.text || "")));
+  var link = wr ? '<div class="bn-btns"><a href="https://t.me/+79228572099" target="_blank" rel="noopener">Написать в Telegram</a><a href="https://max.ru/u/f9LHodD0cOKRmm6zQe7htfB4vuNkJ9rkBDoMbNKp_xQk4fv2uD5sTsZ4S24" target="_blank" rel="noopener">Написать в MAX</a></div>'
+    : (/^https:\/\//.test(u) ? '<a href="' + esc(u) + '" target="_blank" rel="noopener">Подробнее</a>' : "");
   return '<div class="banner">' + (b.title ? "<b>" + esc(b.title) + "</b>" : "") + (b.text ? "<span>" + esc(b.text) + "</span>" : "") + link + "</div>";
 }
 function orgCard(it, showCat) {
