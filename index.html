@@ -256,6 +256,26 @@ button.soon { width: 100%; text-align: left; font: inherit; cursor: pointer; }
 .nfs-i .tx p { margin: 0; font-size: 16px; line-height: 1.45; overflow-wrap: anywhere; }
 .nfs-i .tx .meta { font-size: 13px; color: var(--muted); display: flex; gap: 10px; }
 .nfs-i .hint { align-self: center; font-size: 12px; color: var(--muted); }
+
+.adcats { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.adcats button { min-height: 40px; padding: 8px 14px; border-radius: 999px; border: 2px solid var(--line); background: var(--white); font: inherit; font-size: 14px; font-weight: 700; color: var(--ink); }
+.adcats button.on { background: var(--green); border-color: var(--green); color: #fff; }
+.ad { margin-top: 12px; padding: 14px; background: var(--white); border: 2px solid var(--line); border-radius: 16px; display: flex; flex-direction: column; gap: 6px; }
+.ad h3 { margin: 0; font-size: 17px; font-weight: 800; line-height: 1.25; }
+.ad .pr { font-size: 17px; font-weight: 800; color: var(--green); }
+.ad p { margin: 0; font-size: 15px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
+.ad .meta { font-size: 13px; color: var(--muted); }
+.ad .ph { display: flex; gap: 8px; overflow-x: auto; }
+.ad .ph img { width: 120px; height: 120px; object-fit: cover; border-radius: 12px; flex: none; }
+.ad .ct { align-self: flex-start; padding: 10px 14px; border-radius: 12px; background: var(--green); color: #fff; font-size: 15px; font-weight: 800; text-decoration: none; }
+.adsel { width: 100%; min-height: 52px; padding: 12px 14px; border: 2px solid var(--line); border-radius: 14px; font: inherit; font-size: 16px; background: var(--white); color: var(--ink); }
+.adph { display: flex; gap: 8px; flex-wrap: wrap; }
+.adph .it { position: relative; }
+.adph img { width: 84px; height: 84px; object-fit: cover; border-radius: 12px; display: block; }
+.adph .it button { position: absolute; top: -6px; right: -6px; width: 28px; height: 28px; border-radius: 50%; border: 0; background: var(--ink); color: #fff; font-size: 16px; line-height: 1; }
+.adsum { padding: 12px 14px; border-radius: 14px; background: #F1F7F3; font-size: 15px; line-height: 1.4; }
+.adsum b { font-size: 18px; }
+.btn2 { min-height: 48px; padding: 10px 16px; border-radius: 14px; border: 2px solid var(--green); background: var(--white); color: var(--green); font: inherit; font-size: 15px; font-weight: 800; }
 </style>
 </head>
 <body>
@@ -355,6 +375,7 @@ function parse(r) {
   if (r === "news") return { v: "news" };
   if (r === "id") return { v: "id" };
   if (r === "board") return { v: "board" };
+  if (r === "adnew") return { v: "adnew" };
   if (r === "help") return { v: "help" };
   if (r === "ask") return { v: "ask" };
   if (r === "apply") return { v: "apply" };
@@ -541,11 +562,109 @@ function viewHelp() {
     '<div class="owner"><div class="tt"><b>Вы владелец бизнеса?</b><span>Добавим вашу карточку в приложение</span></div><button type="button" data-go="owner">Узнать как</button></div>' +
     '<div class="foot">© 2026 «Бугуруслан всё в одном месте» · Б-56. Все права защищены</div></div>';
 }
+var ADCATS = [["prodazha", "Куплю или продам"], ["tehnika", "Техника и электроника"], ["avto", "Авто и запчасти"], ["nedvizh", "Недвижимость"], ["rabota", "Работа"], ["uslugi", "Услуги"], ["zhivotnye", "Животные"], ["dacha", "Дом, дача, огород"], ["darom", "Отдам даром"], ["raznoe", "Разное"]];
+var ADS = [], adCat = "", adPh = [], adLoaded = false;
+function adCatName(id) { for (var i = 0; i < ADCATS.length; i++) if (ADCATS[i][0] === id) return ADCATS[i][1]; return ""; }
+function adContact(c) {
+  c = String(c || "").trim();
+  var digits = c.replace(/\D/g, "");
+  if (/^@[A-Za-z0-9_]{4,}$/.test(c)) return '<a class="ct" href="https://t.me/' + esc(c.slice(1)) + '" target="_blank" rel="noopener">Написать ' + esc(c) + "</a>";
+  if (digits.length >= 10 && digits.length <= 12) return '<a class="ct" href="' + telHref(c) + '">Позвонить ' + esc(c) + "</a>";
+  return '<span class="meta">Связь: ' + esc(c) + "</span>";
+}
+function adCard(a) {
+  return '<div class="ad"><div class="tags"><span class="tag mint">' + esc(adCatName(a.cat)) + "</span></div><h3>" + esc(a.title) + "</h3>" +
+    (a.price ? '<div class="pr">' + esc(a.price) + "</div>" : "") + "<p>" + esc(a.text) + "</p>" +
+    ((a.photos && a.photos.length) ? '<div class="ph">' + a.photos.map(function (u) { return '<img src="' + esc(u) + '" alt="" loading="lazy">'; }).join("") + "</div>" : "") +
+    adContact(a.contact) + '<div class="meta">' + (a.name ? esc(a.name) + " · " : "") + (fmtDate(a.date) ? "от " + fmtDate(a.date) : "") + (fmtDate(a.till) ? " · до " + fmtDate(a.till) : "") + "</div></div>";
+}
+function adListHtml() {
+  var list = ADS.filter(function (a) { return !adCat || a.cat === adCat; });
+  if (!list.length) return '<div class="note">' + (adLoaded ? "В этом разделе пока нет объявлений. Подайте своё первым." : "Загружаем объявления…") + "</div>";
+  return list.map(adCard).join("");
+}
 function viewBoard() {
   return '<div class="app"><div class="row"><h1>Доска объявлений</h1></div>' +
-    '<div class="soon big"><span class="badge">Скоро</span><b>Доска объявлений Бугуруслана</b><span>Продать, купить, найти мастера или отдать в хорошие руки. Объявления жителей города в одном месте.</span><span>Запуск совсем скоро. Узнайте первыми в нашем канале:</span></div>' +
-    '<div class="ownlinks"><a href="' + TG_CHANNEL + '" target="_blank" rel="noopener">Наш Telegram-канал</a><a href="' + MAX_CHANNEL + '" target="_blank" rel="noopener">Наш канал в Максе</a></div>' +
+    '<button type="button" class="bigbtn" data-go="adnew">Подать объявление</button>' +
+    '<div class="adcats" id="adcats">' + adCatsHtml() + "</div>" +
+    '<div id="adlist">' + adListHtml() + "</div>" +
+    '<div class="ownlinks"><a href="/rules.html">Правила и оплата</a><a href="' + TG_CHANNEL + '" target="_blank" rel="noopener">Наш Telegram-канал</a></div>' +
     '<div class="foot">© 2026 «Бугуруслан всё в одном месте» · Б-56. Все права защищены</div></div>';
+}
+function adCatsHtml() {
+  return '<button type="button" data-adcat="" class="' + (!adCat ? "on" : "") + '">Все</button>' + ADCATS.map(function (c) { return '<button type="button" data-adcat="' + c[0] + '" class="' + (adCat === c[0] ? "on" : "") + '">' + esc(c[1]) + "</button>"; }).join("");
+}
+function loadAds() {
+  if (DEMO) { ADS = [{ id: "1", cat: "prodazha", title: "Детская коляска", text: "Состояние хорошее, самовывоз.", price: "5 000 ₽", contact: "8 900 000-00-00", name: "Пример", photos: [], date: "2026-10-18", till: "2026-10-23" }]; adLoaded = true; return; }
+  try { var c = JSON.parse(sget("b56_ads") || "null"); if (c) { ADS = c; adLoaded = true; } } catch (e) {}
+  apiGet("ads").then(function (r) {
+    if (!r || !r.ok || !r.items) return;
+    ADS = r.items; adLoaded = true; sset("b56_ads", JSON.stringify(r.items));
+    var l = document.getElementById("adlist"); if (l && parse(state.route).v === "board") l.innerHTML = adListHtml();
+  }, function () { adLoaded = true; var l = document.getElementById("adlist"); if (l && !ADS.length) l.innerHTML = adListHtml(); });
+}
+function adSumHtml() {
+  var cat = (document.getElementById("ad_cat") || {}).value, n = adPh.length, free = cat === "darom";
+  var sum = (free ? 0 : 100) + n * 100;
+  return sum ? 'К оплате: <b>' + sum + " ₽</b><br>" + (free ? "" : "Объявление на 5 дней — 100 ₽") + (n ? (free ? "" : "<br>") + "Фото: " + n + " × 100 ₽" : "") : "Объявление в разделе «Отдам даром» — без оплаты.";
+}
+function adPhHtml() {
+  return adPh.map(function (b, i) { return '<div class="it"><img alt="" src="data:image/jpeg;base64,' + b + '"><button type="button" data-adrm="' + i + '" aria-label="Убрать фото">×</button></div>'; }).join("");
+}
+function viewAdNew() {
+  return '<div class="app"><div class="row">' + backBtn("Назад") + "<h1>Новое объявление</h1></div>" +
+    '<div class="panel" id="formbox">' +
+    '<label class="fld" for="ad_cat"><b>Раздел</b><select id="ad_cat" class="adsel"><option value="">Выберите раздел</option>' + ADCATS.map(function (c) { return '<option value="' + c[0] + '">' + esc(c[1]) + "</option>"; }).join("") + "</select></label>" +
+    field("ad_title", "Заголовок", "коротко, что вы предлагаете или ищете", "input", "Например: Детская коляска") +
+    field("ad_text", "Текст объявления", "состояние, размеры, где забрать", "textarea", "") +
+    field("ad_price", "Цена", "можно не писать", "input", "Например: 5 000 ₽") +
+    field("ad_contact", "Телефон или Telegram", "будет виден всем в объявлении", "input", "8 9.. или @имя") +
+    field("ad_name", "Ваше имя", "можно не писать", "input", "") +
+    '<div class="fld"><b>Фото</b><span>до 3 штук, каждое фото — 100 ₽</span><div class="adph" id="adph">' + adPhHtml() + '</div><input type="file" id="ad_file" accept="image/*" multiple style="display:none"><button type="button" class="btn2" data-adpick="1">Добавить фото</button></div>' +
+    '<div class="adsum" id="adsum">' + adSumHtml() + "</div>" +
+    '<div id="f_res" role="status"></div>' +
+    '<button type="button" class="bigbtn" data-adsend="1">Отправить на проверку</button></div>' +
+    '<div class="note">Объявление появится на доске после оплаты и проверки администратором. <a href="/rules.html">Правила и оплата</a></div>' +
+    '<div class="foot">© 2026 «Бугуруслан всё в одном месте» · Б-56. Все права защищены</div></div>';
+}
+function adShrink(file) {
+  return new Promise(function (ok, fail) {
+    var img = new Image(), url = URL.createObjectURL(file);
+    img.onload = function () {
+      var k = Math.min(1, 1000 / Math.max(img.width, img.height)), c = document.createElement("canvas");
+      c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      c.toBlob(function (b) { if (!b) return fail(); var r = new FileReader(); r.onload = function () { ok(String(r.result).split(",")[1]); }; r.readAsDataURL(b); }, "image/jpeg", 0.75);
+    };
+    img.onerror = function () { fail(); };
+    img.src = url;
+  });
+}
+function adRefresh() { var p = document.getElementById("adph"), m = document.getElementById("adsum"); if (p) p.innerHTML = adPhHtml(); if (m) m.innerHTML = adSumHtml(); }
+function sendAd(btn) {
+  function v(id) { var e = document.getElementById(id); return e ? e.value.trim() : ""; }
+  var res = document.getElementById("f_res");
+  function show(t, err) { res.className = "formmsg" + (err ? " err" : ""); res.textContent = t; }
+  if (!v("ad_cat")) { show("Выберите раздел.", true); return; }
+  if (!v("ad_title")) { show("Напишите заголовок.", true); return; }
+  if (!v("ad_text")) { show("Напишите текст объявления.", true); return; }
+  if (!v("ad_contact")) { show("Напишите телефон или Telegram для связи.", true); return; }
+  var body = { a: "ad_add", cat: v("ad_cat"), title: v("ad_title"), text: v("ad_text"), price: v("ad_price"), contact: v("ad_contact"), name: v("ad_name"), photos: adPh.slice(), pid: getId() };
+  function done(r) {
+    track("ad_send");
+    var sum = r && r.sum != null ? r.sum : 0, box = document.getElementById("formbox");
+    adPh = [];
+    if (box) box.innerHTML = '<div class="formmsg">Спасибо! Объявление принято.</div>' +
+      (sum ? '<div class="adsum">К оплате: <b>' + sum + ' ₽</b></div>' + (r && r.pay ? '<a class="bigbtn" style="text-decoration:none;text-align:center" href="' + esc(r.pay) + '" target="_blank" rel="noopener">Оплатить</a><div class="note">После оплаты администратор проверит и опубликует объявление.</div>' : '<div class="note">Оплата скоро заработает. Администратор свяжется с вами по указанному контакту и подскажет, как оплатить. После оплаты и проверки объявление появится на доске.</div>') : '<div class="note">Администратор проверит объявление и опубликует его.</div>') +
+      '<button type="button" class="btn2" data-go="board">К доске объявлений</button>';
+  }
+  btn.disabled = true; btn.textContent = "Отправляем…";
+  if (!API) { setTimeout(function () { done({ sum: (v("ad_cat") === "darom" ? 0 : 100) + adPh.length * 100 }); }, 300); return; }
+  apiPost(body, 60000).then(function (r) {
+    if (r && r.ok) done(r);
+    else { btn.disabled = false; btn.textContent = "Отправить на проверку"; show((r && r.err) || "Не получилось отправить. Попробуйте ещё раз.", true); }
+  }, function () { btn.disabled = false; btn.textContent = "Отправить на проверку"; show("Нет связи. Проверьте интернет и попробуйте ещё раз.", true); });
 }
 function viewForm(kind) {
   var owner = kind === "owner";
@@ -588,7 +707,7 @@ var DEMO_NEWS = [
   { id: "20261013100002", date: "2026-10-12", type: "Акция", title: "Салон красоты «Красотка» дарит скидку 10%", text: "На все услуги до конца месяца. Назовите запись из приложения «Б-56».", org: "Салон красоты «Красотка»", until: "2026-10-31" },
   { id: "20261013100001", date: "2026-10-10", type: "Новость", title: "В приложении появились новые разделы", text: "Кондитеры, бани и сауны, фото и видео, курсы.", org: "", until: "" }
 ];
-var SEND = { card_open: 1, price_open: 1, call_click: 1, route_click: 1, link_click: 1, owner_info: 1, owner_contact: 1, news_open: 1, qr_open: 1, install: 1, open_from_icon: 1, role_resident: 1, role_owner: 1, install_howto: 1, owner_request: 1, support_open: 1, support_send: 1 };
+var SEND = { card_open: 1, price_open: 1, call_click: 1, route_click: 1, link_click: 1, owner_info: 1, owner_contact: 1, news_open: 1, qr_open: 1, install: 1, open_from_icon: 1, role_resident: 1, role_owner: 1, install_howto: 1, owner_request: 1, support_open: 1, support_send: 1, ad_send: 1 };
 var evq = [], newsData = [], memRole = "", memId = "";
 
 function sget(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -607,14 +726,14 @@ function visitParams() {}
 setInterval(flushEv, 15000);
 document.addEventListener("visibilitychange", function () { if (document.hidden) flushEv(); });
 
-function withTimeout(url, opt) {
+function withTimeout(url, opt, ms) {
   var ctl = typeof AbortController !== "undefined" ? new AbortController() : null;
-  var t = setTimeout(function () { if (ctl) ctl.abort(); }, 10000);
+  var t = setTimeout(function () { if (ctl) ctl.abort(); }, ms || 10000);
   if (ctl) opt.signal = ctl.signal;
   return fetch(url, opt).then(function (r) { clearTimeout(t); return r.json(); });
 }
 function apiGet(a) { return withTimeout(API + "?a=" + encodeURIComponent(a), { method: "GET" }); }
-function apiPost(o) { return withTimeout(API, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(o) }); }
+function apiPost(o, ms) { return withTimeout(API, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(o) }, ms); }
 
 function getRole() { return sget("b56_role") || memRole || ""; }
 function getId() { return sget("b56_id") || memId || ""; }
@@ -850,7 +969,7 @@ var TABS = [
   ["board", "Объявления", '<path d="M20 12l-8 8-9-9V3h8z"/><circle cx="7.5" cy="7.5" r="1.2"/>'],
   ["help", "Помощь", '<path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.5A8 8 0 1 1 21 12z"/>']
 ];
-function tabOf(v) { return v === "news" ? "news" : v === "board" ? "board" : (v === "help" || v === "ask" || v === "owner" || v === "apply") ? "help" : "home"; }
+function tabOf(v) { return v === "news" ? "news" : (v === "board" || v === "adnew") ? "board" : (v === "help" || v === "ask" || v === "owner" || v === "apply") ? "help" : "home"; }
 function renderTabs() {
   var el = document.getElementById("tabbar");
   if (!el) return;
@@ -869,6 +988,7 @@ function render() {
   else if (r.v === "install") html = viewInstall();
   else if (r.v === "news") html = viewNews();
   else if (r.v === "board") html = viewBoard();
+  else if (r.v === "adnew") html = viewAdNew();
   else if (r.v === "id") html = viewId();
   else if (r.v === "help") html = viewHelp();
   else if (r.v === "ask") html = viewForm("ask");
@@ -930,6 +1050,14 @@ document.addEventListener("click", function (e) {
     if (tr === state.route) { try { window.scrollTo(0, 0); } catch (er) {} return; }
     trackRoute(tr); state.stack = tr === "home" ? [] : ["home"]; state.route = tr; setHash(tr); render(); return;
   }
+  var ac = e.target.closest("[data-adcat]");
+  if (ac) { adCat = ac.getAttribute("data-adcat"); var ace = document.getElementById("adcats"), ale = document.getElementById("adlist"); if (ace) ace.innerHTML = adCatsHtml(); if (ale) ale.innerHTML = adListHtml(); return; }
+  var apk = e.target.closest("[data-adpick]");
+  if (apk) { if (adPh.length >= 3) { var fr = document.getElementById("f_res"); if (fr) { fr.className = "formmsg err"; fr.textContent = "Можно не больше 3 фото."; } return; } var fi = document.getElementById("ad_file"); if (fi) fi.click(); return; }
+  var arm = e.target.closest("[data-adrm]");
+  if (arm) { adPh.splice(Number(arm.getAttribute("data-adrm")), 1); adRefresh(); return; }
+  var asd = e.target.closest("[data-adsend]");
+  if (asd) { sendAd(asd); return; }
   var sd = e.target.closest("[data-send]");
   if (sd) { sendTicket(sd.getAttribute("data-send"), sd); return; }
   var cl = e.target.closest("[data-copylink]");
@@ -960,6 +1088,13 @@ document.addEventListener("click", function (e) {
     else if (a.closest(".web")) track("link_click", { org: org });
   }
 });
+document.addEventListener("change", function (e) {
+  if (e.target.id === "ad_cat") { adRefresh(); return; }
+  if (e.target.id !== "ad_file" || !e.target.files.length) return;
+  var files = Array.prototype.slice.call(e.target.files), chain = Promise.resolve();
+  files.forEach(function (f) { chain = chain.then(function () { if (adPh.length >= 3) return; return adShrink(f).then(function (b) { adPh.push(b); }, function () {}); }); });
+  chain.then(function () { e.target.value = ""; adRefresh(); });
+});
 window.addEventListener("hashchange", function () {
   var r = location.hash.slice(1) || "home";
   if (r === state.route) return;
@@ -980,6 +1115,7 @@ window.addEventListener("appinstalled", function () { sset("b56_inst", "1"); tra
   var r = "home";
   try { r = location.hash.slice(1) || "home"; } catch (e) {}
   loadPlaces();
+  loadAds();
   loadBanners();
   state.route = valid(r) ? r : "home";
   var src = qrSource();
