@@ -68,7 +68,7 @@ var API = "https://script.google.com/macros/s/AKfycbyRiGD8kP3YnhLAa_FDMo_iwgBYz6
 var DEMO = !API;
 var CATS = [{"id":"avto","name":"Автосервисы"},{"id":"moyki","name":"Автомойки"},{"id":"zapchasti","name":"Автозапчасти"},{"id":"produkty","name":"Продукты"},{"id":"odezhda","name":"Одежда и обувь"},{"id":"remont","name":"Ремонт и стройка"},{"id":"okna","name":"Окна, двери, жалюзи"},{"id":"turizm","name":"Путешествия и туризм"},{"id":"shtory","name":"Шторы и текстиль"},{"id":"mebel","name":"Мебель"},{"id":"tehnika","name":"Техника"},{"id":"remont-tehniki","name":"Ремонт техники"},{"id":"stomat","name":"Стоматология"},{"id":"krasota","name":"Красота"},{"id":"fitnes","name":"Фитнес и спорт"},{"id":"kafe","name":"Кафе и рестораны"},{"id":"cvety","name":"Цветы и подарки"},{"id":"prazdniki","name":"Праздники"},{"id":"detyam","name":"Детям"},{"id":"gruz","name":"Грузоперевозки"},{"id":"nedvizhimost","name":"Недвижимость"},{"id":"yuristy","name":"Юристы и бухгалтеры"},{"id":"gostinicy","name":"Гостиницы"},{"id":"foto","name":"Фото и печать"},{"id":"dosug","name":"Досуг"},{"id":"uslugi","name":"Услуги"},{"id":"drugoe","name":"Другое"},{"id":"kursy","name":"Курсы"},{"id":"konditery","name":"Кондитеры"},{"id":"bani","name":"Бани, сауны, коттеджи"},{"id":"video","name":"Фотограф и видеосъёмка"},{"id":"magaziny","name":"Магазины разные"},{"id":"rynok-gorod","name":"Городской рынок"},{"id":"rynok-yug","name":"Южный рынок"},{"id":"baza-shirokaya","name":"База «Широкая»"},{"id":"baza-kontrakt","name":"База «Контракт»"}];
 var TGOK = false, PHBUSY = false;
-var OPEN_T = 0, TICKETS = [], PLACES = [], EDIT = null, FRESH = true, PDEL = "", STARS = [], BANNERS = [], BEDIT = null, BDEL = "";
+var OPEN_T = 0, ADS = [], OPEN_A = 0, TICKETS = [], PLACES = [], EDIT = null, FRESH = true, PDEL = "", STARS = [], BANNERS = [], BEDIT = null, BDEL = "";
 var PW = "", ROLE = "", TAB = "news", MSG = null, BUSY = false, NEWS = [], STATS = null, WIN = null, PENDING_DEL = "";
 var root = document.getElementById("root");
 
@@ -102,6 +102,8 @@ function demoCall(o) {
       if (a === "photo_add") { var pp = D.places.filter(function (x) { return x.id === Number(o.id); })[0]; if (!pp) return res({ ok: false, err: "Сначала сохраните заведение." }); pp.photoIds = pp.photoIds || []; pp.photos = pp.photos || []; if (pp.photoIds.length >= 6) return res({ ok: false, err: "Можно не больше 6 фото." }); var fid = "d" + Math.random().toString(36).slice(2, 7); pp.photoIds.push(fid); pp.photos.push("data:image/jpeg;base64," + o.data); return res({ ok: true, fid: fid }); }
       if (a === "photo_del") { var pq = D.places.filter(function (x) { return x.id === Number(o.id); })[0]; if (pq && pq.photoIds) { var k2 = pq.photoIds.indexOf(o.fid); if (k2 >= 0) { pq.photoIds.splice(k2, 1); pq.photos.splice(k2, 1); } } return res({ ok: true }); }
       if (a === "place_del") { D.places = D.places.filter(function (x) { return x.id !== Number(o.id); }); return res({ ok: true }); }
+      if (a === "ads_admin") { D.ads = D.ads || [{ id: "20261019100001", date: "2026-10-19T10:00:00", cat: "prodazha", title: "Детская коляска", text: "Состояние хорошее.", price: "5 000 ₽", contact: "8 900 000-00-00", name: "Мария", photos: [], status: "ждёт оплаты", sum: "100", pid: "Б56-12345" }]; return res({ ok: true, items: D.ads }); }
+      if (a === "ad_set") { (D.ads || []).forEach(function (x) { if (x.id === o.id) { x.status = o.act === "paid" ? "оплачено" : o.act === "reject" ? "отклонено" : o.act === "remove" ? "снято" : "опубликовано"; if (o.act === "publish" || o.act === "extend") x.till = ago(-5); } }); return res({ ok: true }); }
       if (a === "tickets_list") return res({ ok: true, items: D.tickets });
       if (a === "ticket_done") { D.tickets.forEach(function (x) { if (x.id === o.id) x.done = o.done !== false; }); return res({ ok: true }); }
       if (a === "news_list") return res({ ok: true, items: D.news });
@@ -137,7 +139,7 @@ function loginView() {
     (DEMO ? '<div class="card"><div class="note"><b>Пробный режим.</b> Здесь примеры, не настоящие данные. Войти можно кнопками:</div><button class="btn alt sm" data-demo="admin">Войти в пробном режиме</button></div>' : "");
 }
 function tabsHtml() {
-  var t = [["news", "Новости"], ["places", "Заведения"], ["tickets", "Обращения" + (OPEN_T ? " (" + OPEN_T + ")" : "")], ["stats", "Статистика"]]; t.push(["banners", "Плашки"]); t.push(["draw", "Розыгрыш"]);
+  var t = [["news", "Новости"], ["places", "Заведения"], ["tickets", "Обращения" + (OPEN_T ? " (" + OPEN_T + ")" : "")], ["stats", "Статистика"]]; t.push(["ads", "Объявления" + (OPEN_A ? " (" + OPEN_A + ")" : "")]); t.push(["banners", "Плашки"]); t.push(["draw", "Розыгрыш"]);
   return '<div class="tabs">' + t.map(function (x) { return '<button type="button" data-tab="' + x[0] + '" aria-pressed="' + (TAB === x[0]) + '">' + x[1] + "</button>"; }).join("") + "</div>";
 }
 function newsTab() {
@@ -267,8 +269,30 @@ function ticketsTab() {
   return "<h2>Ждут ответа: " + open.length + "</h2>" + (open.length ? open.map(one).join("") : '<div class="note">Новых обращений нет.</div>') +
     (done.length ? "<h2>Отвечено: " + done.length + "</h2>" + done.map(one).join("") : "");
 }
+var ADCN = { prodazha: "Куплю или продам", tehnika: "Техника и электроника", avto: "Авто и запчасти", nedvizh: "Недвижимость", rabota: "Работа", uslugi: "Услуги", zhivotnye: "Животные", dacha: "Дом, дача, огород", darom: "Отдам даром", raznoe: "Разное" };
+function adsTab() {
+  var wait = ADS.filter(function (x) { return x.status === "ждёт оплаты" || x.status === "на проверке" || x.status === "оплачено"; });
+  var live = ADS.filter(function (x) { return x.status === "опубликовано"; });
+  var other = ADS.filter(function (x) { return x.status === "отклонено" || x.status === "снято"; });
+  function one(x) {
+    var d = String(x.date || "").replace("T", " ").slice(0, 16), b = "";
+    if (x.status === "опубликовано") b = '<button class="btn sm" data-adact="extend" data-adid="' + esc(x.id) + '">Продлить на 5 дней</button> <button class="btn alt sm" data-adact="remove" data-adid="' + esc(x.id) + '">Снять</button>';
+    else if (x.status === "отклонено" || x.status === "снято") b = "";
+    else {
+      if (x.status === "ждёт оплаты") b += '<button class="btn alt sm" data-adact="paid" data-adid="' + esc(x.id) + '">Оплата пришла</button> ';
+      b += '<button class="btn sm" data-adact="publish" data-adid="' + esc(x.id) + '">Опубликовать на 5 дней</button> <button class="btn alt sm" data-adact="reject" data-adid="' + esc(x.id) + '">Отклонить</button>';
+    }
+    return '<div class="ni"><b>' + esc(x.title) + '</b><div class="m"><span>' + esc(ADCN[x.cat] || x.cat) + "</span><span>" + esc(d) + "</span><span>Статус: " + esc(x.status) + "</span>" + (x.sum && x.sum !== "0" ? "<span>К оплате: " + esc(x.sum) + " ₽</span>" : "") + (x.till ? "<span>до " + esc(fmt(x.till)) + "</span>" : "") + "</div>" +
+      "<p>" + esc(x.text) + "</p>" + (x.price ? '<div class="m"><b>Цена: ' + esc(x.price) + "</b></div>" : "") +
+      ((x.photos && x.photos.length) ? '<div class="m">' + x.photos.map(function (u) { return '<a href="' + esc(u) + '" target="_blank" rel="noopener"><img src="' + esc(u) + '" alt="" style="width:90px;height:90px;object-fit:cover;border-radius:10px"></a>'; }).join(" ") + "</div>" : "") +
+      '<div class="m"><b>Связь: ' + esc(x.contact) + "</b>" + (x.name ? "<span>" + esc(x.name) + "</span>" : "") + (x.pid ? "<span>" + esc(x.pid) + "</span>" : "") + "</div>" + contactLinks(x.contact) + (x.reason ? '<div class="m">Причина отказа: ' + esc(x.reason) + "</div>" : "") + (b ? "<div>" + b + "</div>" : "") + "</div>";
+  }
+  return "<h2>Ждут проверки: " + wait.length + "</h2>" + (wait.length ? wait.map(one).join("") : '<div class="note">Новых объявлений нет.</div>') +
+    (live.length ? "<h2>На доске: " + live.length + "</h2>" + live.map(one).join("") : "") +
+    (other.length ? "<h2>Отклонены и сняты: " + other.length + "</h2>" + other.map(one).join("") : "");
+}
 function mainView() {
-  var body = TAB === "news" ? newsTab() : TAB === "places" ? placesTab() : TAB === "stats" ? statsTab() : TAB === "tickets" ? ticketsTab() : TAB === "banners" ? bannersTab() : drawTab();
+  var body = TAB === "news" ? newsTab() : TAB === "places" ? placesTab() : TAB === "stats" ? statsTab() : TAB === "tickets" ? ticketsTab() : TAB === "ads" ? adsTab() : TAB === "banners" ? bannersTab() : drawTab();
   return '<div class="top"><div><h1>Администратор Б-56</h1><div class="who">' + "Администратор" + (DEMO ? " · пробный режим" : "") + '</div></div><button class="btn alt sm" data-out="1">Выйти</button></div>' +
     (MSG ? '<div class="msg' + (MSG.err ? " err" : "") + '">' + esc(MSG.t) + "</div>" : "") + tabsHtml() + body;
 }
@@ -291,6 +315,7 @@ function loadTab() {
   else if (TAB === "places") call({ a: "places_list", pw: PW }).then(function (r) { if (r.ok) PLACES = r.items; else afterAuthFail(r); draw(); });
   else if (TAB === "banners") call({ a: "banners_list", pw: PW }).then(function (r) { if (r.ok) BANNERS = r.items; else afterAuthFail(r); draw(); });
   else if (TAB === "tickets") call({ a: "tickets_list", pw: PW }).then(function (r) { if (r.ok) { TICKETS = r.items; OPEN_T = TICKETS.filter(function (x) { return !x.done; }).length; } else afterAuthFail(r); draw(); });
+  else if (TAB === "ads") call({ a: "ads_admin", pw: PW }).then(function (r) { if (r.ok) { ADS = r.items; OPEN_A = ADS.filter(function (x) { return x.status === "ждёт оплаты" || x.status === "на проверке" || x.status === "оплачено"; }).length; } else afterAuthFail(r); draw(); });
   else if (TAB === "stats") { STATS = null; draw(); call({ a: "stats", pw: PW }).then(function (r) { if (r.ok) STATS = r; else afterAuthFail(r); draw(); }); }
   else draw();
 }
@@ -298,7 +323,7 @@ function login(pw, remember) {
   BUSY = true; MSG = null; draw();
   call({ a: "login", pw: pw }).then(function (r) {
     BUSY = false;
-    if (r.ok) { PW = pw; ROLE = r.role; TGOK = !!r.tg; if (remember) sset("b56_adm", pw); TAB = "news"; MSG = null; loadTab(); call({ a: "tickets_list", pw: pw }).then(function (q) { if (q.ok) { OPEN_T = q.items.filter(function (x) { return !x.done; }).length; draw(); } }); }
+    if (r.ok) { PW = pw; ROLE = r.role; TGOK = !!r.tg; if (remember) sset("b56_adm", pw); TAB = "news"; MSG = null; loadTab(); call({ a: "ads_admin", pw: pw }).then(function (q) { if (q.ok) { OPEN_A = q.items.filter(function (x) { return x.status === "ждёт оплаты" || x.status === "на проверке" || x.status === "оплачено"; }).length; draw(); } }); call({ a: "tickets_list", pw: pw }).then(function (q) { if (q.ok) { OPEN_T = q.items.filter(function (x) { return !x.done; }).length; draw(); } }); }
     else { MSG = r.err || "Не получилось войти."; draw(); }
   });
 }
@@ -372,6 +397,12 @@ root.addEventListener("click", function (e) {
   var t = e.target.closest("button"); if (!t) return;
   if (t.dataset.demo) { login(t.dataset.demo, false); return; }
   if (t.dataset.tab) { TAB = t.dataset.tab; MSG = null; WIN = null; EDIT = null; BEDIT = null; STARS = []; FRESH = true; loadTab(); return; }
+  if (t.dataset.adact) {
+    var aa = t.dataset.adact, ao = { a: "ad_set", pw: PW, id: t.dataset.adid, act: aa };
+    if (aa === "reject") ao.reason = "Не соответствует правилам";
+    call(ao).then(function (r) { if (!r.ok) say(r.err || "Ошибка", true); else say(aa === "publish" ? "Объявление опубликовано." : aa === "extend" ? "Продлено." : aa === "reject" ? "Отклонено." : aa === "remove" ? "Снято с доски." : "Отмечено: оплата пришла.", false); loadTab(); });
+    return;
+  }
   if (t.dataset.tdone) { call({ a: "ticket_done", pw: PW, id: t.dataset.tdone, done: t.dataset.tval === "1" }).then(function (r) { if (!r.ok) afterAuthFail(r); loadTab(); }); return; }
   if (t.dataset.out) { PW = ""; ROLE = ""; MSG = null; sdel("b56_adm"); draw(); return; }
   if (t.dataset.edit) { var pid = Number(t.dataset.edit); EDIT = PLACES.filter(function (x) { return x.id === pid; })[0] || null; STARS = (EDIT && EDIT.stars) ? [].concat(EDIT.stars) : []; FRESH = true; MSG = null; draw(); window.scrollTo(0, 0); return; }
