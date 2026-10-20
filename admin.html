@@ -103,6 +103,7 @@ function demoCall(o) {
       if (a === "photo_del") { var pq = D.places.filter(function (x) { return x.id === Number(o.id); })[0]; if (pq && pq.photoIds) { var k2 = pq.photoIds.indexOf(o.fid); if (k2 >= 0) { pq.photoIds.splice(k2, 1); pq.photos.splice(k2, 1); } } return res({ ok: true }); }
       if (a === "place_del") { D.places = D.places.filter(function (x) { return x.id !== Number(o.id); }); return res({ ok: true }); }
       if (a === "ads_admin") { D.ads = D.ads || [{ id: "20261019100001", date: "2026-10-19T10:00:00", cat: "prodazha", title: "Детская коляска", text: "Состояние хорошее.", price: "5 000 ₽", contact: "8 900 000-00-00", name: "Мария", photos: [], status: "ждёт оплаты", sum: "100", pid: "Б56-12345" }]; return res({ ok: true, items: D.ads }); }
+      if (a === "ad_set" && (o.act === "delete" || o.act === "clear")) { D.ads = (D.ads || []).filter(function (x) { return o.act === "delete" ? x.id !== o.id : (x.status !== "отклонено" && x.status !== "снято"); }); return res({ ok: true }); }
       if (a === "ad_set") { (D.ads || []).forEach(function (x) { if (x.id === o.id) { x.status = o.act === "paid" ? "оплачено" : o.act === "reject" ? "отклонено" : o.act === "remove" ? "снято" : "опубликовано"; if (o.act === "publish" || o.act === "extend") x.till = ago(-5); } }); return res({ ok: true }); }
       if (a === "tickets_list") return res({ ok: true, items: D.tickets });
       if (a === "ticket_done") { D.tickets.forEach(function (x) { if (x.id === o.id) x.done = o.done !== false; }); return res({ ok: true }); }
@@ -269,15 +270,16 @@ function ticketsTab() {
   return "<h2>Ждут ответа: " + open.length + "</h2>" + (open.length ? open.map(one).join("") : '<div class="note">Новых обращений нет.</div>') +
     (done.length ? "<h2>Отвечено: " + done.length + "</h2>" + done.map(one).join("") : "");
 }
-var ADCN = { prodazha: "Куплю или продам", tehnika: "Техника и электроника", avto: "Авто и запчасти", nedvizh: "Недвижимость", rabota: "Работа", uslugi: "Услуги", zhivotnye: "Животные", dacha: "Дом, дача, огород", darom: "Отдам даром", raznoe: "Разное" };
+var ADEL = "", ADCLR = 0;
+var ADCN = { prodazha: "Продам", kuplyu: "Куплю", tehnika: "Техника и электроника", avto: "Авто и запчасти", nedvizh: "Недвижимость", rabota: "Работа", uslugi: "Услуги", zhivotnye: "Животные", dacha: "Дом, дача, огород", darom: "Отдам даром", raznoe: "Разное" };
 function adsTab() {
-  var wait = ADS.filter(function (x) { return x.status === "ждёт оплаты" || x.status === "на проверке" || x.status === "оплачено"; });
+  var wait = ADS.filter(function (x) { return x.status === "ждёт оплаты" || x.status === "на проверке" || x.status === "оплачено"; }).sort(function (p, q) { return (q.status === "на проверке" ? 1 : 0) - (p.status === "на проверке" ? 1 : 0); });
   var live = ADS.filter(function (x) { return x.status === "опубликовано"; });
   var other = ADS.filter(function (x) { return x.status === "отклонено" || x.status === "снято"; });
   function one(x) {
     var d = String(x.date || "").replace("T", " ").slice(0, 16), b = "";
     if (x.status === "опубликовано") b = '<button class="btn sm" data-adact="extend" data-adid="' + esc(x.id) + '">Продлить на 5 дней</button> <button class="btn alt sm" data-adact="remove" data-adid="' + esc(x.id) + '">Снять</button>';
-    else if (x.status === "отклонено" || x.status === "снято") b = "";
+    else if (x.status === "отклонено" || x.status === "снято") b = ADEL === x.id ? '<button class="btn sm" data-adact="delete" data-adid="' + esc(x.id) + '">Точно удалить?</button> <button class="btn alt sm" data-adact="nodel">Нет</button>' : '<button class="btn alt sm" data-adact="askdel" data-adid="' + esc(x.id) + '">Удалить</button>';
     else {
       if (x.status === "ждёт оплаты") b += '<button class="btn alt sm" data-adact="paid" data-adid="' + esc(x.id) + '">Оплата пришла</button> ';
       b += '<button class="btn sm" data-adact="publish" data-adid="' + esc(x.id) + '">Опубликовать на 5 дней</button> <button class="btn alt sm" data-adact="reject" data-adid="' + esc(x.id) + '">Отклонить</button>';
@@ -285,11 +287,11 @@ function adsTab() {
     return '<div class="ni"><b>' + esc(x.title) + '</b><div class="m"><span>' + esc(ADCN[x.cat] || x.cat) + "</span><span>" + esc(d) + "</span><span>Статус: " + esc(x.status) + "</span>" + (x.sum && x.sum !== "0" ? "<span>К оплате: " + esc(x.sum) + " ₽</span>" : "") + (x.till ? "<span>до " + esc(fmt(x.till)) + "</span>" : "") + "</div>" +
       "<p>" + esc(x.text) + "</p>" + (x.price ? '<div class="m"><b>Цена: ' + esc(x.price) + "</b></div>" : "") +
       ((x.photos && x.photos.length) ? '<div class="m">' + x.photos.map(function (u) { return '<a href="' + esc(u) + '" target="_blank" rel="noopener"><img src="' + esc(u) + '" alt="" style="width:90px;height:90px;object-fit:cover;border-radius:10px"></a>'; }).join(" ") + "</div>" : "") +
-      '<div class="m"><b>Связь: ' + esc(x.contact) + "</b>" + (x.name ? "<span>" + esc(x.name) + "</span>" : "") + (x.pid ? "<span>" + esc(x.pid) + "</span>" : "") + "</div>" + contactLinks(x.contact) + (x.reason ? '<div class="m">Причина отказа: ' + esc(x.reason) + "</div>" : "") + (b ? "<div>" + b + "</div>" : "") + "</div>";
+      '<div class="m"><b>Связь: ' + esc(x.contact) + "</b>" + (x.name ? "<span>" + esc(x.name) + "</span>" : "") + (x.pid ? "<span>" + esc(x.pid) + "</span>" : "") + "</div>" + contactLinks(x.contact) + (x.reason ? '<div class="m"><b>' + (x.status === "отклонено" ? "Причина отказа: " : "") + esc(x.reason) + "</b></div>" : "") + (b ? "<div>" + b + "</div>" : "") + "</div>";
   }
   return "<h2>Ждут проверки: " + wait.length + "</h2>" + (wait.length ? wait.map(one).join("") : '<div class="note">Новых объявлений нет.</div>') +
     (live.length ? "<h2>На доске: " + live.length + "</h2>" + live.map(one).join("") : "") +
-    (other.length ? "<h2>Отклонены и сняты: " + other.length + "</h2>" + other.map(one).join("") : "");
+    (other.length ? "<h2>Отклонены и сняты: " + other.length + '</h2><button class="btn alt sm" data-adact="clear">Очистить все отклонённые и снятые</button>' + other.map(one).join("") : "");
 }
 function mainView() {
   var body = TAB === "news" ? newsTab() : TAB === "places" ? placesTab() : TAB === "stats" ? statsTab() : TAB === "tickets" ? ticketsTab() : TAB === "ads" ? adsTab() : TAB === "banners" ? bannersTab() : drawTab();
@@ -398,9 +400,14 @@ root.addEventListener("click", function (e) {
   if (t.dataset.demo) { login(t.dataset.demo, false); return; }
   if (t.dataset.tab) { TAB = t.dataset.tab; MSG = null; WIN = null; EDIT = null; BEDIT = null; STARS = []; FRESH = true; loadTab(); return; }
   if (t.dataset.adact) {
-    var aa = t.dataset.adact, ao = { a: "ad_set", pw: PW, id: t.dataset.adid, act: aa };
+    var aa = t.dataset.adact;
+    if (aa === "askdel") { ADEL = t.dataset.adid; draw(); return; }
+    if (aa === "nodel") { ADEL = ""; draw(); return; }
+    if (aa === "clear" && ADCLR !== 1) { ADCLR = 1; t.textContent = "Точно очистить? Нажмите ещё раз"; return; }
+    ADEL = ""; ADCLR = 0;
+    var ao = { a: "ad_set", pw: PW, id: t.dataset.adid, act: aa };
     if (aa === "reject") ao.reason = "Не соответствует правилам";
-    call(ao).then(function (r) { if (!r.ok) say(r.err || "Ошибка", true); else say(aa === "publish" ? "Объявление опубликовано." : aa === "extend" ? "Продлено." : aa === "reject" ? "Отклонено." : aa === "remove" ? "Снято с доски." : "Отмечено: оплата пришла.", false); loadTab(); });
+    call(ao).then(function (r) { if (!r.ok) say(r.err || "Ошибка", true); else say(aa === "publish" ? "Объявление опубликовано." : aa === "extend" ? "Продлено." : aa === "reject" ? "Отклонено." : aa === "remove" ? "Снято с доски." : aa === "delete" ? "Удалено." : aa === "clear" ? "Очищено." : "Отмечено: оплата пришла.", false); loadTab(); });
     return;
   }
   if (t.dataset.tdone) { call({ a: "ticket_done", pw: PW, id: t.dataset.tdone, done: t.dataset.tval === "1" }).then(function (r) { if (!r.ok) afterAuthFail(r); loadTab(); }); return; }
