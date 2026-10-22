@@ -218,7 +218,7 @@ function placesTab() {
   var ph = "";
   if (e.id) {
     var ids = e.photoIds || [], urls = e.photos || [];
-    ph = '<div class="card"><h2>Фото заведения</h2><div class="note">До 6 фото. Первое показывается в карточке первым. Фото сжимаются сами.</div>' +
+    ph = '<div class="card"><h2>Фото заведения</h2><div class="note">До 6 фото. Первое показывается в карточке первым. Фото сжимаются сами. <b>Быстро:</b> скопируйте картинку (в ВК правой кнопкой «Копировать изображение») и нажмите здесь Ctrl+V. Файл выбирать не нужно.</div>' +
       (ids.length ? '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">' + ids.map(function (f, i) { return '<div style="display:flex;flex-direction:column;gap:6px"><img src="' + esc(urls[i]) + '" alt="" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px;background:#DCEFE2"><button type="button" class="btn red sm" data-delph="' + esc(f) + '">Убрать</button></div>'; }).join("") + "</div>" : "") +
       (ids.length < 6 ? '<label>Добавить фото<input id="pfile" type="file" accept="image/*" multiple' + (PHBUSY ? " disabled" : "") + "></label>" : "") + (PHBUSY ? '<div class="note">Загружаю…</div>' : "") + "</div>";
   } else ph = '<div class="note">Фото можно добавить после того, как заведение сохранено.</div>';
@@ -439,9 +439,8 @@ function shrink(file) {
 root.addEventListener("input", function (e) {
   if (e.target.id === "psq") { PSQ = e.target.value; var pl = document.getElementById("plist"); if (pl) pl.innerHTML = plistHtml(); }
 });
-root.addEventListener("change", function (e) {
-  if (e.target.id !== "pfile" || !e.target.files.length || !EDIT) return;
-  var files = Array.prototype.slice.call(e.target.files), pid = EDIT.id;
+function uploadPhotos(files) {
+  var pid = EDIT.id;
   PHBUSY = true; draw();
   var chain = Promise.resolve();
   files.forEach(function (f) {
@@ -451,6 +450,22 @@ root.addEventListener("change", function (e) {
     PHBUSY = false;
     call({ a: "places_list", pw: PW }).then(function (r) { if (r.ok) { PLACES = r.items; EDIT = PLACES.filter(function (x) { return x.id === pid; })[0] || null; } FRESH = false; draw(); });
   });
+}
+root.addEventListener("change", function (e) {
+  if (e.target.id !== "pfile" || !e.target.files.length || !EDIT) return;
+  uploadPhotos(Array.prototype.slice.call(e.target.files));
+});
+function imgFiles(dt) { return dt ? Array.prototype.slice.call(dt.files || []).filter(function (f) { return /^image\//.test(f.type); }) : []; }
+document.addEventListener("paste", function (e) {
+  if (!ROLE || TAB !== "places" || !EDIT || PHBUSY) return;
+  var f = imgFiles(e.clipboardData); if (!f.length) return;
+  e.preventDefault(); uploadPhotos(f);
+});
+document.addEventListener("dragover", function (e) { if (TAB === "places" && EDIT) e.preventDefault(); });
+document.addEventListener("drop", function (e) {
+  if (!ROLE || TAB !== "places" || !EDIT || PHBUSY) return;
+  var f = imgFiles(e.dataTransfer); if (!f.length) return;
+  e.preventDefault(); uploadPhotos(f);
 });
 root.addEventListener("click", function (e) {
   var t = e.target.closest("button"); if (!t) return;
