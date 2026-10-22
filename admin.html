@@ -68,7 +68,7 @@ var API = "https://script.google.com/macros/s/AKfycbyRiGD8kP3YnhLAa_FDMo_iwgBYz6
 var DEMO = !API;
 var CATS = [{"id":"avto","name":"Автосервисы"},{"id":"moyki","name":"Автомойки"},{"id":"zapchasti","name":"Автозапчасти"},{"id":"produkty","name":"Продукты"},{"id":"odezhda","name":"Одежда и обувь"},{"id":"remont","name":"Ремонт и стройка"},{"id":"okna","name":"Окна, двери, жалюзи"},{"id":"turizm","name":"Путешествия и туризм"},{"id":"shtory","name":"Шторы и текстиль"},{"id":"mebel","name":"Мебель"},{"id":"tehnika","name":"Техника"},{"id":"remont-tehniki","name":"Ремонт техники"},{"id":"stomat","name":"Стоматология"},{"id":"krasota","name":"Красота"},{"id":"fitnes","name":"Фитнес и спорт"},{"id":"kafe","name":"Кафе и рестораны"},{"id":"cvety","name":"Цветы и подарки"},{"id":"prazdniki","name":"Праздники"},{"id":"detyam","name":"Детям"},{"id":"gruz","name":"Грузоперевозки"},{"id":"nedvizhimost","name":"Недвижимость"},{"id":"yuristy","name":"Юристы и бухгалтеры"},{"id":"gostinicy","name":"Гостиницы"},{"id":"foto","name":"Фото и печать"},{"id":"dosug","name":"Досуг"},{"id":"uslugi","name":"Услуги"},{"id":"drugoe","name":"Другое"},{"id":"kursy","name":"Курсы"},{"id":"konditery","name":"Кондитеры"},{"id":"bani","name":"Бани, сауны, коттеджи"},{"id":"video","name":"Фотограф и видеосъёмка"},{"id":"magaziny","name":"Магазины разные"},{"id":"rynok-gorod","name":"Городской рынок"},{"id":"rynok-yug","name":"Южный рынок"},{"id":"baza-shirokaya","name":"База «Широкая»"},{"id":"baza-kontrakt","name":"База «Контракт»"}];
 var TGOK = false, PHBUSY = false;
-var OPEN_T = 0, OWN = [], OPEN_O = 0, ODEL = "", ADS = [], OPEN_A = 0, TICKETS = [], PLACES = [], EDIT = null, FRESH = true, PDEL = "", STARS = [], BANNERS = [], BEDIT = null, BDEL = "";
+var PSF = "", PSQ = "", OPEN_T = 0, OWN = [], OPEN_O = 0, ODEL = "", ADS = [], OPEN_A = 0, TICKETS = [], PLACES = [], EDIT = null, FRESH = true, PDEL = "", STARS = [], BANNERS = [], BEDIT = null, BDEL = "";
 var PW = "", ROLE = "", TAB = "news", MSG = null, BUSY = false, NEWS = [], STATS = null, WIN = null, PENDING_DEL = "";
 var root = document.getElementById("root");
 
@@ -101,6 +101,7 @@ function demoCall(o) {
         if (q.id) { D.places = D.places.map(function (x) { return x.id === Number(q.id) ? pr : x; }); pr.id = Number(q.id); } else { pr.id = 100 + D.places.length; D.places.push(pr); } return res({ ok: true, id: pr.id }); }
       if (a === "photo_add") { var pp = D.places.filter(function (x) { return x.id === Number(o.id); })[0]; if (!pp) return res({ ok: false, err: "Сначала сохраните заведение." }); pp.photoIds = pp.photoIds || []; pp.photos = pp.photos || []; if (pp.photoIds.length >= 6) return res({ ok: false, err: "Можно не больше 6 фото." }); var fid = "d" + Math.random().toString(36).slice(2, 7); pp.photoIds.push(fid); pp.photos.push("data:image/jpeg;base64," + o.data); return res({ ok: true, fid: fid }); }
       if (a === "photo_del") { var pq = D.places.filter(function (x) { return x.id === Number(o.id); })[0]; if (pq && pq.photoIds) { var k2 = pq.photoIds.indexOf(o.fid); if (k2 >= 0) { pq.photoIds.splice(k2, 1); pq.photos.splice(k2, 1); } } return res({ ok: true }); }
+      if (a === "place_note") { D.places.forEach(function (x) { if (x.id === Number(o.id)) { x.status = o.status; x.memo = o.memo; } }); return res({ ok: true }); }
       if (a === "place_del") { D.places = D.places.filter(function (x) { return x.id !== Number(o.id); }); return res({ ok: true }); }
       if (a === "owners_admin") { D.own = D.own || [{ email: "ivan@mail.ru", date: "2026-10-22T10:00:00", status: "ждёт", pid: 0, name: "Иван", phone: "8 900 000-00-00", edit: "", req: { type: "new", place: { cat: "avto", name: "Автосервис «Мотор»", phone: "8 900 000-00-00", addr: "ул. Мира, 5", hours: "Пн–Пт 9–18", about: "Ремонт легковых авто." } } }, { email: "olga@mail.ru", date: "2026-10-21T10:00:00", status: "ждёт", pid: 0, name: "Ольга", phone: "8 900 111-11-11", edit: "", req: { type: "claim", pid: 1, placeName: "Автосервис «Пример»" } }]; return res({ ok: true, items: D.own }); }
       if (a === "owner_set") { (D.own || []).forEach(function (x) { if (x.email === o.email) { if (o.act === "approve") { x.status = "подтверждён"; x.pid = 1; x.placeName = "Автосервис «Пример»"; } else if (o.act === "reject") x.status = "отклонён"; else if (o.act === "unlink") x.status = "вошёл"; } }); if (o.act === "delete") D.own = (D.own || []).filter(function (x) { return x.email !== o.email; }); return res({ ok: true }); }
@@ -142,7 +143,7 @@ function loginView() {
     (DEMO ? '<div class="card"><div class="note"><b>Пробный режим.</b> Здесь примеры, не настоящие данные. Войти можно кнопками:</div><button class="btn alt sm" data-demo="admin">Войти в пробном режиме</button></div>' : "");
 }
 function tabsHtml() {
-  var t = [["news", "Новости"], ["places", "Заведения"], ["tickets", "Обращения" + (OPEN_T ? " (" + OPEN_T + ")" : "")], ["stats", "Статистика"]]; t.push(["ads", "Объявления" + (OPEN_A ? " (" + OPEN_A + ")" : "")]); t.push(["owners", "Владельцы" + (OPEN_O ? " (" + OPEN_O + ")" : "")]); t.push(["banners", "Плашки"]); t.push(["draw", "Розыгрыш"]);
+  var t = [["news", "Новости"], ["plist", "Список"], ["places", "Заведения"], ["tickets", "Обращения" + (OPEN_T ? " (" + OPEN_T + ")" : "")], ["stats", "Статистика"]]; t.push(["ads", "Объявления" + (OPEN_A ? " (" + OPEN_A + ")" : "")]); t.push(["owners", "Владельцы" + (OPEN_O ? " (" + OPEN_O + ")" : "")]); t.push(["banners", "Плашки"]); t.push(["draw", "Розыгрыш"]);
   return '<div class="tabs">' + t.map(function (x) { return '<button type="button" data-tab="' + x[0] + '" aria-pressed="' + (TAB === x[0]) + '">' + x[1] + "</button>"; }).join("") + "</div>";
 }
 function newsTab() {
@@ -164,6 +165,32 @@ function newsTab() {
     }).join("") : '<div class="note">Пока ничего нет.</div>');
 }
 function catName(id) { for (var i = 0; i < CATS.length; i++) if (CATS[i].id === id) return CATS[i].name; return id; }
+var PST = ["", "ждём логотип", "ждём фото", "ждём данные", "добавила", "нужно поменять", "готово"];
+function plistRows() {
+  var q = PSQ.toLowerCase().replace(/ё/g, "е");
+  return PLACES.filter(function (p) {
+    if (PSF === "none" ? !!p.status : (PSF && p.status !== PSF)) return false;
+    return !q || (String(p.name) + " " + catName(p.cat) + " " + (p.memo || "")).toLowerCase().replace(/ё/g, "е").indexOf(q) >= 0;
+  });
+}
+function plistHtml() {
+  var rows = plistRows();
+  if (!rows.length) return '<div class="note">Никого не найдено.</div>';
+  return rows.map(function (p) {
+    return '<div class="ni" data-prow="' + p.id + '"><b>' + esc(p.name) + '</b><div class="m"><span>' + esc(catName(p.cat)) + "</span><span>" + esc(p.phone) + "</span>" + (p.photoIds && p.photoIds.length ? "<span>фото: " + p.photoIds.length + "</span>" : "<span>без фото</span>") + "</div>" +
+      '<label>Статус<select data-pst>' + PST.map(function (s) { return '<option value="' + esc(s) + '"' + ((p.status || "") === s ? " selected" : "") + ">" + (s || "без статуса") + "</option>"; }).join("") + "</select></label>" +
+      '<label>Заметка для себя<textarea data-pmemo maxlength="500" style="min-height:70px">' + esc(p.memo || "") + "</textarea></label>" +
+      '<div style="display:flex;gap:8px"><button class="btn sm" style="flex:1" data-psave="' + p.id + '">Сохранить</button><button class="btn alt sm" style="flex:1" data-edit="' + p.id + '" data-gotoplaces="1">Открыть карточку</button></div></div>';
+  }).join("");
+}
+function plistTab() {
+  var cnt = {}; PLACES.forEach(function (p) { var k = p.status || "none"; cnt[k] = (cnt[k] || 0) + 1; });
+  var chips = [["", "Все (" + PLACES.length + ")"], ["none", "Без статуса (" + (cnt.none || 0) + ")"]].concat(PST.filter(function (s) { return s; }).map(function (s) { return [s, s + " (" + (cnt[s] || 0) + ")"]; }));
+  return '<div class="note">Здесь все заведения одним списком. Выберите статус, напишите заметку и нажмите «Сохранить». Заметки видите только вы.</div>' +
+    '<label>Поиск<input id="psq" value="' + esc(PSQ) + '" placeholder="название, раздел или слово из заметки"></label>' +
+    '<div style="display:flex;flex-wrap:wrap;gap:8px;margin:10px 0">' + chips.map(function (c) { return '<button type="button" class="btn ' + (PSF === c[0] ? "" : "alt") + ' sm" data-psf="' + esc(c[0]) + '">' + esc(c[1]) + "</button>"; }).join("") + "</div>" +
+    '<div id="plist">' + plistHtml() + "</div>";
+}
 function placesTab() {
   var e = EDIT || {}, f = function (k) { return esc(e[k] || ""); };
   var inp = function (id, label, k, hint, extra) { return '<label>' + label + (hint ? "<small>" + hint + "</small>" : "") + '<input id="' + id + '" ' + (extra || "") + ' value="' + f(k) + '"></label>'; };
@@ -319,7 +346,7 @@ function adsTab() {
     (other.length ? "<h2>Отклонены, сняты и с истёкшим сроком: " + other.length + '</h2><button class="btn alt sm" data-adact="clear">Очистить все ненужные</button>' + other.map(one).join("") : "");
 }
 function mainView() {
-  var body = TAB === "news" ? newsTab() : TAB === "places" ? placesTab() : TAB === "stats" ? statsTab() : TAB === "tickets" ? ticketsTab() : TAB === "ads" ? adsTab() : TAB === "owners" ? ownersTab() : TAB === "banners" ? bannersTab() : drawTab();
+  var body = TAB === "news" ? newsTab() : TAB === "places" ? placesTab() : TAB === "stats" ? statsTab() : TAB === "tickets" ? ticketsTab() : TAB === "ads" ? adsTab() : TAB === "owners" ? ownersTab() : TAB === "plist" ? plistTab() : TAB === "banners" ? bannersTab() : drawTab();
   return '<div class="top"><div><h1>Администратор Б-56</h1><div class="who">' + "Администратор" + (DEMO ? " · пробный режим" : "") + '</div></div><button class="btn alt sm" data-out="1">Выйти</button></div>' +
     (MSG ? '<div class="msg' + (MSG.err ? " err" : "") + '">' + esc(MSG.t) + "</div>" : "") + tabsHtml() + body;
 }
@@ -339,6 +366,7 @@ function say(t, err) { MSG = { t: t, err: !!err }; }
 function afterAuthFail(r) { if (r && /парол/i.test(r.err || "")) { PW = ""; ROLE = ""; sdel("b56_adm"); MSG = r.err; } else say((r && r.err) || "Ошибка", true); }
 function loadTab() {
   if (TAB === "news") call({ a: "news_list", pw: PW }).then(function (r) { if (r.ok) NEWS = r.items; else afterAuthFail(r); draw(); });
+  else if (TAB === "plist") call({ a: "places_list", pw: PW }).then(function (r) { if (r.ok) PLACES = r.items; else afterAuthFail(r); draw(); });
   else if (TAB === "places") call({ a: "places_list", pw: PW }).then(function (r) { if (r.ok) PLACES = r.items; else afterAuthFail(r); draw(); });
   else if (TAB === "banners") call({ a: "banners_list", pw: PW }).then(function (r) { if (r.ok) BANNERS = r.items; else afterAuthFail(r); draw(); });
   else if (TAB === "tickets") call({ a: "tickets_list", pw: PW }).then(function (r) { if (r.ok) { TICKETS = r.items; OPEN_T = TICKETS.filter(function (x) { return !x.done; }).length; } else afterAuthFail(r); draw(); });
@@ -408,6 +436,9 @@ function shrink(file) {
     img.src = url;
   });
 }
+root.addEventListener("input", function (e) {
+  if (e.target.id === "psq") { PSQ = e.target.value; var pl = document.getElementById("plist"); if (pl) pl.innerHTML = plistHtml(); }
+});
 root.addEventListener("change", function (e) {
   if (e.target.id !== "pfile" || !e.target.files.length || !EDIT) return;
   var files = Array.prototype.slice.call(e.target.files), pid = EDIT.id;
@@ -425,6 +456,17 @@ root.addEventListener("click", function (e) {
   var t = e.target.closest("button"); if (!t) return;
   if (t.dataset.demo) { login(t.dataset.demo, false); return; }
   if (t.dataset.tab) { TAB = t.dataset.tab; MSG = null; WIN = null; EDIT = null; BEDIT = null; STARS = []; FRESH = true; loadTab(); return; }
+  if (t.dataset.psf !== undefined) { PSF = t.dataset.psf; draw(); return; }
+  if (t.dataset.psave) {
+    var prow = t.closest("[data-prow]"), pid9 = Number(t.dataset.psave), st9 = prow.querySelector("[data-pst]").value, mm9 = prow.querySelector("[data-pmemo]").value;
+    t.disabled = true; t.textContent = "Сохраняю…";
+    call({ a: "place_note", pw: PW, id: pid9, status: st9, memo: mm9 }).then(function (r) {
+      t.disabled = false;
+      if (r.ok) { PLACES.forEach(function (x) { if (x.id === pid9) { x.status = st9; x.memo = mm9; } }); t.textContent = "Сохранено ✓"; setTimeout(function () { t.textContent = "Сохранить"; }, 1500); }
+      else { t.textContent = "Сохранить"; say(r.err || "Ошибка", true); }
+    });
+    return;
+  }
   if (t.dataset.oact) {
     var oa = t.dataset.oact;
     if (oa === "askdel") { ODEL = "d" + t.dataset.oem; draw(); return; }
@@ -447,7 +489,7 @@ root.addEventListener("click", function (e) {
   }
   if (t.dataset.tdone) { call({ a: "ticket_done", pw: PW, id: t.dataset.tdone, done: t.dataset.tval === "1" }).then(function (r) { if (!r.ok) afterAuthFail(r); loadTab(); }); return; }
   if (t.dataset.out) { PW = ""; ROLE = ""; MSG = null; sdel("b56_adm"); draw(); return; }
-  if (t.dataset.edit) { var pid = Number(t.dataset.edit); EDIT = PLACES.filter(function (x) { return x.id === pid; })[0] || null; STARS = (EDIT && EDIT.stars) ? [].concat(EDIT.stars) : []; FRESH = true; MSG = null; draw(); window.scrollTo(0, 0); return; }
+  if (t.dataset.edit) { if (t.dataset.gotoplaces) TAB = "places"; var pid = Number(t.dataset.edit); EDIT = PLACES.filter(function (x) { return x.id === pid; })[0] || null; STARS = (EDIT && EDIT.stars) ? [].concat(EDIT.stars) : []; FRESH = true; MSG = null; draw(); window.scrollTo(0, 0); return; }
   if (t.dataset.delph && EDIT) { var pid2 = EDIT.id, ff = t.dataset.delph; call({ a: "photo_del", pw: PW, id: pid2, fid: ff }).then(function (r) { if (!r.ok) say(r.err || "Ошибка", true); return call({ a: "places_list", pw: PW }); }).then(function (r) { if (r.ok) { PLACES = r.items; EDIT = PLACES.filter(function (x) { return x.id === pid2; })[0] || null; } FRESH = false; draw(); }); return; }
   if (t.dataset.newp) { EDIT = null; STARS = []; FRESH = true; draw(); return; }
   if (t.dataset.star) { var sn = Number(t.dataset.star), si = STARS.indexOf(sn); if (si >= 0) STARS.splice(si, 1); else STARS.push(sn); FRESH = false; draw(); return; }
