@@ -380,8 +380,10 @@ function parse(r) {
   if (r === "install") return { v: "install" };
   if (r === "news") return { v: "news" };
   if (r === "id") return { v: "id" };
+  if (r === "cab") return { v: "cab" };
   if (r === "board") return { v: "board" };
   if (r === "qr") return { v: "qr" };
+  if (r === "myads") return { v: "myads" };
   if (r === "adnew") return { v: "adnew" };
   if (r === "help") return { v: "help" };
   if (r === "ask") return { v: "ask" };
@@ -542,14 +544,15 @@ var OWNER = { phone: "+7 (922) 857-20-99", wa: "https://wa.me/79228572099", tg: 
 function viewOwner() {
   var items = [
     "Карточка в каталоге: название, адрес, телефон, часы работы",
-    "Прайс-лист и значок «Рекомендуем»",
-    "Ссылки на ваш сайт, Telegram, ВКонтакте",
-    "Ваши новости в окне новостей приложения",
-    "Фото ваших работ в карточке (скоро)"
+    "Вы сами меняете телефон, часы, цены и ссылки, правки видны сразу",
+    "Вход по коду из письма, пароль придумывать не нужно",
+    "Ссылки на ваш сайт, Telegram, ВКонтакте и WhatsApp",
+    "Ваши новости в окне новостей приложения"
   ];
   return '<div class="app"><div class="row">' + backBtn("Назад на главную") + "<h1>Владельцам бизнеса</h1></div>" +
-    '<div class="panel"><h2>Что вы получите</h2><ul class="chk">' + items.map(function (t) { return "<li><span>" + esc(t) + "</span></li>"; }).join("") + "</ul></div>" +
-    '<button type="button" class="bigbtn" data-go="apply">Оставить заявку</button>' +
+    '<div class="panel"><h2>Что даёт кабинет</h2><ul class="chk">' + items.map(function (t) { return "<li><span>" + esc(t) + "</span></li>"; }).join("") + "</ul></div>" +
+    '<button type="button" class="bigbtn" data-go="cab">Войти в кабинет владельца</button>' +
+    '<button type="button" class="btn2" data-go="apply">Написать нам</button>' +
     '<div class="ownlinks"><a href="' + TG_OWNERS + '" target="_blank" rel="noopener">Группа для владельцев в Telegram</a></div>' +
     '<button type="button" class="help-link" data-go="help">Техподдержка и частые вопросы</button>' +
     '<div class="note">Оставьте заявку, мы ответим в течение рабочего дня.</div>' +
@@ -560,8 +563,8 @@ var FAQ = [
   ["Как поставить приложение на телефон?", "Нажмите «Установить» на главном экране и следуйте подсказке. Значок «Б-56» появится среди ваших приложений."],
   ["Где мой номер участника?", "Откройте приложение с его значка на экране телефона. Номер появится на главном экране. Сохраните его: сделайте снимок экрана или запишите."],
   ["Потерял номер участника. Что делать?", "Пока приложение стоит на телефоне, номер можно посмотреть снова на главном экране. Если приложение удалено, напишите нам через кнопку «Написать»."],
-  ["Как добавить мой бизнес в приложение?", "Откройте «Владельцам бизнеса» на главном экране и нажмите «Оставить заявку»."],
-  ["Как изменить данные в моей карточке?", "Напишите нам через кнопку «Написать» и укажите, что изменить: телефон, часы работы, цены."],
+  ["Как добавить мой бизнес в приложение?", "Откройте «Владельцам бизнеса» на главном экране, нажмите «Войти в кабинет владельца» и отправьте заявку. Мы подтвердим её в течение рабочего дня."],
+  ["Как изменить данные в моей карточке?", "Зайдите в «Кабинет владельца» (раздел «Владельцам бизнеса»), войдите по коду из письма и измените нужное сами."],
 ];
 function field(id, label, hint, tag, ph) {
   var inp = tag === "textarea" ? '<textarea id="' + id + '" maxlength="1000" placeholder="' + esc(ph || "") + '"></textarea>' : '<input id="' + id + '" maxlength="100" autocomplete="off" placeholder="' + esc(ph || "") + '">';
@@ -609,6 +612,7 @@ function viewBoard() {
   if (!BOARD_OPEN) return viewBoardSoon();
   return '<div class="app"><div class="row"><h1>Доска объявлений</h1></div>' +
     '<button type="button" class="bigbtn" data-go="adnew">Подать объявление</button>' +
+    (myAds().length ? '<button type="button" class="qrlink" data-go="myads">Мои объявления</button>' : "") +
     '<div class="adcats" id="adcats">' + adCatsHtml() + "</div>" +
     '<div id="adlist">' + adListHtml() + "</div>" +
     '<div class="ownlinks"><a href="/rules.html">Правила и оплата</a><a href="' + TG_CHANNEL + '" target="_blank" rel="noopener">Наш Telegram-канал</a></div>' +
@@ -628,8 +632,8 @@ function loadAds() {
 }
 function adSumHtml() {
   var cat = (document.getElementById("ad_cat") || {}).value, n = adPh.length, free = cat === "darom";
-  var sum = (free ? 0 : 100) + n * 100;
-  return sum ? 'К оплате: <b>' + sum + " ₽</b><br>" + (free ? "" : "Объявление на 5 дней — 100 ₽") + (n ? (free ? "" : "<br>") + "Фото: " + n + " × 100 ₽" : "") : "Объявление в разделе «Отдам даром» — без оплаты.";
+  var sum = (free ? 0 : 100) + n * 50;
+  return sum ? 'К оплате: <b>' + sum + " ₽</b><br>" + (free ? "" : "Объявление на 5 дней — 100 ₽") + (n ? (free ? "" : "<br>") + "Фото: " + n + " × 50 ₽" : "") : "Объявление в разделе «Отдам даром» — без оплаты.";
 }
 function adPhHtml() {
   return adPh.map(function (b, i) { return '<div class="it"><img alt="" src="data:image/jpeg;base64,' + b + '"><button type="button" data-adrm="' + i + '" aria-label="Убрать фото">×</button></div>'; }).join("");
@@ -644,7 +648,7 @@ function viewAdNew() {
     field("ad_price", "Цена", "можно не писать", "input", "Например: 5 000 ₽") +
     field("ad_contact", "Телефон или Telegram", "будет виден всем в объявлении", "input", "8 9.. или @имя") +
     field("ad_name", "Ваше имя", "можно не писать", "input", "") +
-    '<div class="fld"><b>Фото</b><span>до 3 штук, каждое фото — 100 ₽</span><div class="adph" id="adph">' + adPhHtml() + '</div><input type="file" id="ad_file" accept="image/*" multiple style="display:none"><button type="button" class="btn2" data-adpick="1">Добавить фото</button></div>' +
+    '<div class="fld"><b>Фото</b><span>до 3 штук, каждое фото — 50 ₽</span><div class="adph" id="adph">' + adPhHtml() + '</div><input type="file" id="ad_file" accept="image/*" multiple style="display:none"><button type="button" class="btn2" data-adpick="1">Добавить фото</button></div>' +
     '<div class="adsum" id="adsum">' + adSumHtml() + "</div>" +
     '<div id="f_res" role="status"></div>' +
     '<button type="button" class="bigbtn" data-adsend="1">Отправить на проверку</button></div>' +
@@ -666,6 +670,66 @@ function adShrink(file) {
   });
 }
 function adRefresh() { var p = document.getElementById("adph"), m = document.getElementById("adsum"); if (p) p.innerHTML = adPhHtml(); if (m) m.innerHTML = adSumHtml(); }
+function adDoneHtml(r) {
+  var sum = r && r.sum != null ? r.sum : 0;
+  return '<div class="formmsg">Спасибо! Объявление принято.</div>' +
+    (sum ? '<div class="adsum">К оплате: <b>' + sum + ' ₽</b></div>' + (r && r.pay ? '<a class="bigbtn" style="text-decoration:none;text-align:center" href="' + esc(r.pay) + '" target="_blank" rel="noopener">Оплатить</a><div class="note">После оплаты проверка занимает 1–3 минуты, и объявление появится на доске.</div>' : '<div class="note">Оплата скоро заработает. Администратор свяжется с вами по указанному контакту и подскажет, как оплатить. После оплаты проверка занимает 1–3 минуты, и объявление появится на доске.</div>') : '<div class="note">Проверка занимает 1–3 минуты, объявление скоро появится на доске.</div>') +
+    '<button type="button" class="btn2" data-go="myads">Мои объявления</button> <button type="button" class="btn2" data-go="board">К доске объявлений</button>';
+}
+function myAds() { try { var a = JSON.parse(sget("b56_myads") || "[]"); return a instanceof Array ? a : []; } catch (e) { return []; } }
+function addMyAd(code, key) { var a = myAds(); a.unshift({ code: code, key: key }); sset("b56_myads", JSON.stringify(a.slice(0, 30))); MY = null; }
+var MY = null, MYBUSY = "";
+function myStatusText(it) {
+  var s = it.status;
+  if (s === "опубликовано") return "Опубликовано" + (fmtDate(it.till) ? " до " + fmtDate(it.till) : "");
+  if (s === "ждёт оплаты") return "Ждёт оплаты: " + it.sum + " ₽";
+  if (s === "на проверке") return "На проверке";
+  if (s === "оплачено") return "Оплачено, скоро появится";
+  if (s === "срок вышел") return "Срок публикации закончился";
+  if (s === "снято") return "Снято с публикации";
+  if (s === "отклонено") return "Отклонено";
+  return s;
+}
+function myAdsHtml() {
+  if (MY === null) return '<div class="note">Загружаем…</div>';
+  if (!MY.length) return '<div class="note">У вас пока нет объявлений на этом телефоне.</div>';
+  return MY.map(function (it) {
+    var btns = "";
+    if (it.status === "опубликовано") btns = MYBUSY === it.code ? '<button type="button" class="btn2" data-myact="remove" data-mycode="' + esc(it.code) + '">Точно снять?</button> <button type="button" class="btn2" data-myact="cancel">Нет</button>' : '<button type="button" class="btn2" data-myact="ask" data-mycode="' + esc(it.code) + '">Снять с публикации</button>';
+    else if (it.status === "снято" || it.status === "срок вышел") btns = '<button type="button" class="bigbtn" data-myact="repub" data-mycode="' + esc(it.code) + '">Опубликовать ещё раз</button>';
+    return '<div class="ad"><div class="tags"><span class="tag mint">' + esc(adCatName(it.cat)) + "</span></div><h3>" + esc(it.title) + '</h3><div class="meta">' + esc(myStatusText(it)) + "</div>" + (btns ? "<div>" + btns + "</div>" : "") + "</div>";
+  }).join("");
+}
+function viewMyAds() {
+  if (!BOARD_OPEN) return viewBoardSoon();
+  MY = null; loadMyAds();
+  return '<div class="app"><div class="row">' + backBtn("Назад") + "<h1>Мои объявления</h1></div>" +
+    '<div id="myads">' + myAdsHtml() + "</div>" +
+    '<div class="note">Продали раньше? Снимите объявление, и вам перестанут звонить. Закончился срок? Опубликуйте ещё раз без набора текста.</div>' +
+    '<div class="foot">© 2026 «Бугуруслан всё в одном месте» · Б-56. Все права защищены</div></div>';
+}
+function drawMyAds() { var e = document.getElementById("myads"); if (e) e.innerHTML = myAdsHtml(); }
+function loadMyAds() {
+  var items = myAds();
+  if (!items.length) { MY = []; drawMyAds(); return; }
+  if (!API) { MY = items.map(function (x, i) { return { code: x.code, title: "Пробное объявление", cat: "raznoe", status: "опубликовано", till: "2026-10-25", sum: "100" }; }); drawMyAds(); return; }
+  apiPost({ a: "ad_mine", items: items }).then(function (r) { MY = (r && r.ok) ? r.items : []; drawMyAds(); }, function () { MY = []; drawMyAds(); });
+}
+function myActDo(act, code) {
+  var it = myAds().filter(function (x) { return x.code === code; })[0];
+  if (!it) return;
+  if (!API) { if (act === "remove") { MY.forEach(function (m) { if (m.code === code) m.status = "снято"; }); MYBUSY = ""; drawMyAds(); } else { var e0 = document.getElementById("myads"); if (e0) e0.innerHTML = adDoneHtml({ sum: 100 }); } return; }
+  apiPost({ a: "ad_self", act: act, code: code, key: it.key }, 30000).then(function (r) {
+    MYBUSY = "";
+    if (!r || !r.ok) { alert((r && r.err) || "Не получилось. Попробуйте ещё раз."); loadMyAds(); return; }
+    if (act === "repub" && r.code && r.key) {
+      addMyAd(r.code, r.key);
+      var e = document.getElementById("myads"); if (e) e.innerHTML = adDoneHtml(r);
+      return;
+    }
+    loadMyAds();
+  }, function () { alert("Нет связи. Проверьте интернет."); });
+}
 function sendAd(btn) {
   function v(id) { var e = document.getElementById(id); return e ? e.value.trim() : ""; }
   var res = document.getElementById("f_res");
@@ -677,14 +741,13 @@ function sendAd(btn) {
   var body = { a: "ad_add", cat: v("ad_cat"), title: v("ad_title"), text: v("ad_text"), price: v("ad_price"), contact: v("ad_contact"), name: v("ad_name"), photos: adPh.slice(), pid: getId() };
   function done(r) {
     track("ad_send");
+    if (r && r.code && r.key) addMyAd(r.code, r.key);
     var sum = r && r.sum != null ? r.sum : 0, box = document.getElementById("formbox");
     adPh = [];
-    if (box) box.innerHTML = '<div class="formmsg">Спасибо! Объявление принято.</div>' +
-      (sum ? '<div class="adsum">К оплате: <b>' + sum + ' ₽</b></div>' + (r && r.pay ? '<a class="bigbtn" style="text-decoration:none;text-align:center" href="' + esc(r.pay) + '" target="_blank" rel="noopener">Оплатить</a><div class="note">После оплаты проверка занимает 1–3 минуты, и объявление появится на доске.</div>' : '<div class="note">Оплата скоро заработает. Администратор свяжется с вами по указанному контакту и подскажет, как оплатить. После оплаты проверка занимает 1–3 минуты, и объявление появится на доске.</div>') : '<div class="note">Проверка занимает 1–3 минуты, объявление скоро появится на доске.</div>') +
-      '<button type="button" class="btn2" data-go="board">К доске объявлений</button>';
+    if (box) box.innerHTML = adDoneHtml(r);
   }
   btn.disabled = true; btn.textContent = "Отправляем…";
-  if (!API) { setTimeout(function () { done({ sum: (v("ad_cat") === "darom" ? 0 : 100) + adPh.length * 100 }); }, 300); return; }
+  if (!API) { setTimeout(function () { done({ code: "d" + Date.now(), key: "k", sum: (v("ad_cat") === "darom" ? 0 : 100) + adPh.length * 50 }); }, 300); return; }
   apiPost(body, 60000).then(function (r) {
     if (r && r.ok) done(r);
     else { btn.disabled = false; btn.textContent = "Отправить на проверку"; show((r && r.err) || "Не получилось отправить. Попробуйте ещё раз.", true); }
@@ -723,6 +786,156 @@ function sendTicket(kind, btn) {
   }, function () { btn.disabled = false; btn.textContent = "Отправить"; show("Нет связи. Проверьте интернет и попробуйте ещё раз.", true); });
 }
 
+/* ---------- кабинет владельца ---------- */
+var CAB = { step: "email", email: "", me: null, mode: "" };
+var DEMO_OWN = { status: "вошёл", place: null, req: null };
+function cabSess() { try { var s = JSON.parse(sget("b56_own") || "null"); return s && s.email && s.token ? s : null; } catch (e) { return null; } }
+function cabDemo(o) {
+  var a = o.a;
+  if (a === "own_code") return { ok: true };
+  if (a === "own_login") return o.code === "123456" ? { ok: true, token: "abcdef0123456789abcdef0123" } : { ok: false, err: "Код не подошёл или устарел." };
+  if (a === "own_me") return { ok: true, email: o.email, status: DEMO_OWN.status, place: DEMO_OWN.place, req: DEMO_OWN.req };
+  if (a === "own_claim") { DEMO_OWN.status = "ждёт"; DEMO_OWN.req = { type: "claim", name: "Заведение" }; return { ok: true }; }
+  if (a === "own_new") { DEMO_OWN.status = "ждёт"; DEMO_OWN.req = { type: "new", name: o.place.name }; return { ok: true }; }
+  if (a === "own_save") { for (var k in o.place) DEMO_OWN.place[k] = o.place[k]; return { ok: true }; }
+  return { ok: false, err: "?" };
+}
+function cabApi(o) {
+  var s = cabSess();
+  if (s && o.a !== "own_code" && o.a !== "own_login") { o.email = s.email; o.token = s.token; }
+  if (API) return apiPost(o, 30000);
+  return new Promise(function (ok) { setTimeout(function () { ok(cabDemo(o)); }, 200); });
+}
+function cabF(id, label, hint, tag, val, ph, max) {
+  var inp = tag === "textarea" ? '<textarea id="' + id + '" maxlength="' + (max || 400) + '" placeholder="' + esc(ph || "") + '">' + esc(val || "") + "</textarea>" :
+    '<input id="' + id + '" maxlength="' + (max || 120) + '" autocomplete="off" placeholder="' + esc(ph || "") + '" value="' + esc(val || "") + '">';
+  return '<label class="fld" for="' + id + '"><b>' + esc(label) + "</b>" + (hint ? "<span>" + esc(hint) + "</span>" : "") + inp + "</label>";
+}
+function cabShow(t, err) { var e = document.getElementById("cab_res"); if (e) { e.className = "formmsg" + (err ? " err" : ""); e.textContent = t; e.hidden = !t; } }
+function cabVal(id) { var e = document.getElementById(id); return e ? e.value.trim() : ""; }
+function viewCab() {
+  return '<div class="app"><div class="row">' + backBtn("Назад") + "<h1>Кабинет владельца</h1></div>" +
+    '<div id="cab"></div>' +
+    '<div class="foot">© 2026 «Бугуруслан всё в одном месте» · Б-56. Все права защищены</div></div>';
+}
+function cabInit() {
+  track("cab_open");
+  var s = cabSess();
+  if (!s) { CAB.step = "email"; drawCab(); return; }
+  CAB.step = "load"; CAB.email = s.email; drawCab();
+  cabApi({ a: "own_me" }).then(function (r) {
+    if (r && r.ok) { CAB.me = r; CAB.step = "main"; }
+    else if (r && r.auth === false) { sset("b56_own", ""); CAB.step = "email"; }
+    else { CAB.step = "email"; }
+    drawCab();
+    if (r && !r.ok && r.auth !== false) cabShow(r.err || "Не получилось загрузить.", true);
+  }, function () { CAB.step = "email"; drawCab(); cabShow("Нет связи. Проверьте интернет.", true); });
+}
+function cabOut() { return '<div id="cab_res" role="status" hidden></div>'; }
+function drawCab() {
+  var e = document.getElementById("cab");
+  if (!e) return;
+  var h = "", m = CAB.me;
+  if (CAB.step === "email") {
+    h = '<div class="panel"><p>Войдите по почте. Мы пришлём код, пароль придумывать не нужно.</p>' +
+      cabF("cab_email", "Ваша почта", "", "input", CAB.email, "name@mail.ru", 80) + cabOut() +
+      '<button type="button" class="bigbtn" data-cab="code">Получить код</button></div>';
+  } else if (CAB.step === "code") {
+    h = '<div class="panel"><p>Код отправлен на <b>' + esc(CAB.email) + "</b>. Он действует 10 минут. Если письма нет, загляните в «Спам».</p>" +
+      '<label class="fld" for="cab_code"><b>Код из письма</b><input id="cab_code" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="6 цифр"></label>' + cabOut() +
+      '<button type="button" class="bigbtn" data-cab="login">Войти</button>' +
+      '<button type="button" class="btn2" data-cab="again">Другая почта</button></div>';
+  } else if (CAB.step === "load" || !m) {
+    h = '<div class="panel"><p>Загружаем…</p>' + cabOut() + "</div>";
+  } else if (m.status === "подтверждён" && m.place) {
+    var p = m.place;
+    h = '<div class="panel"><p>Здесь вы сами меняете свою карточку. Изменения видны всем сразу.</p>' +
+      cabF("cp_name", "Название", "", "input", p.name, "", 120) +
+      cabF("cp_phone", "Телефон", "", "input", p.phone, "+7 ...", 40) +
+      cabF("cp_addr", "Адрес", "", "input", p.addr === "Бугуруслан" ? "" : p.addr, "ул. ..., дом", 150) +
+      cabF("cp_hours", "Часы работы", "", "input", p.hours, "Пн–Пт 9:00–18:00", 120) +
+      cabF("cp_about", "Чем занимаетесь", "коротко, до 400 знаков. Телефон и ссылки сюда не пишите, для них есть поля ниже", "textarea", p.about, "", 400) +
+      cabF("cp_price", "Прайс-лист", "по одной услуге в строке: название | цена", "textarea", p.price, "Замена масла | от 800 ₽", 4000) +
+      cabF("cp_pnote", "Пояснение к прайсу", "необязательно", "input", p.priceNote, "", 300) +
+      cabF("cp_site", "Сайт", "необязательно", "input", p.site, "https://...", 200) +
+      cabF("cp_vk", "ВКонтакте", "необязательно", "input", p.vk, "https://vk.ru/название", 200) +
+      cabF("cp_tg", "Telegram", "необязательно", "input", p.tg, "@имя или телефон", 200) +
+      cabF("cp_wa", "WhatsApp", "необязательно", "input", p.wa, "телефон", 200) +
+      cabF("cp_note", "Как нас найти", "необязательно", "input", p.note, "Вход со двора", 200) +
+      cabOut() +
+      '<button type="button" class="bigbtn" data-cab="save">Сохранить</button>' +
+      '<button type="button" class="btn2" data-go="card-' + p.id + '">Посмотреть свою карточку</button></div>' +
+      '<div class="note">Фото в карточку добавляем мы. Напишите нам через «Техподдержку».</div>';
+  } else if (m.status === "ждёт") {
+    h = '<div class="panel"><p><b>Заявка отправлена.</b> ' + (m.req && m.req.name ? "«" + esc(m.req.name) + "». " : "") + "Мы проверим её и подтвердим в течение рабочего дня. Письмо придёт на " + esc(m.email) + ".</p></div>";
+  } else {
+    var opt = ITEMS.slice().sort(function (a, b) { return String(a.name).localeCompare(String(b.name), "ru"); }).map(function (it) { return '<option value="' + it.id + '">' + esc(it.name) + "</option>"; }).join("");
+    var cats = CATS.map(function (c) { return '<option value="' + esc(c.id) + '">' + esc(c.name) + "</option>"; }).join("");
+    h = (m.status === "отклонён" ? '<div class="formmsg err">Прошлую заявку мы не смогли подтвердить. Напишите нам через «Техподдержку» или отправьте новую.</div>' : "") +
+      '<div class="panel"><p>Вы вошли как <b>' + esc(m.email) + "</b>. Выберите, что у вас:</p>" +
+      '<button type="button" class="bigbtn" data-cab="mode-claim">Моё заведение уже есть в приложении</button>' +
+      '<button type="button" class="btn2" data-cab="mode-new">Моего заведения ещё нет</button></div>';
+    if (CAB.mode === "claim") {
+      h += '<div class="panel"><label class="fld" for="cc_pid"><b>Какая карточка ваша</b><select id="cc_pid" class="adsel">' + opt + "</select></label>" +
+        cabF("cc_name", "Ваше имя", "", "input", "", "", 80) + cabF("cc_phone", "Ваш телефон", "чтобы мы могли убедиться, что карточка ваша", "input", "", "+7 ...", 40) + cabOut() +
+        '<button type="button" class="bigbtn" data-cab="claim">Отправить заявку</button></div>';
+    } else if (CAB.mode === "new") {
+      h += '<div class="panel"><label class="fld" for="cn_cat"><b>Раздел</b><select id="cn_cat" class="adsel">' + cats + "</select></label>" +
+        cabF("cn_name", "Название", "", "input", "", "Например: Автосервис «Мотор»", 120) + cabF("cn_phone", "Телефон", "", "input", "", "+7 ...", 40) +
+        cabF("cn_addr", "Адрес", "", "input", "", "ул. ..., дом", 150) + cabF("cn_hours", "Часы работы", "", "input", "", "Пн–Пт 9:00–18:00", 120) +
+        cabF("cn_about", "Чем занимаетесь", "коротко, до 400 знаков", "textarea", "", "", 400) + cabOut() +
+        '<button type="button" class="bigbtn" data-cab="new">Отправить заявку</button></div>';
+    }
+  }
+  if (CAB.step === "main") h += '<button type="button" class="help-link" data-cab="out">Выйти из кабинета</button>';
+  e.innerHTML = h;
+}
+function cabClick(b) {
+  var act = b.getAttribute("data-cab");
+  if (act === "again") { CAB.step = "email"; drawCab(); return; }
+  if (act === "out") { sset("b56_own", ""); CAB.step = "email"; CAB.me = null; CAB.mode = ""; drawCab(); return; }
+  if (act === "mode-claim" || act === "mode-new") { CAB.mode = act.slice(5); drawCab(); var c = document.getElementById("cab_res"); if (c) c.scrollIntoView({ block: "center" }); return; }
+  if (act === "code") {
+    var em = cabVal("cab_email").toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(em)) { cabShow("Проверьте адрес почты.", true); return; }
+    CAB.email = em; b.disabled = true; b.textContent = "Отправляем…";
+    cabApi({ a: "own_code", email: em }).then(function (r) {
+      if (r && r.ok) { CAB.step = "code"; drawCab(); } else { b.disabled = false; b.textContent = "Получить код"; cabShow((r && r.err) || "Не получилось.", true); }
+    }, function () { b.disabled = false; b.textContent = "Получить код"; cabShow("Нет связи. Проверьте интернет.", true); });
+    return;
+  }
+  if (act === "login") {
+    var code = cabVal("cab_code");
+    if (code.replace(/\D/g, "").length !== 6) { cabShow("Введите 6 цифр из письма.", true); return; }
+    b.disabled = true; b.textContent = "Входим…";
+    cabApi({ a: "own_login", email: CAB.email, code: code }).then(function (r) {
+      if (r && r.ok) { sset("b56_own", JSON.stringify({ email: CAB.email, token: r.token })); cabInit(); }
+      else { b.disabled = false; b.textContent = "Войти"; cabShow((r && r.err) || "Не получилось.", true); }
+    }, function () { b.disabled = false; b.textContent = "Войти"; cabShow("Нет связи. Проверьте интернет.", true); });
+    return;
+  }
+  var body = null, lbl = b.textContent;
+  if (act === "claim") {
+    body = { a: "own_claim", pid: Number(cabVal("cc_pid")), name: cabVal("cc_name"), phone: cabVal("cc_phone") };
+    if (!body.name || !body.phone) { cabShow("Напишите своё имя и телефон.", true); return; }
+  } else if (act === "new") {
+    body = { a: "own_new", name: cabVal("cn_name"), place: { cat: cabVal("cn_cat"), name: cabVal("cn_name"), phone: cabVal("cn_phone"), addr: cabVal("cn_addr"), hours: cabVal("cn_hours"), about: cabVal("cn_about") } };
+    if (!body.place.name || !body.place.phone) { cabShow("Напишите название и телефон.", true); return; }
+  } else if (act === "save") {
+    body = { a: "own_save", place: { name: cabVal("cp_name"), phone: cabVal("cp_phone"), addr: cabVal("cp_addr"), hours: cabVal("cp_hours"), about: cabVal("cp_about"), price: cabVal("cp_price"), priceNote: cabVal("cp_pnote"), site: cabVal("cp_site"), vk: cabVal("cp_vk"), tg: cabVal("cp_tg"), wa: cabVal("cp_wa"), note: cabVal("cp_note") } };
+  }
+  if (!body) return;
+  b.disabled = true; b.textContent = "Отправляем…";
+  cabApi(body).then(function (r) {
+    b.disabled = false; b.textContent = lbl;
+    if (r && r.ok) {
+      if (act === "save") { track("cab_save"); cabShow("Сохранено. Изменения уже видны в каталоге.", false); sset("b56_places", ""); loadPlaces(); }
+      else cabInit();
+    } else if (r && r.auth === false) { sset("b56_own", ""); CAB.step = "email"; drawCab(); cabShow("Войдите заново.", true); }
+    else cabShow((r && r.err) || "Не получилось. Попробуйте ещё раз.", true);
+  }, function () { b.disabled = false; b.textContent = lbl; cabShow("Нет связи. Проверьте интернет и попробуйте ещё раз.", true); });
+}
+
 /* ---------- связь с сервером, новости, номер участника ---------- */
 var API = "https://script.google.com/macros/s/AKfycbyRiGD8kP3YnhLAa_FDMo_iwgBYz6Ld5zBhYERvGnK7sBLXAfRRuBSYR6HKCmobh0HeSQ/exec"; /* сюда вставляется адрес сервера (Google Apps Script). Пусто = пробный режим */
 var DEMO = !API;
@@ -731,7 +944,7 @@ var DEMO_NEWS = [
   { id: "20261013100002", date: "2026-10-12", type: "Акция", title: "Салон красоты «Красотка» дарит скидку 10%", text: "На все услуги до конца месяца. Назовите запись из приложения «Б-56».", org: "Салон красоты «Красотка»", until: "2026-10-31" },
   { id: "20261013100001", date: "2026-10-10", type: "Новость", title: "В приложении появились новые разделы", text: "Кондитеры, бани и сауны, фото и видео, курсы.", org: "", until: "" }
 ];
-var SEND = { card_open: 1, price_open: 1, call_click: 1, route_click: 1, link_click: 1, owner_info: 1, owner_contact: 1, news_open: 1, qr_open: 1, install: 1, open_from_icon: 1, role_resident: 1, role_owner: 1, install_howto: 1, owner_request: 1, support_open: 1, support_send: 1, ad_send: 1 };
+var SEND = { card_open: 1, price_open: 1, call_click: 1, route_click: 1, link_click: 1, owner_info: 1, owner_contact: 1, news_open: 1, qr_open: 1, install: 1, open_from_icon: 1, role_resident: 1, role_owner: 1, install_howto: 1, owner_request: 1, support_open: 1, support_send: 1, ad_send: 1, cab_open: 1, cab_save: 1 };
 var evq = [], newsData = [], memRole = "", memId = "";
 
 function sget(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -790,6 +1003,7 @@ function loadPlaces() {
     var j = JSON.stringify(r.items);
     if (j === JSON.stringify(ITEMS)) return;
     ITEMS = r.items; sset("b56_places", j);
+    if (parse(state.route).v === "cab") return;
     var q = document.getElementById("q");
     if (q && q.value) return;
     if (!valid(state.route)) state.route = "home";
@@ -993,7 +1207,7 @@ var TABS = [
   ["board", "Объявления", '<path d="M20 12l-8 8-9-9V3h8z"/><circle cx="7.5" cy="7.5" r="1.2"/>'],
   ["help", "Помощь", '<path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.5A8 8 0 1 1 21 12z"/>']
 ];
-function tabOf(v) { return v === "news" ? "news" : (v === "board" || v === "adnew") ? "board" : (v === "help" || v === "ask" || v === "owner" || v === "apply") ? "help" : "home"; }
+function tabOf(v) { return v === "news" ? "news" : (v === "board" || v === "adnew" || v === "myads") ? "board" : (v === "help" || v === "ask" || v === "owner" || v === "apply" || v === "cab") ? "help" : "home"; }
 function renderTabs() {
   var el = document.getElementById("tabbar");
   if (!el) return;
@@ -1009,9 +1223,11 @@ function render() {
   else if (r.v === "card") html = viewCard(itemById(r.id));
   else if (r.v === "price") html = viewPrice(itemById(r.id));
   else if (r.v === "owner") html = viewOwner();
+  else if (r.v === "cab") html = viewCab();
   else if (r.v === "install") html = viewInstall();
   else if (r.v === "news") html = viewNews();
   else if (r.v === "qr") html = viewQr();
+  else if (r.v === "myads") html = viewMyAds();
   else if (r.v === "board") html = viewBoard();
   else if (r.v === "adnew") html = viewAdNew();
   else if (r.v === "id") html = viewId();
@@ -1032,6 +1248,7 @@ function render() {
   carSetup();
   renderTabs();
   if (r.v === "home") askRole();
+  if (r.v === "cab") cabInit();
   try { window.scrollTo(0, 0); } catch (e) {}
 }
 function bindGallery() {
@@ -1077,6 +1294,8 @@ document.addEventListener("click", function (e) {
   }
   var ac = e.target.closest("[data-adcat]");
   if (ac) { adCat = ac.getAttribute("data-adcat"); var ace = document.getElementById("adcats"), ale = document.getElementById("adlist"); if (ace) ace.innerHTML = adCatsHtml(); if (ale) ale.innerHTML = adListHtml(); return; }
+  var mya = e.target.closest("[data-myact]");
+  if (mya) { var ma = mya.getAttribute("data-myact"), mc = mya.getAttribute("data-mycode"); if (ma === "ask") { MYBUSY = mc; drawMyAds(); } else if (ma === "cancel") { MYBUSY = ""; drawMyAds(); } else { mya.disabled = true; myActDo(ma, mc); } return; }
   var apk = e.target.closest("[data-adpick]");
   if (apk) { if (adPh.length >= 3) { var fr = document.getElementById("f_res"); if (fr) { fr.className = "formmsg err"; fr.textContent = "Можно не больше 3 фото."; } return; } var fi = document.getElementById("ad_file"); if (fi) fi.click(); return; }
   var arm = e.target.closest("[data-adrm]");
@@ -1085,6 +1304,8 @@ document.addEventListener("click", function (e) {
   if (asd) { sendAd(asd); return; }
   var sd = e.target.closest("[data-send]");
   if (sd) { sendTicket(sd.getAttribute("data-send"), sd); return; }
+  var cbn = e.target.closest("[data-cab]");
+  if (cbn) { cabClick(cbn); return; }
   var cl = e.target.closest("[data-copylink]");
   if (cl) { var u = "https://buguruslan56.ru"; try { navigator.clipboard.writeText(u).then(function () { cl.textContent = "Ссылка скопирована ✓"; }, function () { cl.textContent = u; }); } catch (er) { cl.textContent = u; } return; }
   var cp = e.target.closest("[data-copyid]");
