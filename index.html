@@ -342,6 +342,12 @@ button.soon { width: 100%; text-align: left; font: inherit; cursor: pointer; }
 .hrs input[type="checkbox"] { width: 24px; height: 24px; min-height: 0; padding: 0; flex: none; }
 .hrs input[type="time"] { width: 100%; min-width: 0; min-height: 44px; padding: 4px 4px; font: inherit; font-size: 15px; border: 2px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); }
 .hrs input[type="time"]:disabled { opacity: .45; }
+.hrs .hrs-day { display: flex; flex-direction: column; gap: 4px; }
+.hrs .hrs-lunch { display: grid; grid-template-columns: 60px minmax(0, 1fr) 10px minmax(0, 1fr); align-items: center; gap: 6px; }
+.hrs .hrs-lunch[hidden] { display: none; }
+.hrs .hrs-lunch label.hrs-w { gap: 4px; font-size: 13px; font-weight: 700; color: var(--muted); }
+.hrs .hrs-lunch input[type="checkbox"] { width: 22px; height: 22px; }
+.hrs .hrs-lunch input[type="time"] { min-height: 40px; }
 .hrs .hrs-txt { min-height: 48px; padding: 10px 12px; font: inherit; font-size: 16px; border: 2px solid var(--line); border-radius: 12px; width: 100%; }
 .hrs .hrs-act { display: flex; flex-wrap: wrap; gap: 6px; }
 .hrs .hrs-act button { min-height: 40px; padding: 0 12px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--ink); font: inherit; font-size: 13px; font-weight: 800; cursor: pointer; }
@@ -361,12 +367,7 @@ var ITEMS = [
   { id: 10, cat: "okna", name: "Светлый дом: окна, двери, жалюзи", about: "Окна, двери, балконы, жалюзи. Бесплатный замер, рассрочка без банка.", addr: "ул. Коммунистическая, 22", note: "Вход перед 1 подъездом, со стороны ул. Чапаевской", phone: "+7 (922) 857-20-99", hours: "10:00–18:00, суббота и воскресенье выходной", rec: true,
     site: "https://svetly-dom-buguruslan.netlify.app", wa: "https://wa.me/79228572099", tg: "https://t.me/+79228572099",
     priceNote: "Цены указаны «от». Точную стоимость назовём после бесплатного замера.",
-    price: [["Пластиковые окна", "от 5 000 ₽"], ["Двери ПВХ", "от 13 500 ₽"], ["Балконы и лоджии", "от 56 000 ₽"], ["Жалюзи, за м²", "от 1 500 ₽"], ["Рулонные шторы", "от 1 800 ₽"], ["Москитные сетки", "от 950 ₽"], ["Откосы", "от 600 ₽"], ["Подоконники и отливы", "от 500 ₽"], ["Ремонт и регулировка", "от 400 ₽"]] },
-  { id: 1, cat: "avto", name: "Автосервис «Пример»", addr: "ул. Примерная, 1", phone: "+7 (000) 000-00-00", hours: "[укажите]", rec: true,
-    price: [["Диагностика", "000 ₽"], ["Замена масла", "000 ₽"], ["Шиномонтаж", "000 ₽"], ["Замена колодок", "000 ₽"], ["Развал-схождение", "000 ₽"]],
-    site: "", vk: "", tg: "" },
-  { id: 2, cat: "avto", name: "Автосервис «Пример 2»", addr: "ул. Примерная, 2", phone: "+7 (000) 000-00-00", hours: "[укажите]" },
-  { id: 3, cat: "avto", name: "Автосервис «Пример 3»", addr: "ул. Примерная, 3", phone: "+7 (000) 000-00-00", hours: "[укажите]" }
+    price: [["Пластиковые окна", "от 5 000 ₽"], ["Двери ПВХ", "от 13 500 ₽"], ["Балконы и лоджии", "от 56 000 ₽"], ["Жалюзи, за м²", "от 1 500 ₽"], ["Рулонные шторы", "от 1 800 ₽"], ["Москитные сетки", "от 950 ₽"], ["Откосы", "от 600 ₽"], ["Подоконники и отливы", "от 500 ₽"], ["Ремонт и регулировка", "от 400 ₽"]] }
 ];
 
 var P = {
@@ -500,19 +501,24 @@ function parseHours(s) {
   s = norm(s || "");
   if (!s || s.indexOf("укаж") !== -1) return null;
   if (/круглосут|24 ?(часа|ч)|24\/7/.test(s)) return { all: true };
-  var sch = [null, null, null, null, null, null, null, null], defs = [], any = false;
+  var sch = [null, null, null, null, null, null, null, null], defs = [], any = false, lunchDef = null, lunchBy = [null, null, null, null, null, null, null, null];
   var rx = /(?:с\s*)?(\d{1,2})(?:[:.](\d{2}))?\s*(?:-|–|—|до)\s*(\d{1,2})(?:[:.](\d{2}))?/;
+  var rl = /(?:обед|перерыв)[^0-9]{0,12}(\d{1,2})(?:[:.](\d{2}))?\s*(?:-|–|—|до)\s*(\d{1,2})(?:[:.](\d{2}))?/;
   s.split(/[;,\n]+/).forEach(function (seg) {
-    var t = rx.exec(seg), days = daysOf(seg);
+    var days = daysOf(seg), lm = rl.exec(seg), lun = lm ? [Number(lm[1]) * 60 + Number(lm[2] || 0), Number(lm[3]) * 60 + Number(lm[4] || 0)] : null;
+    var t = rx.exec(lm ? seg.replace(rl, " ") : seg);
+    if (lm && !t) { if (days) days.forEach(function (d) { lunchBy[d] = lun; }); else lunchDef = lun; return; }
     if (t) {
       var a = Number(t[1]) * 60 + Number(t[2] || 0), b = Number(t[3]) * 60 + Number(t[4] || 0);
       if (b <= a) b += 1440;
       any = true;
-      if (days) days.forEach(function (d) { sch[d] = [a, b]; }); else defs.push([a, b]);
+      var r = lun ? [a, b, lun[0], lun[1]] : [a, b];
+      if (days) days.forEach(function (d) { sch[d] = r; }); else defs.push(r);
     } else if (/выходн|не работает|закрыто/.test(seg) && days) days.forEach(function (d) { sch[d] = "off"; });
   });
   if (!any) return null;
   if (defs.length) for (var d = 1; d <= 7; d++) if (sch[d] === null) sch[d] = defs[0];
+  for (var e = 1; e <= 7; e++) { var x = sch[e], l = lunchBy[e] || lunchDef; if (x && x !== "off" && x.length === 2 && l) sch[e] = [x[0], x[1], l[0], l[1]]; }
   return { sch: sch };
 }
 function nowParts() {
@@ -533,7 +539,8 @@ function openInfo(hours, now) {
   var r = p.sch[now.d];
   if (!r || r === "off") return { open: false, text: "Сегодня выходной" };
   if (now.m < r[0]) return { open: false, text: "Закрыто · откроется в " + fmtMin(r[0]) };
-  if (now.m < r[1]) return { open: true, text: "Открыто до " + fmtMin(r[1]) };
+  if (r.length > 2 && now.m >= r[2] && now.m < r[3]) return { open: false, text: "Обед · откроется в " + fmtMin(r[3]) };
+  if (now.m < r[1]) return { open: true, text: r.length > 2 && now.m < r[2] ? "Открыто до " + fmtMin(r[2]) + " · обед до " + fmtMin(r[3]) : "Открыто до " + fmtMin(r[1]) };
   return { open: false, text: "Закрыто" };
 }
 function favGet() { try { var a = JSON.parse(sget("b56_fav") || "[]"); return a instanceof Array ? a : []; } catch (e) { return []; } }
@@ -558,7 +565,7 @@ function histAdd(q) {
 }
 var flt = { open: false, deliv: false, rec: false, high: false }, fltRoute = "";
 function isDeliv(it) { return [].concat(it.cat).indexOf("gruz") !== -1 || /достав/.test(norm((it.name || "") + " " + (it.about || "") + " " + (it.note || ""))); }
-function isHighRated(it) { return !!(it.stars && it.stars.length >= 4); }
+function isHighRated(it) { return false; }
 function anyFlt() { return flt.open || flt.deliv || flt.rec || flt.high; }
 function passF(it) {
   if (flt.open) { var o = openInfo(it.hours); if (!(o && o.open)) return false; }
@@ -613,6 +620,7 @@ function searchBox(placeholder, label) {
     '<input id="q" type="search" placeholder="' + esc(placeholder) + '" aria-label="' + esc(label) + '" autocomplete="off" enterkeyhint="search"></label></div>';
 }
 function starsHtml(arr) {
+  return "";
   arr = [].concat(arr || []).map(Number);
   var s = "", n = 0;
   for (var i = 1; i <= 5; i++) { var on = arr.indexOf(i) !== -1; if (on) n++; s += '<svg width="20" height="20" viewBox="0 0 24 24" fill="' + (on ? "#14532D" : "none") + '" stroke="#14532D" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>'; }
@@ -1071,7 +1079,7 @@ function cabApi(o) {
   if (API) return apiPost(o, 30000);
   return new Promise(function (ok) { setTimeout(function () { ok(cabDemo(o)); }, 200); });
 }
-/* ===== редактор часов работы по дням ===== */
+/* ===== редактор часов работы по дням (с обедом) ===== */
 var HRS_D = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 var HRS_I = { "пн": 1, "по": 1, "вт": 2, "ср": 3, "чт": 4, "пт": 5, "сб": 6, "су": 6, "вс": 7, "во": 7 };
 function hrsDaysOf(seg) {
@@ -1091,30 +1099,42 @@ function hrsDaysOf(seg) {
   if (/выходные/.test(seg)) return [6, 7];
   return null;
 }
-/* разбор текста часов: null, если не поняли; {all:true} или {sch:[..8]} */
+/* разбор текста часов: null, если не поняли; {all:true} или {sch:[..8]}; день: "off" или [с, до] или [с, до, обедС, обедДо] */
 function hrsParse(s) {
   s = String(s || "").toLowerCase().replace(/ё/g, "е");
   if (!s || s.indexOf("укаж") !== -1) return null;
   if (/круглосут|24 ?(часа|ч)|24\/7/.test(s)) return { all: true };
-  var sch = [null, null, null, null, null, null, null, null], defs = [], any = false;
+  var sch = [null, null, null, null, null, null, null, null], defs = [], any = false, lunchDef = null, lunchBy = [null, null, null, null, null, null, null, null];
   var rx = /(?:с\s*)?(\d{1,2})(?:[:.](\d{2}))?\s*(?:-|–|—|до)\s*(\d{1,2})(?:[:.](\d{2}))?/;
+  var rl = /(?:обед|перерыв)[^0-9]{0,12}(\d{1,2})(?:[:.](\d{2}))?\s*(?:-|–|—|до)\s*(\d{1,2})(?:[:.](\d{2}))?/;
   s.split(/[;,\n]+/).forEach(function (seg) {
-    var t = rx.exec(seg), days = hrsDaysOf(seg);
+    var days = hrsDaysOf(seg), lm = rl.exec(seg), lun = lm ? [Number(lm[1]) * 60 + Number(lm[2] || 0), Number(lm[3]) * 60 + Number(lm[4] || 0)] : null;
+    var t = rx.exec(lm ? seg.replace(rl, " ") : seg);
+    if (lm && !t) {
+      /* сегмент только про обед */
+      if (days) days.forEach(function (d) { lunchBy[d] = lun; }); else lunchDef = lun;
+      return;
+    }
     if (t) {
       var a = Number(t[1]) * 60 + Number(t[2] || 0), b = Number(t[3]) * 60 + Number(t[4] || 0);
       if (b <= a) b += 1440;
       any = true;
-      if (days) days.forEach(function (d) { sch[d] = [a, b]; }); else defs.push([a, b]);
+      var r = lun ? [a, b, lun[0], lun[1]] : [a, b];
+      if (days) days.forEach(function (d) { sch[d] = r; }); else defs.push(r);
     } else if (/выходн|не работает|закрыто/.test(seg) && days) days.forEach(function (d) { sch[d] = "off"; });
   });
   if (!any) return null;
   if (defs.length) for (var d = 1; d <= 7; d++) if (sch[d] === null) sch[d] = defs[0];
+  for (var e = 1; e <= 7; e++) {
+    var x = sch[e], l = lunchBy[e] || lunchDef;
+    if (x && x !== "off" && x.length === 2 && l) sch[e] = [x[0], x[1], l[0], l[1]];
+  }
   return { sch: sch };
 }
 function hrsT(m) { m = m % 1440; return ("0" + Math.floor(m / 60)).slice(-2) + ":" + ("0" + (m % 60)).slice(-2); }
-/* rows: массив из 7 элементов: null (выходной) или [минуты начала, минуты конца] */
+/* rows: массив из 7 элементов: null (выходной) или [с, до] или [с, до, обедС, обедДо] */
 function hrsBuild(rows) {
-  var vals = rows.map(function (r) { return r ? hrsT(r[0]) + "–" + hrsT(r[1]) : "off"; });
+  var vals = rows.map(function (r) { return r ? hrsT(r[0]) + "–" + hrsT(r[1]) + (r.length > 2 ? " (обед " + hrsT(r[2]) + "–" + hrsT(r[3]) + ")" : "") : "off"; });
   if (vals.every(function (v) { return v === "off"; })) return "";
   if (vals.every(function (v) { return v === "00:00–23:59"; })) return "Круглосуточно";
   if (vals.every(function (v) { return v === vals[0]; })) return "Ежедневно " + vals[0];
@@ -1131,32 +1151,39 @@ function hrsBuild(rows) {
 function hrsEsc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
 function hrsEditor(id, label, hint, value) {
   var rows = HRS_D.map(function (n, d) {
-    return '<div class="hrs-row"><span class="hrs-d">' + n + '</span><label class="hrs-w"><input type="checkbox" data-hw="' + d + '" aria-label="' + n + ': работаем"></label>' +
-      '<input type="time" data-ha="' + d + '" value="09:00" aria-label="' + n + ': с"><span>–</span><input type="time" data-hb="' + d + '" value="18:00" aria-label="' + n + ': до"></div>';
+    return '<div class="hrs-day"><div class="hrs-row"><span class="hrs-d">' + n + '</span><label class="hrs-w"><input type="checkbox" data-hw="' + d + '" aria-label="' + n + ': работаем"></label>' +
+      '<input type="time" data-ha="' + d + '" value="09:00" aria-label="' + n + ': с"><span>–</span><input type="time" data-hb="' + d + '" value="18:00" aria-label="' + n + ': до"></div>' +
+      '<div class="hrs-lunch" data-hl="' + d + '"><label class="hrs-w"><input type="checkbox" data-hc="' + d + '" aria-label="' + n + ': есть обед"><span>обед</span></label>' +
+      '<input type="time" data-hs="' + d + '" value="13:00" aria-label="' + n + ': обед с"><span>–</span><input type="time" data-he="' + d + '" value="14:00" aria-label="' + n + ': обед до"></div></div>';
   }).join("");
-  return '<div class="hrs" data-hrs="' + id + '"><b>' + hrsEsc(label) + "</b>" + (hint ? '<span class="hrs-h">' + hrsEsc(hint) + "</span>" : "") +
+  return '<div class="hrs" data-hrs="' + id + '">' + (label ? "<b>" + hrsEsc(label) + "</b>" : "") + (hint ? '<span class="hrs-h">' + hrsEsc(hint) + "</span>" : "") +
     '<input type="hidden" id="' + id + '" value="' + hrsEsc(value) + '">' +
     '<div class="hrs-days">' + rows + "</div>" +
-    '<input type="text" class="hrs-txt" maxlength="120" placeholder="Например: по записи" aria-label="Часы работы текстом" hidden>' +
+    '<input type="text" class="hrs-txt" maxlength="300" placeholder="Например: по записи" aria-label="Часы работы текстом" hidden>' +
     '<div class="hrs-act"><button type="button" data-hrsact="weekdays">Как в Пн: все будни</button><button type="button" data-hrsact="all">Как в Пн: все дни</button><button type="button" data-hrsact="24">Круглосуточно</button><button type="button" data-hrsact="text">Написать своими словами</button></div></div>';
 }
+function hrsMin(v) { var m = /^(\d{2}):(\d{2})$/.exec(v); return m ? Number(m[1]) * 60 + Number(m[2]) : null; }
 function hrsRows(box) {
   var out = [];
   for (var d = 0; d < 7; d++) {
-    var w = box.querySelector('[data-hw="' + d + '"]'), a = box.querySelector('[data-ha="' + d + '"]'), b = box.querySelector('[data-hb="' + d + '"]');
-    var ma = /^(\d{2}):(\d{2})$/.exec(a.value), mb = /^(\d{2}):(\d{2})$/.exec(b.value);
-    out.push(w.checked && ma && mb ? [Number(ma[1]) * 60 + Number(ma[2]), Number(mb[1]) * 60 + Number(mb[2])] : null);
+    var w = box.querySelector('[data-hw="' + d + '"]'), a = hrsMin(box.querySelector('[data-ha="' + d + '"]').value), b = hrsMin(box.querySelector('[data-hb="' + d + '"]').value);
+    if (!(w.checked && a !== null && b !== null)) { out.push(null); continue; }
+    var c = box.querySelector('[data-hc="' + d + '"]'), ls = hrsMin(box.querySelector('[data-hs="' + d + '"]').value), le = hrsMin(box.querySelector('[data-he="' + d + '"]').value);
+    out.push(c.checked && ls !== null && le !== null && le > ls ? [a, b, ls, le] : [a, b]);
   }
   return out;
 }
 function hrsSync(box) {
   var hid = box.querySelector('input[type="hidden"]'), txt = box.querySelector(".hrs-txt");
   for (var d = 0; d < 7; d++) {
-    var w = box.querySelector('[data-hw="' + d + '"]');
+    var w = box.querySelector('[data-hw="' + d + '"]'), c = box.querySelector('[data-hc="' + d + '"]');
     box.querySelector('[data-ha="' + d + '"]').disabled = !w.checked;
     box.querySelector('[data-hb="' + d + '"]').disabled = !w.checked;
+    box.querySelector('[data-hl="' + d + '"]').hidden = !w.checked;
+    box.querySelector('[data-hs="' + d + '"]').disabled = !(w.checked && c.checked);
+    box.querySelector('[data-he="' + d + '"]').disabled = !(w.checked && c.checked);
   }
-  hid.value = box.getAttribute("data-mode") === "text" ? txt.value.trim().slice(0, 120) : hrsBuild(hrsRows(box));
+  hid.value = box.getAttribute("data-mode") === "text" ? txt.value.trim().slice(0, 300) : hrsBuild(hrsRows(box));
 }
 function hrsLoad(box) {
   var hid = box.querySelector('input[type="hidden"]'), txt = box.querySelector(".hrs-txt"), days = box.querySelector(".hrs-days"), tb = box.querySelector('[data-hrsact="text"]');
@@ -1165,34 +1192,43 @@ function hrsLoad(box) {
   box.removeAttribute("data-mode"); txt.hidden = true; days.hidden = false; tb.textContent = "Написать своими словами";
   for (var d = 0; d < 7; d++) {
     var r = p ? (p.all ? [0, 1439] : (p.sch[d + 1] && p.sch[d + 1] !== "off" ? p.sch[d + 1] : null)) : null;
-    var w = box.querySelector('[data-hw="' + d + '"]');
+    var w = box.querySelector('[data-hw="' + d + '"]'), c = box.querySelector('[data-hc="' + d + '"]');
     w.checked = !!r;
-    if (r) { box.querySelector('[data-ha="' + d + '"]').value = hrsT(r[0]); box.querySelector('[data-hb="' + d + '"]').value = hrsT(r[1]); }
-    box.querySelector('[data-ha="' + d + '"]').disabled = !r; box.querySelector('[data-hb="' + d + '"]').disabled = !r;
+    c.checked = !!(r && r.length > 2);
+    if (r) {
+      box.querySelector('[data-ha="' + d + '"]').value = hrsT(r[0]); box.querySelector('[data-hb="' + d + '"]').value = hrsT(r[1]);
+      if (r.length > 2) { box.querySelector('[data-hs="' + d + '"]').value = hrsT(r[2]); box.querySelector('[data-he="' + d + '"]').value = hrsT(r[3]); }
+    }
   }
+  hrsSync(box);
+  hid.value = v;
 }
 function hrsLoadAll() { var bs = document.querySelectorAll(".hrs"); for (var i = 0; i < bs.length; i++) hrsLoad(bs[i]); }
-document.addEventListener("input", function (e) { var b = e.target.closest && e.target.closest(".hrs"); if (b) hrsSync(b); });
-document.addEventListener("change", function (e) { var b = e.target.closest && e.target.closest(".hrs"); if (b) hrsSync(b); });
+function hrsNotify(box) { try { box.dispatchEvent(new Event("hrschange", { bubbles: true })); } catch (e) {} }
+document.addEventListener("input", function (e) { var b = e.target.closest && e.target.closest(".hrs"); if (b) { hrsSync(b); hrsNotify(b); } });
+document.addEventListener("change", function (e) { var b = e.target.closest && e.target.closest(".hrs"); if (b) { hrsSync(b); hrsNotify(b); } });
 document.addEventListener("click", function (e) {
   var btn = e.target.closest && e.target.closest("[data-hrsact]");
   if (!btn) return;
   var box = btn.closest(".hrs"), act = btn.getAttribute("data-hrsact"), hid = box.querySelector('input[type="hidden"]'), txt = box.querySelector(".hrs-txt");
   e.preventDefault();
   if (act === "text") {
-    if (box.getAttribute("data-mode") === "text") { hid.value = txt.value.trim().slice(0, 120); hrsLoad(box); }
+    if (box.getAttribute("data-mode") === "text") { hid.value = txt.value.trim().slice(0, 300); hrsLoad(box); }
     else { txt.value = hid.value; box.setAttribute("data-mode", "text"); txt.hidden = false; box.querySelector(".hrs-days").hidden = true; btn.textContent = "Выбрать по дням"; }
-    hrsSync(box); return;
+    hrsSync(box); hrsNotify(box); return;
   }
-  var a0 = box.querySelector('[data-ha="0"]').value, b0 = box.querySelector('[data-hb="0"]').value;
+  var q = function (k, d) { return box.querySelector("[" + k + '="' + d + '"]'); };
+  var a0 = q("data-ha", 0).value, b0 = q("data-hb", 0).value, c0 = q("data-hc", 0).checked, s0 = q("data-hs", 0).value, e0 = q("data-he", 0).value;
   for (var d = 0; d < 7; d++) {
     var on = act === "24" || act === "all" || (act === "weekdays" && d < 5);
     if (!on) continue;
-    box.querySelector('[data-hw="' + d + '"]').checked = true;
-    box.querySelector('[data-ha="' + d + '"]').value = act === "24" ? "00:00" : a0;
-    box.querySelector('[data-hb="' + d + '"]').value = act === "24" ? "23:59" : b0;
+    q("data-hw", d).checked = true;
+    q("data-ha", d).value = act === "24" ? "00:00" : a0;
+    q("data-hb", d).value = act === "24" ? "23:59" : b0;
+    q("data-hc", d).checked = act === "24" ? false : c0;
+    q("data-hs", d).value = s0; q("data-he", d).value = e0;
   }
-  hrsSync(box);
+  hrsSync(box); hrsNotify(box);
 });
 
 function cabF(id, label, hint, tag, val, ph, max) {

@@ -13,34 +13,32 @@
   --font:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
-body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--font); }
+body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--font); overflow-x:hidden; }
 [hidden] { display:none !important; }
-.wrap { max-width:560px; margin:0 auto; padding:20px 16px 40px; display:flex; flex-direction:column; gap:14px; }
-h1 { margin:0; font-size:24px; line-height:1.15; }
+.wrap { max-width:560px; margin:0 auto; padding:16px 16px 104px; display:flex; flex-direction:column; gap:14px; }
+h1 { margin:0; font-size:22px; line-height:1.15; }
 h2 { margin:0; font-size:18px; }
 .top { display:flex; align-items:center; justify-content:space-between; gap:10px; }
 .who { font-size:13px; color:var(--muted); }
 .card { background:var(--white); border:1px solid var(--line); border-radius:18px; padding:16px; display:flex; flex-direction:column; gap:12px; }
 label { display:flex; flex-direction:column; gap:6px; font-size:14px; font-weight:700; }
 label small { font-weight:400; color:var(--muted); }
-input, select, textarea { font:inherit; font-size:16px; padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:#fff; color:var(--ink); width:100%; }
-textarea { min-height:110px; resize:vertical; }
+input, select, textarea { font:inherit; font-size:16px; padding:12px 14px; min-height:48px; border:1px solid var(--line); border-radius:12px; background:#fff; color:var(--ink); width:100%; }
+textarea { min-height:100px; resize:vertical; }
 input:focus, select:focus, textarea:focus, button:focus-visible { outline:3px solid var(--green); outline-offset:1px; }
 .btn { min-height:52px; border-radius:14px; border:2px solid var(--green); background:var(--green); color:#fff; font:inherit; font-size:17px; font-weight:800; cursor:pointer; padding:0 18px; }
 .btn.alt { background:#fff; color:var(--green); }
 .btn.red { background:#fff; color:var(--red); border-color:var(--red); }
-.btn.sm { min-height:44px; font-size:15px; }
+.btn.sm { min-height:46px; font-size:15px; }
 .btn[disabled] { opacity:.5; }
-.tabs { display:flex; flex-wrap:wrap; gap:8px; }
-.tabs button { flex:1 1 28%; min-width:0; padding:0 2px; min-height:48px; border:1px solid var(--line); border-radius:12px; background:#fff; font:inherit; font-size:13px; font-weight:800; color:var(--ink); cursor:pointer; }
-.tabs button[aria-pressed="true"] { background:var(--green); color:#fff; border-color:var(--green); }
+.row2 { display:flex; gap:8px; flex-wrap:wrap; } .row2 > * { flex:1 1 140px; }
 .msg { padding:12px 14px; border-radius:12px; font-size:15px; background:var(--mint); color:var(--green); font-weight:700; }
 .msg.err { background:#FBE4E2; color:var(--red); }
-.check { display:flex; align-items:center; gap:10px; font-weight:600; font-size:15px; flex-direction:row; }
-.check input { width:24px; height:24px; flex:none; }
+.check { display:flex; align-items:center; gap:10px; font-weight:600; font-size:15px; flex-direction:row; min-height:44px; }
+.check input { width:24px; height:24px; min-height:0; flex:none; padding:0; }
 .nt { display:inline-block; padding:3px 10px; border-radius:999px; font-size:12px; font-weight:800; background:#E6EBE8; }
 .nt.gold { background:var(--gold); } .nt.mint { background:var(--mint); color:var(--green); }
-.ni { border:1px solid var(--line); border-radius:14px; padding:12px; display:flex; flex-direction:column; gap:6px; background:#fff; }
+.ni { border:1px solid var(--line); border-radius:14px; padding:12px; display:flex; flex-direction:column; gap:8px; background:#fff; }
 .ni b { overflow-wrap:anywhere; }
 .ni p { margin:0; font-size:15px; overflow-wrap:anywhere; white-space:pre-line; }
 .ni .m { font-size:13px; color:var(--muted); display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
@@ -51,14 +49,91 @@ input:focus, select:focus, textarea:focus, button:focus-visible { outline:3px so
 .bars div { flex:1; background:var(--green); border-radius:4px 4px 0 0; min-height:2px; position:relative; }
 .bars div i { position:absolute; top:-16px; left:0; right:0; text-align:center; font-size:10px; font-style:normal; color:var(--muted); }
 .bl { display:flex; gap:4px; font-size:10px; color:var(--muted); } .bl span { flex:1; text-align:center; }
-table { width:100%; border-collapse:collapse; font-size:14px; }
-th, td { text-align:left; padding:8px 6px; border-bottom:1px solid var(--line); vertical-align:top; }
-th { font-size:12px; color:var(--muted); font-weight:700; }
-td.n, th.n { text-align:right; white-space:nowrap; }
-.scroll { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; font-size:13px; table-layout:fixed; }
+th, td { text-align:left; padding:8px 4px; border-bottom:1px solid var(--line); vertical-align:top; overflow-wrap:anywhere; }
+th { font-size:11px; color:var(--muted); font-weight:700; }
+td.n, th.n { text-align:right; width:54px; }
 .win { font-size:30px; font-weight:800; color:var(--green); text-align:center; letter-spacing:.04em; padding:8px; background:var(--mint); border-radius:14px; }
 .note { font-size:13px; color:var(--muted); line-height:1.4; }
 body.busy::before { content:"Загружаю…"; position:fixed; top:0; left:0; right:0; z-index:50; padding:8px; text-align:center; font-size:14px; font-weight:800; background:var(--green); color:#fff; }
+/* нижнее меню */
+.bnav { position:fixed; left:0; right:0; bottom:0; z-index:40; background:#fff; border-top:1px solid var(--line); display:flex; justify-content:center; padding-bottom:env(safe-area-inset-bottom); }
+.bnav-in { width:100%; max-width:560px; display:grid; grid-template-columns:repeat(4,1fr); }
+.bnav button { position:relative; min-height:64px; border:0; background:none; font:inherit; font-size:12px; font-weight:800; color:var(--muted); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; cursor:pointer; }
+.bnav button[aria-current="page"] { color:var(--green); }
+.bnav svg { width:26px; height:26px; }
+.bdg { position:absolute; top:6px; left:calc(50% + 6px); min-width:20px; height:20px; padding:0 5px; border-radius:999px; background:#A4262C; color:#fff; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+/* переключатель */
+.seg { display:grid; grid-auto-flow:column; grid-auto-columns:1fr; gap:6px; background:#E3EDE6; padding:4px; border-radius:14px; }
+.seg button { min-height:46px; border:0; border-radius:11px; background:transparent; font:inherit; font-size:15px; font-weight:800; color:var(--muted); cursor:pointer; padding:0 6px; }
+.seg button[aria-pressed="true"] { background:#fff; color:var(--green); box-shadow:0 1px 3px rgba(0,0,0,.12); }
+.chips { display:flex; flex-wrap:wrap; gap:8px; }
+.chips button { min-height:44px; border-radius:999px; border:1px solid var(--line); background:#fff; color:var(--ink); font:inherit; font-size:15px; font-weight:800; padding:0 14px; cursor:pointer; }
+.chips button[aria-pressed="true"] { background:var(--green); color:#fff; border-color:var(--green); }
+.chips button span { opacity:.75; margin-left:4px; font-weight:700; }
+/* строка заведения */
+.pr { all:unset; box-sizing:border-box; display:flex; flex-direction:column; gap:6px; width:100%; cursor:pointer; background:#fff; border:1px solid var(--line); border-radius:14px; padding:12px 14px; }
+.pr:focus-visible { outline:3px solid var(--green); }
+.pr .l1 { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
+.pr .nm { font-size:17px; font-weight:800; overflow-wrap:anywhere; }
+.pr .ct { font-size:13px; color:var(--muted); }
+.pr .bar { display:flex; align-items:center; gap:10px; }
+.pr .bar i { flex:1; height:8px; border-radius:99px; background:#EDF2EE; overflow:hidden; display:block; }
+.pr .bar i b { display:block; height:100%; background:var(--green); border-radius:99px; }
+.pr .ms { font-size:13px; color:var(--muted); }
+.pr .st { font-size:13px; color:#124A8A; font-weight:700; }
+.bd { display:inline-block; flex:none; padding:4px 10px; border-radius:999px; font-size:13px; font-weight:800; }
+.bd.ok { background:#DCEFE2; color:#14532D; } .bd.mid { background:#FADFAA; color:#7A5200; } .bd.low { background:#FADFAA; color:#7A5200; } .bd.hid { background:#E6EBE8; color:#4D6657; } .bd.man { background:#DDEBFA; color:#124A8A; }
+/* инбокс */
+.ib { all:unset; box-sizing:border-box; display:flex; gap:12px; align-items:center; width:100%; min-height:64px; cursor:pointer; background:#fff; border:1px solid var(--line); border-radius:14px; padding:10px 14px; }
+.ib:focus-visible { outline:3px solid var(--green); }
+.ib .ic { flex:none; width:40px; height:40px; border-radius:12px; background:var(--mint); color:var(--green); display:flex; align-items:center; justify-content:center; }
+.ib .ic svg { width:22px; height:22px; }
+.ib .tx { flex:1; min-width:0; display:flex; flex-direction:column; gap:2px; }
+.ib .tt { font-size:16px; font-weight:800; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.ib .sb { font-size:13px; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.ib .tm { flex:none; font-size:12px; color:var(--muted); font-weight:700; }
+.ib.open { border-color:var(--green); border-width:2px; border-bottom-left-radius:0; border-bottom-right-radius:0; }
+.idt { border:2px solid var(--green); border-top:0; border-radius:0 0 14px 14px; padding:12px 14px; display:flex; flex-direction:column; gap:10px; background:#fff; margin-top:-8px; }
+.idt p { margin:0; font-size:15px; overflow-wrap:anywhere; white-space:pre-line; }
+.big { display:flex; flex-wrap:wrap; gap:8px; } .big > * { flex:1 1 140px; min-height:48px; }
+a.btn { display:flex; align-items:center; justify-content:center; text-decoration:none; }
+/* карточка заведения */
+.eh { display:flex; align-items:center; gap:8px; }
+.eh h1 { flex:1; min-width:0; overflow-wrap:anywhere; font-size:20px; }
+.ib0 { flex:none; width:46px; height:46px; border-radius:12px; border:1px solid var(--line); background:#fff; color:var(--green); display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0; }
+.ib0 svg { width:24px; height:24px; }
+.blk { background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+.bh { all:unset; box-sizing:border-box; display:flex; align-items:center; gap:10px; width:100%; min-height:56px; padding:0 14px; cursor:pointer; }
+.bh:focus-visible { outline:3px solid var(--green); outline-offset:-3px; }
+.bh .bt { flex:1; font-size:16px; font-weight:800; }
+.bh .bc { flex:none; width:24px; height:24px; border-radius:50%; border:2px solid var(--line); display:flex; align-items:center; justify-content:center; color:#fff; }
+.bh .bc.on { background:var(--green); border-color:var(--green); }
+.bh .bc svg { width:14px; height:14px; }
+.bh .chev { flex:none; width:22px; height:22px; color:var(--muted); transition:transform .15s; }
+.bh[aria-expanded="true"] .chev { transform:rotate(90deg); }
+.bb { padding:4px 14px 14px; display:flex; flex-direction:column; gap:12px; border-top:1px solid var(--line); padding-top:12px; }
+.savest { font-size:14px; font-weight:700; color:var(--muted); min-height:20px; text-align:center; }
+.savest.ok { color:var(--green); } .savest.err { color:var(--red); } .savest.warn { color:#7A5200; }
+.ph-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.ph-grid img { width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:12px; background:#DCEFE2; display:block; }
+.prl { display:flex; flex-direction:column; gap:8px; }
+.pr-row { display:grid; grid-template-columns:34px minmax(0,1fr) 92px 34px; gap:6px; align-items:center; background:#fff; }
+.pr-row.drag { opacity:.7; box-shadow:0 4px 14px rgba(0,0,0,.2); position:relative; z-index:2; }
+.pr-row input { min-width:0; padding:10px 10px; }
+.pr-h { width:34px; height:44px; border:0; background:none; color:var(--muted); font-size:20px; line-height:1; cursor:grab; touch-action:none; padding:0; }
+.pr-x { width:34px; height:44px; border:0; background:none; color:var(--red); font-size:20px; cursor:pointer; padding:0; }
+.row-in { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; align-items:end; }
+.row-in .btn { min-height:48px; font-size:14px; padding:0 12px; }
+.ovl { position:fixed; inset:0; z-index:60; background:rgba(11,36,23,.55); display:flex; align-items:flex-end; justify-content:center; }
+.ovl-in { background:var(--bg); width:100%; max-width:560px; max-height:92vh; overflow-y:auto; border-radius:20px 20px 0 0; padding:16px; display:flex; flex-direction:column; gap:12px; }
+.pv { background:#fff; border:1px solid var(--line); border-radius:16px; padding:14px; display:flex; flex-direction:column; gap:10px; }
+.pv h3 { margin:0; font-size:20px; }
+.pv .chip { display:inline-flex; padding:4px 10px; border-radius:99px; font-size:13px; font-weight:800; width:fit-content; }
+.pv .chip.o { background:#DCEFE2; color:#14532D; } .pv .chip.c { background:#FBE4E2; color:#B3261E; }
+.pv .lk { display:flex; flex-wrap:wrap; gap:6px; } .pv .lk span { padding:8px 12px; border-radius:99px; background:var(--mint); color:var(--green); font-weight:800; font-size:14px; }
+.pv .pl { display:flex; justify-content:space-between; gap:10px; border-bottom:1px solid var(--line); padding:6px 0; font-size:15px; }
+.pv .ph { display:flex; gap:6px; } .pv .ph img { flex:1; min-width:0; aspect-ratio:4/3; object-fit:cover; border-radius:10px; }
 .hrs { display: flex; flex-direction: column; gap: 8px; }
 .hrs > b { font-size: 15px; font-weight: 800; }
 .hrs .hrs-h { font-size: 13px; font-weight: 400; color: var(--muted); }
@@ -72,17 +147,31 @@ body.busy::before { content:"Загружаю…"; position:fixed; top:0; left:0
 .hrs .hrs-txt { min-height: 48px; padding: 10px 12px; font: inherit; font-size: 16px; border: 2px solid var(--line); border-radius: 12px; width: 100%; }
 .hrs .hrs-act { display: flex; flex-wrap: wrap; gap: 6px; }
 .hrs .hrs-act button { min-height: 40px; padding: 0 12px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--ink); font: inherit; font-size: 13px; font-weight: 800; cursor: pointer; }
+.hrs .hrs-day { display: flex; flex-direction: column; gap: 4px; }
+.hrs .hrs-lunch { display: grid; grid-template-columns: 60px minmax(0, 1fr) 10px minmax(0, 1fr); align-items: center; gap: 6px; }
+.hrs .hrs-lunch[hidden] { display: none; }
+.hrs .hrs-lunch label.hrs-w { gap: 4px; font-size: 13px; font-weight: 700; color: var(--muted); flex-direction: row; }
+.hrs .hrs-lunch input[type="checkbox"] { width: 22px; height: 22px; }
+.hrs .hrs-lunch input[type="time"] { min-height: 40px; }
+.hrs input[type="time"] { padding: 4px 4px; font-size: 15px; }
+
 </style>
 </head>
 <body>
 <div class="wrap" id="root"></div>
+<nav class="bnav" id="bnav" hidden><div class="bnav-in" id="bnavin"></div></nav>
 <script>
 var API = "https://script.google.com/macros/s/AKfycbyRiGD8kP3YnhLAa_FDMo_iwgBYz6Ld5zBhYERvGnK7sBLXAfRRuBSYR6HKCmobh0HeSQ/exec"; /* сюда вставляется адрес сервера. Пусто = пробный режим */
 var DEMO = !API;
 var CATS = [{"id":"avto","name":"Автосервисы"},{"id":"moyki","name":"Автомойки"},{"id":"zapchasti","name":"Автозапчасти"},{"id":"produkty","name":"Продукты"},{"id":"odezhda","name":"Одежда и обувь"},{"id":"remont","name":"Ремонт и стройка"},{"id":"okna","name":"Окна, двери, жалюзи"},{"id":"turizm","name":"Путешествия и туризм"},{"id":"shtory","name":"Шторы и текстиль"},{"id":"mebel","name":"Мебель"},{"id":"tehnika","name":"Техника"},{"id":"remont-tehniki","name":"Ремонт техники"},{"id":"stomat","name":"Стоматология"},{"id":"krasota","name":"Красота"},{"id":"fitnes","name":"Фитнес и спорт"},{"id":"kafe","name":"Кафе и рестораны"},{"id":"cvety","name":"Цветы и подарки"},{"id":"prazdniki","name":"Праздники"},{"id":"detyam","name":"Детям"},{"id":"gruz","name":"Грузоперевозки"},{"id":"nedvizhimost","name":"Недвижимость"},{"id":"yuristy","name":"Юристы и бухгалтеры"},{"id":"gostinicy","name":"Гостиницы"},{"id":"foto","name":"Фото и печать"},{"id":"dosug","name":"Досуг"},{"id":"uslugi","name":"Услуги"},{"id":"drugoe","name":"Другое"},{"id":"kursy","name":"Курсы"},{"id":"konditery","name":"Кондитеры"},{"id":"bani","name":"Бани, сауны, коттеджи"},{"id":"video","name":"Фотограф и видеосъёмка"},{"id":"magaziny","name":"Магазины разные"},{"id":"rynok-gorod","name":"Городской рынок"},{"id":"rynok-yug","name":"Южный рынок"},{"id":"baza-shirokaya","name":"База «Широкая»"},{"id":"baza-kontrakt","name":"База «Контракт»"}];
-var TGOK = false, PHBUSY = false;
-var PSF = "", PSQ = "", OPEN_T = 0, OWN = [], OPEN_O = 0, ODEL = "", ADS = [], OPEN_A = 0, TICKETS = [], PLACES = [], EDIT = null, FRESH = true, PDEL = "", STARS = [], BANNERS = [], BEDIT = null, BDEL = "";
-var PW = "", ROLE = "", TAB = "news", MSG = null, BUSY = false, NEWS = [], STATS = null, WIN = null, PENDING_DEL = "";
+var ADCN = { prodazha: "Продам", kuplyu: "Куплю", tehnika: "Техника и электроника", avto: "Авто и запчасти", nedvizh: "Недвижимость", rabota: "Работа", uslugi: "Услуги", zhivotnye: "Животные", dacha: "Дом, дача, огород", darom: "Отдам даром", raznoe: "Разное" };
+var PST = ["", "ждём логотип", "ждём фото", "ждём данные", "добавила", "нужно поменять"];
+var PW = "", ROLE = "", TGOK = false, BUSY = false, MSG = null;
+var TAB = "places", PUB = "news";
+var PLACES = [], NEWS = [], BANNERS = [], TICKETS = [], OWN = [], ADS = [], STATS = null, STORG = {};
+var PSF = "", PSQ = "";
+var IBF = "new", IOPEN = "", IDEL = "", ADCLR = 0;
+var ED = null, EDS = null, BEDIT = null, BDEL = "", PENDING_DEL = "", WIN = null, PHBUSY = false;
 var root = document.getElementById("root");
 
 function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
@@ -90,103 +179,27 @@ function sget(k) { try { return localStorage.getItem(k); } catch (e) { return nu
 function sset(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
 function sdel(k) { try { localStorage.removeItem(k); } catch (e) {} }
 function fmt(d) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(d || ""); return m ? m[3] + "." + m[2] + "." + m[1] : (d || ""); }
-function ago(n) { var d = new Date(Date.now() - n * 86400000); return d.toISOString().slice(0, 10); }
+function norm(s) { return String(s || "").toLowerCase().replace(/ё/g, "е"); }
+function toTs(s) { var t = Date.parse(String(s || "").replace(" ", "T")); return isNaN(t) ? 0 : t; }
+function agoTxt(s) { var t = toTs(s); if (!t) return ""; var m = Math.max(0, Math.floor((Date.now() - t) / 60000)); if (m < 1) return "сейчас"; if (m < 60) return m + " мин"; var h = Math.floor(m / 60); if (h < 24) return h + " ч"; return Math.floor(h / 24) + " дн"; }
+function hhmm() { var d = new Date(); return ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2); }
+function daysSince(d) { if (!d) return 9999; var t = new Date(String(d).slice(0, 10) + "T00:00:00").getTime(); return isNaN(t) ? 9999 : Math.floor((Date.now() - t) / 86400000); }
+function staleInfo(p) { return Math.min(daysSince(p.upd), daysSince(p.chk)); }
+function catName(id) { for (var i = 0; i < CATS.length; i++) if (CATS[i].id === id) return CATS[i].name; return id; }
 
-/* ---------- пробный «сервер» в памяти ---------- */
-var D = { tickets: [{ id: "2026101310001", date: "2026-10-13T10:05:00", kind: "Заявка владельца", name: "Иван", contact: "+7 900 111-22-33", biz: "Шиномонтаж «Круг»", msg: "Хочу карточку в приложении", pid: "", done: false }, { id: "2026101309002", date: "2026-10-12T16:20:00", kind: "Вопрос", name: "", contact: "@anna", biz: "", msg: "Как узнать результаты розыгрыша?", pid: "Б56-48213", done: true }], news: [
-  { id: "20261012100002", date: ago(1), type: "Акция", title: "Салон красоты «Красотка» дарит скидку 10%", text: "На все услуги до конца месяца.", org: "Салон красоты «Красотка»", until: ago(-18), expired: false },
-  { id: "20261010100001", date: ago(3), type: "Новость", title: "В приложении появились новые разделы", text: "Кондитеры, бани и сауны, фото и видео, курсы.", org: "", until: "", expired: false } ], seq: 5, places: [
-  { id: 10, cat: "okna", name: "Светлый дом: окна, двери, жалюзи", about: "Окна, двери, балконы, жалюзи.", addr: "ул. Коммунистическая, 22", phone: "+7 (922) 857-20-99", hours: "10:00–18:00", rec: true, priceText: "Пластиковые окна | от 5 000 ₽\nДвери ПВХ | от 13 500 ₽" },
-  { id: 11, cat: "uslugi", name: "Сайты и приложения", addr: "ул. Коммунистическая, 22", phone: "+7 (922) 857-20-99", rec: true, priceText: "Сайт-визитка | 3 500 ₽" } ] };
-function demoCall(o) {
-  return new Promise(function (res) {
-    setTimeout(function () {
-      var a = o.a;
-      if (a === "login") return res(o.pw === "admin" ? { ok: true, role: "admin", tg: true } : { ok: false, err: "Неверный пароль." });
-      var role = o.pw === "admin" ? "admin" : "";
-      if (!role) return res({ ok: false, err: "Неверный пароль." });
-      if (a === "places_list") return res({ ok: true, items: D.places });
-      if (a === "banners_list") return res({ ok: true, items: D.banners || [] });
-      if (a === "banner_save") { D.banners = D.banners || []; var bq = o.banner || {}; if (!bq.cat) return res({ ok: false, err: "Выберите раздел." }); if (!String(bq.title || "").trim() && !String(bq.text || "").trim()) return res({ ok: false, err: "Напишите заголовок или текст." }); D.banners = D.banners.filter(function (x) { return x.cat !== bq.cat; }); D.banners.push({ cat: bq.cat, title: bq.title || "", text: bq.text || "", url: bq.url || "" }); return res({ ok: true }); }
-      if (a === "banner_del") { D.banners = (D.banners || []).filter(function (x) { return x.cat !== o.cat; }); return res({ ok: true }); }
-      if (a === "place_save") { var q = o.place; if (!q.name) return res({ ok: false, err: "Напишите название." }); if (!q.cat) return res({ ok: false, err: "Выберите раздел." }); if (!q.phone) return res({ ok: false, err: "Напишите телефон." });
-        var pr = {}; for (var kk in q) pr[kk] = q[kk]; pr.priceText = q.price || ""; pr.rec = !!q.rec; pr.stars = [].concat(q.stars || []);
-        if (q.id) { D.places = D.places.map(function (x) { return x.id === Number(q.id) ? pr : x; }); pr.id = Number(q.id); } else { pr.id = 100 + D.places.length; D.places.push(pr); } return res({ ok: true, id: pr.id }); }
-      if (a === "photo_add") { var pp = D.places.filter(function (x) { return x.id === Number(o.id); })[0]; if (!pp) return res({ ok: false, err: "Сначала сохраните заведение." }); pp.photoIds = pp.photoIds || []; pp.photos = pp.photos || []; if (pp.photoIds.length >= 6) return res({ ok: false, err: "Можно не больше 6 фото." }); var fid = "d" + Math.random().toString(36).slice(2, 7); pp.photoIds.push(fid); pp.photos.push("data:image/jpeg;base64," + o.data); return res({ ok: true, fid: fid }); }
-      if (a === "photo_del") { var pq = D.places.filter(function (x) { return x.id === Number(o.id); })[0]; if (pq && pq.photoIds) { var k2 = pq.photoIds.indexOf(o.fid); if (k2 >= 0) { pq.photoIds.splice(k2, 1); pq.photos.splice(k2, 1); } } return res({ ok: true }); }
-      if (a === "place_note") { D.places.forEach(function (x) { if (x.id === Number(o.id)) { x.status = o.status; x.memo = o.memo; } }); return res({ ok: true }); }
-      if (a === "place_check") { D.places.forEach(function (x) { if (x.id === Number(o.id)) x.chk = new Date().toISOString().slice(0, 10); }); return res({ ok: true }); }
-      if (a === "place_hide") { D.places.forEach(function (x) { if (x.id === Number(o.id)) x.hidden = !!o.hide; }); return res({ ok: true }); }
-      if (a === "place_del") { D.places = D.places.filter(function (x) { return x.id !== Number(o.id); }); return res({ ok: true }); }
-      if (a === "owners_admin") { D.own = D.own || [{ email: "ivan@mail.ru", date: "2026-10-22T10:00:00", status: "ждёт", pid: 0, name: "Иван", phone: "8 900 000-00-00", edit: "", req: { type: "new", place: { cat: "avto", name: "Автосервис «Мотор»", phone: "8 900 000-00-00", addr: "ул. Мира, 5", hours: "Пн–Пт 9–18", about: "Ремонт легковых авто." } } }, { email: "olga@mail.ru", date: "2026-10-21T10:00:00", status: "ждёт", pid: 0, name: "Ольга", phone: "8 900 111-11-11", edit: "", req: { type: "claim", pid: 1, placeName: "Автосервис «Пример»" } }]; return res({ ok: true, items: D.own }); }
-      if (a === "owner_set") { (D.own || []).forEach(function (x) { if (x.email === o.email) { if (o.act === "approve") { x.status = "подтверждён"; x.pid = 1; x.placeName = "Автосервис «Пример»"; } else if (o.act === "reject") x.status = "отклонён"; else if (o.act === "unlink") x.status = "вошёл"; } }); if (o.act === "delete") D.own = (D.own || []).filter(function (x) { return x.email !== o.email; }); return res({ ok: true }); }
-      if (a === "ads_admin") { D.ads = D.ads || [{ id: "20261019100001", date: "2026-10-19T10:00:00", cat: "prodazha", title: "Детская коляска", text: "Состояние хорошее.", price: "5 000 ₽", contact: "8 900 000-00-00", name: "Мария", photos: [], status: "ждёт оплаты", sum: "100", pid: "Б56-12345" }]; return res({ ok: true, items: D.ads }); }
-      if (a === "ad_set" && (o.act === "delete" || o.act === "clear")) { D.ads = (D.ads || []).filter(function (x) { return o.act === "delete" ? x.id !== o.id : (x.status !== "отклонено" && x.status !== "снято"); }); return res({ ok: true }); }
-      if (a === "ad_set") { (D.ads || []).forEach(function (x) { if (x.id === o.id) { x.status = o.act === "paid" ? "оплачено" : o.act === "reject" ? "отклонено" : o.act === "remove" ? "снято" : "опубликовано"; if (o.act === "publish" || o.act === "extend") x.till = ago(-5); } }); return res({ ok: true }); }
-      if (a === "tickets_list") return res({ ok: true, items: D.tickets });
-      if (a === "ticket_done") { D.tickets.forEach(function (x) { if (x.id === o.id) x.done = o.done !== false; }); return res({ ok: true }); }
-      if (a === "news_list") return res({ ok: true, items: D.news });
-      if (a === "news_add") { if (!String(o.title || "").trim()) return res({ ok: false, err: "Напишите заголовок." });
-        D.news.unshift({ id: "2026101310" + (D.seq++), date: ago(0), type: o.type, title: o.title, text: o.text, org: o.org, until: o.until, expired: false, img: o.data ? "data:image/jpeg;base64," + o.data : "" }); return res({ ok: true }); }
-      if (a === "news_del") { D.news = D.news.filter(function (n) { return n.id !== o.id; }); return res({ ok: true }); }
-      if (a === "stats") { var days = []; for (var i = 13; i >= 0; i--) days.push({ d: ago(i), n: [0, 1, 0, 2, 3, 1, 4, 2, 5, 3, 6, 4, 7, 9][13 - i] });
-        var r = { ok: true, total: 47, roles: { "житель": 31, "владелец": 9, "не выбрано": 7 }, plats: { android: 33, iphone: 14 }, srcs: { "QR Android": 22, "QR iPhone": 11, "напрямую": 14 }, days: days, events: { card_open: 120, call_click: 31, news_open: 64 },
-          orgs: [{ org: "Светлый дом: окна, двери, жалюзи", views: 58, prices: 31, calls: 17, routes: 6, links: 9 }, { org: "Сайты и приложения", views: 34, prices: 12, calls: 8, routes: 0, links: 5 }] };
-        if (role === "admin") r.recent = [{ id: "Б56-48213", date: ago(0) + " 09:12", role: "житель", plat: "android", src: "QR Android" }, { id: "Б56-90417", date: ago(0) + " 08:40", role: "владелец", plat: "iphone", src: "QR iPhone" }];
-        return res(r); }
-      if (a === "draw") { var w = []; for (var k = 0; k < Math.min(10, o.n || 1); k++) w.push("Б56-" + (10000 + Math.floor(Math.random() * 90000))); return res({ ok: true, winners: w, total: 47 }); }
-      res({ ok: false, err: "?" });
-    }, 250);
-  });
-}
+function demoCall() { return Promise.resolve({ ok: false, err: "?" }); }
 var PEND = 0;
 function call(o) { PEND++; document.body.classList.add("busy"); var fin = function (r) { PEND--; if (PEND <= 0) { PEND = 0; document.body.classList.remove("busy"); } return r; }; return call0(o).then(fin, function (e) { fin(); throw e; }); }
 function call0(o) {
   if (DEMO) return demoCall(o);
-  var ctl = typeof AbortController !== "undefined" ? new AbortController() : null, t = setTimeout(function () { if (ctl) ctl.abort(); }, 15000);
+  var ctl = typeof AbortController !== "undefined" ? new AbortController() : null, t = setTimeout(function () { if (ctl) ctl.abort(); }, 20000);
   return fetch(API, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(o), signal: ctl ? ctl.signal : undefined })
     .then(function (r) { clearTimeout(t); return r.json(); })
     .catch(function () { return { ok: false, err: "Нет связи с сервером. Проверьте интернет и попробуйте ещё раз." }; });
 }
+function netErr(r) { return !!(r && !r.ok && /Нет связи/.test(r.err || "")); }
 
-/* ---------- экраны ---------- */
-function loginView() {
-  return '<h1>Администратор «Бугуруслан всё в одном месте»</h1>' + (MSG ? '<div class="msg err">' + esc(MSG) + "</div>" : "") +
-    '<form class="card" id="lf"><label>Пароль<input id="pw" type="password" autocomplete="current-password" autocapitalize="off" required></label>' +
-    '<label class="check"><input type="checkbox" id="rem"> Запомнить на этом телефоне</label>' +
-    '<button class="btn" type="submit"' + (BUSY ? " disabled" : "") + ">" + (BUSY ? "Проверяю…" : "Войти") + "</button></form>" +
-    (DEMO ? '<div class="card"><div class="note"><b>Пробный режим.</b> Здесь примеры, не настоящие данные. Войти можно кнопками:</div><button class="btn alt sm" data-demo="admin">Войти в пробном режиме</button></div>' : "");
-}
-function tabsHtml() {
-  var t = [["plist", "Список"], ["news", "Новости"], ["places", "Заведения"], ["tickets", "Обращения" + (OPEN_T ? " (" + OPEN_T + ")" : "")], ["stats", "Статистика"]]; t.push(["ads", "Объявления" + (OPEN_A ? " (" + OPEN_A + ")" : "")]); t.push(["owners", "Владельцы" + (OPEN_O ? " (" + OPEN_O + ")" : "")]); t.push(["banners", "Плашки"]); t.push(["draw", "Розыгрыш"]);
-  return '<div class="tabs">' + t.map(function (x) { return '<button type="button" data-tab="' + x[0] + '" aria-pressed="' + (TAB === x[0]) + '">' + x[1] + "</button>"; }).join("") + "</div>";
-}
-function newsTab() {
-  return '<form class="card" id="nf"><h2>Новая запись</h2>' +
-    '<label>Что это<select id="nty"><option>Акция</option><option>Новость</option><option>Розыгрыш</option></select></label>' +
-    '<label>Заголовок<small>до 120 знаков</small><input id="nti" maxlength="120" required placeholder="Например: Красотка дарит скидку 10%"></label>' +
-    '<label>Текст<small>до 1000 знаков, можно не писать</small><textarea id="nte" maxlength="1000"></textarea></label>' +
-    '<label>Кто объявляет<small>название заведения, можно не писать</small><input id="nor" maxlength="80"></label>' +
-    '<label>Картинка<small>одна фотография с телефона или компьютера, можно не добавлять. Лучше горизонтальная</small><input id="nfile" type="file" accept="image/*"></label>' +
-    '<label>Показывать до<small>можно не указывать — тогда висит, пока вы не уберёте</small><input id="nun" type="date"></label>' +
-    (TGOK ? '<label class="check"><input type="checkbox" id="ntg" checked> Отправить также в Telegram-канал</label>' : '<div class="note">Отправка в Telegram пока не подключена.</div>') +
-    '<button class="btn" type="submit"' + (BUSY ? " disabled" : "") + ">Опубликовать</button></form>" +
-    '<h2>Сейчас в приложении</h2>' +
-    (NEWS.length ? NEWS.map(function (n) {
-      var cls = n.type === "Акция" ? "gold" : n.type === "Розыгрыш" ? "mint" : "";
-      return '<div class="ni"><div class="m"><span class="nt ' + cls + '">' + esc(n.type) + "</span><span>" + esc(fmt(n.date)) + "</span>" + (n.until ? "<span>до " + esc(fmt(n.until)) + "</span>" : "") + (n.expired ? '<span style="color:#B3261E;font-weight:700">срок вышел</span>' : "") + "</div>" + (n.img ? '<img src="' + esc(n.img) + '" alt="" style="width:100%;max-height:150px;object-fit:cover;border-radius:10px;margin:6px 0">' : "") + "<b>" + esc(n.title) + "</b>" +
-        (n.org ? '<div class="m">' + esc(n.org) + "</div>" : "") +
-        (PENDING_DEL === n.id ? '<div style="display:flex;gap:8px"><button class="btn red sm" style="flex:1" data-del="' + esc(n.id) + '">Да, убрать</button><button class="btn alt sm" style="flex:1" data-nodel="1">Отмена</button></div>' : '<button class="btn alt sm" data-askdel="' + esc(n.id) + '">Убрать</button>') + "</div>";
-    }).join("") : '<div class="note">Пока ничего нет.</div>');
-}
-function catName(id) { for (var i = 0; i < CATS.length; i++) if (CATS[i].id === id) return CATS[i].name; return id; }
-var PST = ["", "ждём логотип", "ждём фото", "ждём данные", "добавила", "нужно поменять", "готово"];
-var POPEN = 0, FROMLIST = false;
-var STC = { "ждём логотип": ["#FFF1D0", "#7A5200"], "ждём фото": ["#FFF1D0", "#7A5200"], "ждём данные": ["#FFF1D0", "#7A5200"], "добавила": ["#DDEBFA", "#124A8A"], "нужно поменять": ["#FBE4E2", "#B3261E"], "готово": ["#DCEFE2", "#14532D"] };
-function daysSince(d) { if (!d) return 9999; var t = new Date(String(d).slice(0, 10) + "T00:00:00").getTime(); return isNaN(t) ? 9999 : Math.floor((Date.now() - t) / 86400000); }
-function staleInfo(p) { var n = Math.min(daysSince(p.upd), daysSince(p.chk)); return n; }
-var SORTP = { "нужно поменять": 0, "ждём логотип": 1, "ждём фото": 1, "ждём данные": 1, "": 2, "добавила": 3, "готово": 4 };
-/* ===== редактор часов работы по дням ===== */
+/* ===== редактор часов работы по дням (с обедом) ===== */
 var HRS_D = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
 var HRS_I = { "пн": 1, "по": 1, "вт": 2, "ср": 3, "чт": 4, "пт": 5, "сб": 6, "су": 6, "вс": 7, "во": 7 };
 function hrsDaysOf(seg) {
@@ -206,30 +219,42 @@ function hrsDaysOf(seg) {
   if (/выходные/.test(seg)) return [6, 7];
   return null;
 }
-/* разбор текста часов: null, если не поняли; {all:true} или {sch:[..8]} */
+/* разбор текста часов: null, если не поняли; {all:true} или {sch:[..8]}; день: "off" или [с, до] или [с, до, обедС, обедДо] */
 function hrsParse(s) {
   s = String(s || "").toLowerCase().replace(/ё/g, "е");
   if (!s || s.indexOf("укаж") !== -1) return null;
   if (/круглосут|24 ?(часа|ч)|24\/7/.test(s)) return { all: true };
-  var sch = [null, null, null, null, null, null, null, null], defs = [], any = false;
+  var sch = [null, null, null, null, null, null, null, null], defs = [], any = false, lunchDef = null, lunchBy = [null, null, null, null, null, null, null, null];
   var rx = /(?:с\s*)?(\d{1,2})(?:[:.](\d{2}))?\s*(?:-|–|—|до)\s*(\d{1,2})(?:[:.](\d{2}))?/;
+  var rl = /(?:обед|перерыв)[^0-9]{0,12}(\d{1,2})(?:[:.](\d{2}))?\s*(?:-|–|—|до)\s*(\d{1,2})(?:[:.](\d{2}))?/;
   s.split(/[;,\n]+/).forEach(function (seg) {
-    var t = rx.exec(seg), days = hrsDaysOf(seg);
+    var days = hrsDaysOf(seg), lm = rl.exec(seg), lun = lm ? [Number(lm[1]) * 60 + Number(lm[2] || 0), Number(lm[3]) * 60 + Number(lm[4] || 0)] : null;
+    var t = rx.exec(lm ? seg.replace(rl, " ") : seg);
+    if (lm && !t) {
+      /* сегмент только про обед */
+      if (days) days.forEach(function (d) { lunchBy[d] = lun; }); else lunchDef = lun;
+      return;
+    }
     if (t) {
       var a = Number(t[1]) * 60 + Number(t[2] || 0), b = Number(t[3]) * 60 + Number(t[4] || 0);
       if (b <= a) b += 1440;
       any = true;
-      if (days) days.forEach(function (d) { sch[d] = [a, b]; }); else defs.push([a, b]);
+      var r = lun ? [a, b, lun[0], lun[1]] : [a, b];
+      if (days) days.forEach(function (d) { sch[d] = r; }); else defs.push(r);
     } else if (/выходн|не работает|закрыто/.test(seg) && days) days.forEach(function (d) { sch[d] = "off"; });
   });
   if (!any) return null;
   if (defs.length) for (var d = 1; d <= 7; d++) if (sch[d] === null) sch[d] = defs[0];
+  for (var e = 1; e <= 7; e++) {
+    var x = sch[e], l = lunchBy[e] || lunchDef;
+    if (x && x !== "off" && x.length === 2 && l) sch[e] = [x[0], x[1], l[0], l[1]];
+  }
   return { sch: sch };
 }
 function hrsT(m) { m = m % 1440; return ("0" + Math.floor(m / 60)).slice(-2) + ":" + ("0" + (m % 60)).slice(-2); }
-/* rows: массив из 7 элементов: null (выходной) или [минуты начала, минуты конца] */
+/* rows: массив из 7 элементов: null (выходной) или [с, до] или [с, до, обедС, обедДо] */
 function hrsBuild(rows) {
-  var vals = rows.map(function (r) { return r ? hrsT(r[0]) + "–" + hrsT(r[1]) : "off"; });
+  var vals = rows.map(function (r) { return r ? hrsT(r[0]) + "–" + hrsT(r[1]) + (r.length > 2 ? " (обед " + hrsT(r[2]) + "–" + hrsT(r[3]) + ")" : "") : "off"; });
   if (vals.every(function (v) { return v === "off"; })) return "";
   if (vals.every(function (v) { return v === "00:00–23:59"; })) return "Круглосуточно";
   if (vals.every(function (v) { return v === vals[0]; })) return "Ежедневно " + vals[0];
@@ -246,32 +271,39 @@ function hrsBuild(rows) {
 function hrsEsc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
 function hrsEditor(id, label, hint, value) {
   var rows = HRS_D.map(function (n, d) {
-    return '<div class="hrs-row"><span class="hrs-d">' + n + '</span><label class="hrs-w"><input type="checkbox" data-hw="' + d + '" aria-label="' + n + ': работаем"></label>' +
-      '<input type="time" data-ha="' + d + '" value="09:00" aria-label="' + n + ': с"><span>–</span><input type="time" data-hb="' + d + '" value="18:00" aria-label="' + n + ': до"></div>';
+    return '<div class="hrs-day"><div class="hrs-row"><span class="hrs-d">' + n + '</span><label class="hrs-w"><input type="checkbox" data-hw="' + d + '" aria-label="' + n + ': работаем"></label>' +
+      '<input type="time" data-ha="' + d + '" value="09:00" aria-label="' + n + ': с"><span>–</span><input type="time" data-hb="' + d + '" value="18:00" aria-label="' + n + ': до"></div>' +
+      '<div class="hrs-lunch" data-hl="' + d + '"><label class="hrs-w"><input type="checkbox" data-hc="' + d + '" aria-label="' + n + ': есть обед"><span>обед</span></label>' +
+      '<input type="time" data-hs="' + d + '" value="13:00" aria-label="' + n + ': обед с"><span>–</span><input type="time" data-he="' + d + '" value="14:00" aria-label="' + n + ': обед до"></div></div>';
   }).join("");
-  return '<div class="hrs" data-hrs="' + id + '"><b>' + hrsEsc(label) + "</b>" + (hint ? '<span class="hrs-h">' + hrsEsc(hint) + "</span>" : "") +
+  return '<div class="hrs" data-hrs="' + id + '">' + (label ? "<b>" + hrsEsc(label) + "</b>" : "") + (hint ? '<span class="hrs-h">' + hrsEsc(hint) + "</span>" : "") +
     '<input type="hidden" id="' + id + '" value="' + hrsEsc(value) + '">' +
     '<div class="hrs-days">' + rows + "</div>" +
-    '<input type="text" class="hrs-txt" maxlength="120" placeholder="Например: по записи" aria-label="Часы работы текстом" hidden>' +
+    '<input type="text" class="hrs-txt" maxlength="300" placeholder="Например: по записи" aria-label="Часы работы текстом" hidden>' +
     '<div class="hrs-act"><button type="button" data-hrsact="weekdays">Как в Пн: все будни</button><button type="button" data-hrsact="all">Как в Пн: все дни</button><button type="button" data-hrsact="24">Круглосуточно</button><button type="button" data-hrsact="text">Написать своими словами</button></div></div>';
 }
+function hrsMin(v) { var m = /^(\d{2}):(\d{2})$/.exec(v); return m ? Number(m[1]) * 60 + Number(m[2]) : null; }
 function hrsRows(box) {
   var out = [];
   for (var d = 0; d < 7; d++) {
-    var w = box.querySelector('[data-hw="' + d + '"]'), a = box.querySelector('[data-ha="' + d + '"]'), b = box.querySelector('[data-hb="' + d + '"]');
-    var ma = /^(\d{2}):(\d{2})$/.exec(a.value), mb = /^(\d{2}):(\d{2})$/.exec(b.value);
-    out.push(w.checked && ma && mb ? [Number(ma[1]) * 60 + Number(ma[2]), Number(mb[1]) * 60 + Number(mb[2])] : null);
+    var w = box.querySelector('[data-hw="' + d + '"]'), a = hrsMin(box.querySelector('[data-ha="' + d + '"]').value), b = hrsMin(box.querySelector('[data-hb="' + d + '"]').value);
+    if (!(w.checked && a !== null && b !== null)) { out.push(null); continue; }
+    var c = box.querySelector('[data-hc="' + d + '"]'), ls = hrsMin(box.querySelector('[data-hs="' + d + '"]').value), le = hrsMin(box.querySelector('[data-he="' + d + '"]').value);
+    out.push(c.checked && ls !== null && le !== null && le > ls ? [a, b, ls, le] : [a, b]);
   }
   return out;
 }
 function hrsSync(box) {
   var hid = box.querySelector('input[type="hidden"]'), txt = box.querySelector(".hrs-txt");
   for (var d = 0; d < 7; d++) {
-    var w = box.querySelector('[data-hw="' + d + '"]');
+    var w = box.querySelector('[data-hw="' + d + '"]'), c = box.querySelector('[data-hc="' + d + '"]');
     box.querySelector('[data-ha="' + d + '"]').disabled = !w.checked;
     box.querySelector('[data-hb="' + d + '"]').disabled = !w.checked;
+    box.querySelector('[data-hl="' + d + '"]').hidden = !w.checked;
+    box.querySelector('[data-hs="' + d + '"]').disabled = !(w.checked && c.checked);
+    box.querySelector('[data-he="' + d + '"]').disabled = !(w.checked && c.checked);
   }
-  hid.value = box.getAttribute("data-mode") === "text" ? txt.value.trim().slice(0, 120) : hrsBuild(hrsRows(box));
+  hid.value = box.getAttribute("data-mode") === "text" ? txt.value.trim().slice(0, 300) : hrsBuild(hrsRows(box));
 }
 function hrsLoad(box) {
   var hid = box.querySelector('input[type="hidden"]'), txt = box.querySelector(".hrs-txt"), days = box.querySelector(".hrs-days"), tb = box.querySelector('[data-hrsact="text"]');
@@ -280,312 +312,280 @@ function hrsLoad(box) {
   box.removeAttribute("data-mode"); txt.hidden = true; days.hidden = false; tb.textContent = "Написать своими словами";
   for (var d = 0; d < 7; d++) {
     var r = p ? (p.all ? [0, 1439] : (p.sch[d + 1] && p.sch[d + 1] !== "off" ? p.sch[d + 1] : null)) : null;
-    var w = box.querySelector('[data-hw="' + d + '"]');
+    var w = box.querySelector('[data-hw="' + d + '"]'), c = box.querySelector('[data-hc="' + d + '"]');
     w.checked = !!r;
-    if (r) { box.querySelector('[data-ha="' + d + '"]').value = hrsT(r[0]); box.querySelector('[data-hb="' + d + '"]').value = hrsT(r[1]); }
-    box.querySelector('[data-ha="' + d + '"]').disabled = !r; box.querySelector('[data-hb="' + d + '"]').disabled = !r;
+    c.checked = !!(r && r.length > 2);
+    if (r) {
+      box.querySelector('[data-ha="' + d + '"]').value = hrsT(r[0]); box.querySelector('[data-hb="' + d + '"]').value = hrsT(r[1]);
+      if (r.length > 2) { box.querySelector('[data-hs="' + d + '"]').value = hrsT(r[2]); box.querySelector('[data-he="' + d + '"]').value = hrsT(r[3]); }
+    }
   }
+  hrsSync(box);
+  hid.value = v;
 }
 function hrsLoadAll() { var bs = document.querySelectorAll(".hrs"); for (var i = 0; i < bs.length; i++) hrsLoad(bs[i]); }
-document.addEventListener("input", function (e) { var b = e.target.closest && e.target.closest(".hrs"); if (b) hrsSync(b); });
-document.addEventListener("change", function (e) { var b = e.target.closest && e.target.closest(".hrs"); if (b) hrsSync(b); });
+function hrsNotify(box) { try { box.dispatchEvent(new Event("hrschange", { bubbles: true })); } catch (e) {} }
+document.addEventListener("input", function (e) { var b = e.target.closest && e.target.closest(".hrs"); if (b) { hrsSync(b); hrsNotify(b); } });
+document.addEventListener("change", function (e) { var b = e.target.closest && e.target.closest(".hrs"); if (b) { hrsSync(b); hrsNotify(b); } });
 document.addEventListener("click", function (e) {
   var btn = e.target.closest && e.target.closest("[data-hrsact]");
   if (!btn) return;
   var box = btn.closest(".hrs"), act = btn.getAttribute("data-hrsact"), hid = box.querySelector('input[type="hidden"]'), txt = box.querySelector(".hrs-txt");
   e.preventDefault();
   if (act === "text") {
-    if (box.getAttribute("data-mode") === "text") { hid.value = txt.value.trim().slice(0, 120); hrsLoad(box); }
+    if (box.getAttribute("data-mode") === "text") { hid.value = txt.value.trim().slice(0, 300); hrsLoad(box); }
     else { txt.value = hid.value; box.setAttribute("data-mode", "text"); txt.hidden = false; box.querySelector(".hrs-days").hidden = true; btn.textContent = "Выбрать по дням"; }
-    hrsSync(box); return;
+    hrsSync(box); hrsNotify(box); return;
   }
-  var a0 = box.querySelector('[data-ha="0"]').value, b0 = box.querySelector('[data-hb="0"]').value;
+  var q = function (k, d) { return box.querySelector("[" + k + '="' + d + '"]'); };
+  var a0 = q("data-ha", 0).value, b0 = q("data-hb", 0).value, c0 = q("data-hc", 0).checked, s0 = q("data-hs", 0).value, e0 = q("data-he", 0).value;
   for (var d = 0; d < 7; d++) {
     var on = act === "24" || act === "all" || (act === "weekdays" && d < 5);
     if (!on) continue;
-    box.querySelector('[data-hw="' + d + '"]').checked = true;
-    box.querySelector('[data-ha="' + d + '"]').value = act === "24" ? "00:00" : a0;
-    box.querySelector('[data-hb="' + d + '"]').value = act === "24" ? "23:59" : b0;
+    q("data-hw", d).checked = true;
+    q("data-ha", d).value = act === "24" ? "00:00" : a0;
+    q("data-hb", d).value = act === "24" ? "23:59" : b0;
+    q("data-hc", d).checked = act === "24" ? false : c0;
+    q("data-hs", d).value = s0; q("data-he", d).value = e0;
   }
-  hrsSync(box);
+  hrsSync(box); hrsNotify(box);
 });
 
-function plistRows() {
-  var q = PSQ.toLowerCase().replace(/ё/g, "е");
-  return PLACES.filter(function (p) {
-    if (PSF === "hid" ? !p.hidden : PSF === "old" ? staleInfo(p) < 120 : (PSF === "none" ? !!p.status : (PSF && p.status !== PSF))) return false;
-    return !q || (String(p.name) + " " + catName(p.cat) + " " + (p.memo || "") + " " + (p.phone || "")).toLowerCase().replace(/ё/g, "е").indexOf(q) >= 0;
-  }).sort(function (a, b) { var x = SORTP[a.status || ""], y = SORTP[b.status || ""]; return x !== y ? x - y : String(a.name).localeCompare(String(b.name), "ru"); });
+
+/* ---------- значки ---------- */
+function ic(p) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + "</svg>"; }
+var IC = {
+  store: ic('<path d="M3 9l1.5-5h15L21 9"/><path d="M4 9v11h16V9"/><path d="M3 9a3 3 0 0 0 6 0 3 3 0 0 0 6 0 3 3 0 0 0 6 0"/><path d="M10 20v-6h4v6"/>'),
+  inbox: ic('<path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.5 5h13L22 12v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-6z"/>'),
+  news: ic('<path d="M4 4h13a2 2 0 0 1 2 2v14H6a2 2 0 0 1-2-2z"/><path d="M19 8h2v10a2 2 0 0 1-2 2"/><path d="M8 8h7M8 12h7M8 16h4"/>'),
+  chart: ic('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'),
+  chat: ic('<path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>'),
+  tag: ic('<path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/>'),
+  user: ic('<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>'),
+  chev: ic('<path d="m9 18 6-6-6-6"/>'),
+  check: ic('<path d="M20 6 9 17l-5-5"/>'),
+  back: ic('<path d="m15 18-6-6 6-6"/>'),
+  eye: ic('<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/>'),
+  plus: ic('<path d="M12 5v14M5 12h14"/>')
+};
+
+/* ---------- заполненность ---------- */
+function fillInfo(p) {
+  var miss = [], ok = 0;
+  if (p.about) ok++; else miss.push("нет описания");
+  if (p.addr && p.addr !== "Бугуруслан") ok++; else miss.push("нет адреса");
+  if (p.hours) ok++; else miss.push("нет часов");
+  if (p.vk || p.site || p.tg || p.wa || p.max) ok++; else miss.push("нет ссылок");
+  if (p.photoIds && p.photoIds.length) ok++; else miss.push("нет фото");
+  if (p.priceText) ok++; else miss.push("нет прайса");
+  return { pct: Math.round(ok / 6 * 100), miss: miss };
 }
-function pchip(t, bg, fg) { return '<span style="display:inline-block;padding:4px 10px;border-radius:999px;font-size:13px;font-weight:800;background:' + bg + ";color:" + fg + '">' + esc(t) + "</span>"; }
-function pcard(p) {
-  var st = p.status || "", c = STC[st] || ["#E6EBE8", "#4D6657"], miss = [];
-  if (!(p.photoIds && p.photoIds.length)) miss.push("нет фото");
-  if (!(p.price && p.price.length)) miss.push("нет прайса");
-  if (!p.hours) miss.push("нет часов");
+function badgeOf(p, f) {
+  if (p.hidden) return '<span class="bd hid">скрыта</span>';
+  if (p.status && p.status !== "готово") return '<span class="bd man">' + esc(p.status) + "</span>";
+  if (f.pct >= 100) return '<span class="bd ok">готово</span>';
+  return '<span class="bd ' + (f.pct >= 60 ? "mid" : "low") + '">' + f.pct + "%</span>";
+}
+function placeRow(p) {
+  var f = fillInfo(p), st = STORG[p.name], extra = "";
+  if (st) extra = '<span class="ms">' + st.views + " " + plural(st.views, "просмотр", "просмотра", "просмотров") + " · " + st.calls + " " + plural(st.calls, "звонок", "звонка", "звонков") + " за 30 дней</span>";
   var sd = staleInfo(p);
-  if (sd >= 120) miss.push(sd >= 9999 ? "не проверяли" : "не проверяли " + Math.floor(sd / 30) + " мес.");
-  if (!(p.vk || p.site || p.tg || p.wa || p.max)) miss.push("нет ссылок");
-  var open = POPEN === p.id;
-  var head = '<button type="button" data-popen="' + p.id + '" aria-expanded="' + open + '" style="all:unset;display:flex;flex-direction:column;gap:6px;cursor:pointer;width:100%">' +
-    '<span style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><b style="font-size:17px;overflow-wrap:anywhere">' + esc(p.name) + "</b>" + (p.hidden ? pchip("скрыта", "#E6EBE8", "#4D6657") + " " : "") + pchip(st || "без статуса", c[0], c[1]) + "</span>" +
-    '<span style="font-size:14px;color:#4D6657">' + esc(catName(p.cat)) + (p.addr && p.addr !== "Бугуруслан" ? " · " + esc(p.addr) : "") + "</span>" +
-    '<span style="font-size:14px;color:#4D6657">' + esc(p.phone || "") + "</span>" +
-    '<span style="display:flex;flex-wrap:wrap;gap:6px">' + miss.map(function (m) { return pchip(m, "#F3E9E8", "#8A1C12"); }).join("") + (p.memo ? pchip(String(p.memo).slice(0, 70) + (String(p.memo).length > 70 ? "…" : ""), "#E1EEF6", "#124A6A") : "") + (!miss.length && !p.memo ? pchip("заполнено", "#DCEFE2", "#14532D") : "") + "</span></button>";
-  var panel = open ? '<div style="display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--line);padding-top:10px">' +
-    '<label>Статус<select data-pst>' + PST.map(function (x) { return '<option value="' + esc(x) + '"' + (st === x ? " selected" : "") + ">" + (x || "без статуса") + "</option>"; }).join("") + "</select></label>" +
-    '<label>Заметка для себя<textarea data-pmemo maxlength="500" style="min-height:80px" placeholder="Например: логотип пришлёт в пятницу">' + esc(p.memo || "") + "</textarea></label>" +
-    '<div style="display:flex;gap:8px"><button class="btn sm" style="flex:1" data-psave="' + p.id + '">Сохранить</button><button class="btn alt sm" style="flex:1" data-edit="' + p.id + '" data-gotoplaces="1">Изменить карточку</button></div>' +
-    '<div class="note">Обновлено: ' + (p.upd ? esc(fmt(p.upd)) : "нет данных") + " · Проверено: " + (p.chk ? esc(fmt(p.chk)) : "ни разу") + "</div>" +
-    '<div style="display:flex;gap:8px"><button class="btn alt sm" style="flex:1" data-pchk="' + p.id + '">Проверено сегодня</button><button class="btn alt sm" style="flex:1" data-phide="' + p.id + '" data-hv="' + (p.hidden ? "0" : "1") + '">' + (p.hidden ? "Показать на сайте" : "Скрыть с сайта") + "</button></div></div>" : "";
-  return '<div class="ni" data-prow="' + p.id + '" style="gap:10px;' + (open ? "border-color:var(--green);border-width:2px;" : "") + '">' + head + panel + "</div>";
+  var miss = f.miss.slice(); if (sd >= 90) miss.push(sd >= 9999 ? "не проверяли" : "не проверяли " + Math.floor(sd / 30) + " мес.");
+  return '<button type="button" class="pr" data-pedit="' + p.id + '"><span class="l1"><span class="nm">' + esc(p.name) + "</span>" + badgeOf(p, f) + "</span>" +
+    '<span class="ct">' + esc(catName(p.cat)) + "</span>" +
+    '<span class="bar"><i><b style="width:' + f.pct + '%"></b></i></span>' +
+    '<span class="ms">' + (miss.length ? esc(miss.join(", ")) : "всё заполнено") + "</span>" + extra +
+    (p.memo ? '<span class="st">' + esc(String(p.memo).slice(0, 80)) + "</span>" : "") + "</button>";
 }
-function plistHtml() {
-  var rows = plistRows();
-  return rows.length ? rows.map(pcard).join("") : '<div class="note">Никого не найдено.</div>';
+function plural(n, a, b, c) { n = Math.abs(n) % 100; var m = n % 10; if (n > 10 && n < 20) return c; if (m > 1 && m < 5) return b; if (m === 1) return a; return c; }
+function plistRows() {
+  var q = norm(PSQ);
+  return PLACES.filter(function (p) {
+    if (PSF === "hid" ? !p.hidden : PSF === "unf" ? (p.hidden || fillInfo(p).pct >= 100) : PSF === "old" ? (p.hidden || staleInfo(p) < 90) : false) return false;
+    if (!PSF && false) return false;
+    return !q || norm(p.name + " " + (p.phone || "")).replace(/[^а-яa-z0-9+]/g, "").indexOf(q.replace(/[^а-яa-z0-9+]/g, "")) >= 0 || norm(p.name + " " + (p.phone || "")).indexOf(q) >= 0;
+  }).sort(function (a, b) { return String(a.name).localeCompare(String(b.name), "ru"); });
 }
-function plistTab() {
-  var cnt = {}; PLACES.forEach(function (p) { var k = p.status || "none"; cnt[k] = (cnt[k] || 0) + 1; });
-  var nh = PLACES.filter(function (p) { return p.hidden; }).length, no = PLACES.filter(function (p) { return staleInfo(p) >= 120; }).length;
-  var chips = [["", "Все", PLACES.length], ["none", "Без статуса", cnt.none || 0], ["old", "Давно не проверяли", no], ["hid", "Скрытые", nh]].concat(PST.filter(function (x) { return x; }).map(function (x) { return [x, x, cnt[x] || 0]; }));
-  return '<input id="psq" value="' + esc(PSQ) + '" placeholder="Найти: название, телефон, заметка" style="margin-bottom:2px">' +
-    '<div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:6px">' + chips.map(function (c) { var on = PSF === c[0]; return '<button type="button" data-psf="' + esc(c[0]) + '" style="flex:none;border-radius:999px;border:1px solid ' + (on ? "var(--green)" : "var(--line)") + ";background:" + (on ? "var(--green)" : "#fff") + ";color:" + (on ? "#fff" : "var(--ink)") + ';font:inherit;font-size:15px;font-weight:800;padding:10px 16px;white-space:nowrap;cursor:pointer">' + esc(c[1]) + " " + c[2] + "</button>"; }).join("") + "</div>" +
+function plistHtml() { var rows = plistRows(); return rows.length ? rows.map(placeRow).join("") : '<div class="note">Никого не найдено.</div>'; }
+function placesView() {
+  var nv = PLACES.filter(function (p) { return !p.hidden; });
+  var cnt = { unf: nv.filter(function (p) { return fillInfo(p).pct < 100; }).length, old: nv.filter(function (p) { return staleInfo(p) >= 90; }).length, hid: PLACES.filter(function (p) { return p.hidden; }).length };
+  var chips = [["", "Все", PLACES.length], ["unf", "Не заполнены", cnt.unf], ["old", "Проверить", cnt.old], ["hid", "Скрытые", cnt.hid]];
+  return '<div class="top"><h1>Заведения</h1><button type="button" class="btn sm" data-padd="1" style="min-width:150px">＋ Добавить</button></div>' +
+    '<input id="psq" type="search" value="' + esc(PSQ) + '" placeholder="Название или телефон" aria-label="Поиск по названию и телефону">' +
+    '<div class="chips">' + chips.map(function (c) { return '<button type="button" data-psf="' + c[0] + '" aria-pressed="' + (PSF === c[0]) + '">' + c[1] + " <span>" + c[2] + "</span></button>"; }).join("") + "</div>" +
     '<div id="plist" style="display:flex;flex-direction:column;gap:10px">' + plistHtml() + "</div>";
 }
-function placesTab() {
-  var e = EDIT || {}, f = function (k) { return esc(e[k] || ""); };
-  var inp = function (id, label, k, hint, extra) { return '<label>' + label + (hint ? "<small>" + hint + "</small>" : "") + '<input id="' + id + '" ' + (extra || "") + ' value="' + f(k) + '"></label>'; };
-  var opts = '<option value="">— выберите —</option>' + CATS.map(function (c) { return '<option value="' + esc(c.id) + '"' + (e.cat === c.id ? " selected" : "") + ">" + esc(c.name) + "</option>"; }).join("");
-  var back = (FROMLIST && EDIT) ? '<button type="button" class="btn alt sm" data-tab="plist">← К списку</button>' : "";
-  var form = back + '<form class="card" id="pf"><h2>' + (e.id ? "Изменить заведение" : "Новое заведение") + "</h2>" +
-    '<label>Раздел<select id="pcat">' + opts + "</select></label>" +
-    inp("pnm", "Название", "name", "", 'maxlength="120"') +
-    '<label>Коротко о заведении<small>можно не писать</small><textarea id="pab" maxlength="400" style="min-height:80px">' + f("about") + "</textarea></label>" +
-    inp("pad", "Адрес", "addr", "например: ул. Коммунистическая, 22", 'maxlength="150"') +
-    inp("pno", "Подсказка к адресу", "note", "например: вход со двора или как получить заказ. Можно не писать", 'maxlength="200"') +
-    inp("pph", "Телефон", "phone", "", 'maxlength="40" inputmode="tel"') +
-    hrsEditor("pho", "Часы работы", "поставьте галочку у рабочих дней и укажите время. Дни без галочки считаются выходными", e.hours) +
-    inp("psi", "Сайт", "site", "можно не писать", 'maxlength="200"') +
-    inp("pwa", "WhatsApp", "wa", "номер телефона или ссылка. Можно не писать", 'maxlength="200"') +
-    inp("ptg", "Telegram", "tg", "@имя, номер или ссылка. Можно не писать", 'maxlength="200"') +
-    inp("pvk", "ВКонтакте", "vk", "ссылка. Можно не писать", 'maxlength="200"') +
-    inp("pmx", "MAX", "max", "ссылка на профиль или канал в MAX (max.ru/...). Можно не писать", 'maxlength="200"') +
-    inp("prv", "Отзывы на Яндекс Картах", "reviews", "ссылка на карточку заведения на Яндекс Картах. Можно не писать", 'maxlength="200"') +
-    '<label>Что говорят клиенты<small>по одной строке: имя | отзыв. Например: Анна, установка окон | Всё сделали быстро и аккуратно. Только настоящие отзывы, с согласия человека. Можно не заполнять</small><textarea id="pqt" maxlength="3000" style="min-height:120px">' + esc(e.quotesText || "") + "</textarea></label>" +
-    '<div class="stars-ed"><b style="font-size:15px">Звёзды заведения</b><small style="display:block;color:#4D6657;margin:2px 0 8px">Нажмите на звезду, и она станет зелёной. Нажмите ещё раз, и она снова станет прозрачной</small><div style="display:flex;gap:6px">' + [1, 2, 3, 4, 5].map(function (n) { return '<button type="button" data-star="' + n + '" aria-label="' + n + ' звезда" aria-pressed="' + (STARS.indexOf(n) >= 0) + '" style="width:52px;height:52px;border-radius:14px;border:2px solid #14532D;background:' + (STARS.indexOf(n) >= 0 ? "#14532D" : "transparent") + ';cursor:pointer;display:flex;align-items:center;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="' + (STARS.indexOf(n) >= 0 ? "#FFFFFF" : "none") + '" stroke="' + (STARS.indexOf(n) >= 0 ? "#FFFFFF" : "#14532D") + '" stroke-width="2" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>'; }).join("") + "</div></div>" +
+
+/* ---------- карточка заведения ---------- */
+function newDraft() { return { id: 0, cat: "", name: "", about: "", addr: "", note: "", phone: "", hours: "", site: "", wa: "", tg: "", vk: "", max: "", reviews: "", quotesText: "", rec: false, priceText: "", priceNote: "", status: "", memo: "", hidden: false, photoIds: [], photos: [], upd: "", chk: "", open: { main: true, link: true } }; }
+function openEditor(p) {
+  if (p) { ED = newDraft(); for (var k in p) if (k in ED) ED[k] = p[k]; ED.photoIds = [].concat(p.photoIds || []); ED.photos = [].concat(p.photos || []); ED.open = {}; }
+  else ED = newDraft();
+  EDS = { saving: false, dirty: false, t: null, msg: "", cls: "", nst: ED.status || "", nmemo: ED.memo || "", delAsk: false };
+  MSG = null; draw(true); window.scrollTo(0, 0);
+}
+function priceParse(t) { var out = []; String(t || "").split("\n").forEach(function (l) { l = l.trim(); if (!l) return; var i = l.indexOf("|"); out.push(i < 0 ? [l, ""] : [l.slice(0, i).trim(), l.slice(i + 1).trim()]); }); return out; }
+function priceRowHtml(s, p) { return '<div class="pr-row"><button type="button" class="pr-h" data-prh="1" aria-label="Перетащить строку">⋮⋮</button><input class="pr-s" maxlength="120" placeholder="Услуга" value="' + esc(s) + '" aria-label="Услуга"><input class="pr-p" maxlength="40" placeholder="Цена" value="' + esc(p) + '" aria-label="Цена"><button type="button" class="pr-x" data-prdel="1" aria-label="Удалить строку">✕</button></div>'; }
+function readPrice() {
+  var rows = document.querySelectorAll("#prl .pr-row"), out = [];
+  for (var i = 0; i < rows.length; i++) {
+    var s = rows[i].querySelector(".pr-s").value.replace(/[|\r\n]+/g, " ").trim(), p = rows[i].querySelector(".pr-p").value.replace(/[|\r\n]+/g, " ").trim();
+    if (s || p) out.push(s + " | " + p);
+  }
+  return out.join("\n");
+}
+function catOpts(q, sel) {
+  q = norm(q).trim();
+  var list = CATS.slice().sort(function (a, b) { return a.name.localeCompare(b.name, "ru"); }).filter(function (c) { return !q || norm(c.name).indexOf(q) >= 0 || c.id === sel; });
+  return '<option value="">— выберите —</option>' + list.map(function (c) { return '<option value="' + esc(c.id) + '"' + (c.id === sel ? " selected" : "") + ">" + esc(c.name) + "</option>"; }).join("");
+}
+function fPhone(v) {
+  var d = String(v || "").replace(/\D/g, "");
+  if (d.length === 11 && (d[0] === "7" || d[0] === "8")) d = d.slice(1); else if (d.length === 10) { } else return v;
+  return "+7 (" + d.slice(0, 3) + ") " + d.slice(3, 6) + "-" + d.slice(6, 8) + "-" + d.slice(8, 10);
+}
+function blockDone(k) {
+  var e = ED;
+  if (k === "main") return !!(e.cat && e.name && e.about && e.addr);
+  if (k === "hours") return !!e.hours;
+  if (k === "link") return !!(e.phone && (e.vk || e.site || e.tg || e.wa || e.max));
+  if (k === "photo") return !!(e.photoIds && e.photoIds.length);
+  if (k === "price") return !!e.priceText;
+  return false;
+}
+function blk(k, title, inner, showCheck) {
+  var o = !!ED.open[k], d = showCheck !== false && blockDone(k);
+  return '<section class="blk"><button type="button" class="bh" data-blk="' + k + '" aria-expanded="' + o + '"><span class="bt">' + title + '</span>' + (showCheck === false ? "" : '<span class="bc' + (d ? " on" : "") + '" data-bc="' + k + '">' + (d ? IC.check : "") + "</span>") + '<span class="chev">' + IC.chev + '</span></button><div class="bb"' + (o ? "" : " hidden") + ">" + inner + "</div></section>";
+}
+function inp(id, label, v, hint, extra) { return '<label>' + label + (hint ? "<small>" + hint + "</small>" : "") + '<input id="' + id + '" ' + (extra || "") + ' value="' + esc(v) + '"></label>'; }
+function photoInner() {
+  var e = ED, ids = e.photoIds || [], urls = e.photos || [];
+  if (!e.id) return '<div class="note">Фото можно добавить, когда заведение сохранено. Заполните раздел, название и телефон, это произойдёт само.</div>';
+  return '<div class="note">До 6 фото, первое показывается первым. Быстро: скопируйте картинку и нажмите здесь Ctrl+V.</div>' +
+    (ids.length ? '<div class="ph-grid">' + ids.map(function (f, i) { return '<div style="display:flex;flex-direction:column;gap:6px"><img src="' + esc(urls[i]) + '" alt=""><button type="button" class="btn red sm" data-delph="' + esc(f) + '">Убрать</button></div>'; }).join("") + "</div>" : "") +
+    (ids.length < 6 ? '<label>Добавить фото<input id="pfile" type="file" accept="image/*" multiple' + (PHBUSY ? " disabled" : "") + "></label>" : "") + (PHBUSY ? '<div class="note">Загружаю…</div>' : "");
+}
+function afterFirstSave() {
+  var pb = document.querySelector('[data-blk="photo"]'); if (pb && pb.nextElementSibling) pb.nextElementSibling.innerHTML = photoInner();
+  var c = document.querySelector("[data-echk]"), h = document.querySelector("[data-ehide]"); if (c) c.disabled = false; if (h) h.disabled = false;
+}
+function editorView() {
+  var e = ED, h = "";
+  h += '<div class="eh"><button type="button" class="ib0" data-ecancel="1" aria-label="Назад к списку">' + IC.back + '</button><h1>' + esc(e.name || "Новое заведение") + '</h1><button type="button" class="btn alt sm" data-prev="1">Как увидят</button></div>';
+  h += blk("main", "Основное",
+    '<label>Раздел<input id="pcs" type="search" placeholder="Найти раздел…" aria-label="Найти раздел" autocomplete="off" style="margin-bottom:6px"><select id="pcat">' + catOpts("", e.cat) + "</select></label>" +
+    inp("pnm", "Название", e.name, "", 'maxlength="120"') +
+    '<label>Коротко о заведении<small>до 400 знаков. Телефон и ссылки сюда не пишите</small><textarea id="pab" maxlength="400" style="min-height:90px">' + esc(e.about) + "</textarea></label>" +
+    inp("pad", "Адрес", e.addr, "например: ул. Коммунистическая, 22", 'maxlength="150"') +
+    inp("pno", "Подсказка к адресу", e.note, "например: вход со двора. Можно не писать", 'maxlength="200"') +
+    '<label>Что говорят клиенты<small>по одной строке: имя | отзыв. Только настоящие, с согласия человека. Можно не заполнять</small><textarea id="pqt" maxlength="3000" style="min-height:90px">' + esc(e.quotesText) + "</textarea></label>");
+  h += blk("hours", "Часы работы", hrsEditor("pho", "", "Галочка у рабочих дней, время и при желании обед. Дни без галочки считаются выходными.", e.hours));
+  h += blk("link", "Связь",
+    inp("pph", "Телефон", e.phone, "нужен, чтобы сохранить карточку", 'maxlength="40" inputmode="tel" autocomplete="off"') +
+    '<div class="row-in">' + inp("pwa", "WhatsApp", e.wa, "номер или ссылка", 'maxlength="200"') + '<button type="button" class="btn alt" data-wafrom="1">Как телефон</button></div>' +
+    inp("ptg", "Telegram", e.tg, "@имя, номер или ссылка", 'maxlength="200"') +
+    inp("pvk", "ВКонтакте", e.vk, "ссылка", 'maxlength="200"') +
+    inp("pmx", "MAX", e.max, "ссылка max.ru/…", 'maxlength="200"') +
+    inp("psi", "Сайт", e.site, "можно не писать", 'maxlength="200"') +
+    inp("prv", "Яндекс Карты", e.reviews, "ссылка на карточку заведения. Можно не писать", 'maxlength="200"'));
+  var ids = e.photoIds || [], ph = photoInner();
+  h += blk("photo", "Фото" + (ids.length ? " · " + ids.length + " из 6" : ""), ph);
+  var pr = priceParse(e.priceText); if (!pr.length) pr = [["", ""]];
+  h += blk("price", "Прайс",
+    '<div class="note">Услуга и цена в разных полях. Строки можно перетаскивать за значок слева.</div><div class="prl" id="prl">' + pr.map(function (r) { return priceRowHtml(r[0], r[1]); }).join("") + "</div>" +
+    '<button type="button" class="btn alt sm" data-pradd="1">＋ строка</button>' + inp("ppn", "Пояснение под прайсом", e.priceNote, "можно не писать", 'maxlength="300"'));
+  var sd = staleInfo(e);
+  h += blk("sett", "Настройки",
     '<label class="check"><input type="checkbox" id="prec"' + (e.rec ? " checked" : "") + "> Показывать значок «Рекомендуем»</label>" +
-    '<label>Прайс-лист<small>по одной строке: услуга | цена. Например: Стрижка | 800 ₽. Можно не заполнять</small><textarea id="ppr" maxlength="4000" style="min-height:140px">' + esc(e.priceText || "") + "</textarea></label>" +
-    inp("ppn", "Пояснение под прайсом", "priceNote", "можно не писать", 'maxlength="300"') +
-    '<button class="btn" type="submit"' + (BUSY ? " disabled" : "") + ">" + (e.id ? "Сохранить изменения" : "Добавить в приложение") + "</button>" +
-    (e.id ? '<button class="btn alt sm" type="button" data-newp="1">Отмена, добавить другое</button>' : "") + "</form>";
-  var ph = "";
-  if (e.id) {
-    var ids = e.photoIds || [], urls = e.photos || [];
-    ph = '<div class="card"><h2>Фото заведения</h2><div class="note">До 6 фото. Первое показывается в карточке первым. Фото сжимаются сами. <b>Быстро:</b> скопируйте картинку (в ВК правой кнопкой «Копировать изображение») и нажмите здесь Ctrl+V. Файл выбирать не нужно.</div>' +
-      (ids.length ? '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">' + ids.map(function (f, i) { return '<div style="display:flex;flex-direction:column;gap:6px"><img src="' + esc(urls[i]) + '" alt="" style="width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px;background:#DCEFE2"><button type="button" class="btn red sm" data-delph="' + esc(f) + '">Убрать</button></div>'; }).join("") + "</div>" : "") +
-      (ids.length < 6 ? '<label>Добавить фото<input id="pfile" type="file" accept="image/*" multiple' + (PHBUSY ? " disabled" : "") + "></label>" : "") + (PHBUSY ? '<div class="note">Загружаю…</div>' : "") + "</div>";
-  } else ph = '<div class="note">Фото можно добавить после того, как заведение сохранено.</div>';
-  var list = '<h2>Сейчас в приложении: ' + PLACES.length + "</h2>" + (PLACES.length ? PLACES.map(function (p) {
-    return '<div class="ni"><b>' + esc(p.name) + '</b><div class="m"><span>' + esc(catName(p.cat)) + "</span>" + (p.rec ? '<span class="nt gold">Рекомендуем</span>' : "") + "<span>" + [1, 2, 3, 4, 5].map(function (n) { return (p.stars || []).indexOf(n) >= 0 ? "★" : "☆"; }).join("") + "</span>" + "</div><div class=\"m\">" + esc(p.phone) + "</div>" +
-      '<div style="display:flex;gap:8px"><button class="btn alt sm" style="flex:1" data-edit="' + p.id + '">Изменить</button>' +
-      (PDEL === String(p.id) ? '<button class="btn red sm" style="flex:1" data-delp="' + p.id + '">Да, убрать</button>' : '<button class="btn red sm" style="flex:1" data-askdelp="' + p.id + '">Убрать</button>') + "</div></div>";
-  }).join("") : '<div class="note">Пока никого нет.</div>');
-  return form + ph + list;
-}
-function bannersTab() {
-  var e = BEDIT || {}, f = function (k) { return esc(e[k] || ""); };
-  var opts = '<option value="">— выберите —</option>' + CATS.map(function (c) { return '<option value="' + esc(c.id) + '"' + (e.cat === c.id ? " selected" : "") + ">" + esc(c.name) + "</option>"; }).join("");
-  var form = '<form class="card" id="bf"><h2>' + (BEDIT ? "Изменить плашку" : "Новая плашка") + "</h2>" +
-    '<div class="note">Плашка показывается вверху раздела, над списком заведений. В одном разделе одна плашка. Если выбрать раздел, где плашка уже есть, она заменится.</div>' +
-    '<label>Раздел<select id="bcat">' + opts + "</select></label>" +
-    '<label>Заголовок<small>до 80 знаков</small><input id="bti" maxlength="80" value="' + f("title") + '"></label>' +
-    '<label>Текст<small>до 300 знаков, можно не писать</small><textarea id="bte" maxlength="300" style="min-height:90px">' + f("text") + "</textarea></label>" +
-    '<label>Ссылка<small>начинается с https://. Можно не писать</small><input id="bur" maxlength="300" value="' + f("url") + '"></label>' +
-    '<button class="btn" type="submit"' + (BUSY ? " disabled" : "") + ">" + (BEDIT ? "Сохранить плашку" : "Показать плашку") + "</button>" +
-    (BEDIT ? '<button class="btn alt sm" type="button" data-bnew="1">Отмена, добавить другую</button>' : "") + "</form>";
-  var list = '<h2>Сейчас в приложении: ' + BANNERS.length + "</h2>" + (BANNERS.length ? BANNERS.map(function (b) {
-    return '<div class="ni"><b>' + esc(catName(b.cat)) + "</b>" + (b.title ? '<div class="m"><b>' + esc(b.title) + "</b></div>" : "") + (b.text ? "<p>" + esc(b.text) + "</p>" : "") +
-      '<div style="display:flex;gap:8px"><button class="btn alt sm" style="flex:1" data-bedit="' + esc(b.cat) + '">Изменить</button>' +
-      (BDEL === b.cat ? '<button class="btn red sm" style="flex:1" data-delb="' + esc(b.cat) + '">Да, убрать</button>' : '<button class="btn red sm" style="flex:1" data-askdelb="' + esc(b.cat) + '">Убрать</button>') + "</div></div>";
-  }).join("") : '<div class="note">Пока ни одной плашки.</div>');
-  return form + list;
-}
-function statsTab() {
-  var s = STATS; if (!s) return '<div class="note">Загружаю…</div>';
-  var g = function (o, k) { return (o && o[k]) || 0; };
-  var mx = Math.max.apply(null, s.days.map(function (d) { return d.n; }).concat([1]));
-  var h = '<div class="tiles"><div class="tile"><b>' + s.total + "</b><span>установили приложение</span></div>" +
-    '<div class="tile"><b>' + g(s.roles, "житель") + "</b><span>жителей</span></div>" +
-    '<div class="tile"><b>' + g(s.roles, "владелец") + "</b><span>владельцев бизнеса</span></div>" +
-    '<div class="tile"><b>' + g(s.roles, "не выбрано") + "</b><span>не ответили</span></div>" +
-    '<div class="tile"><b>' + g(s.plats, "android") + "</b><span>Android</span></div>" +
-    '<div class="tile"><b>' + g(s.plats, "iphone") + "</b><span>iPhone</span></div>" +
-    '<div class="tile"><b>' + g(s.srcs, "QR Android") + "</b><span>пришли по QR Android</span></div>" +
-    '<div class="tile"><b>' + g(s.srcs, "QR iPhone") + "</b><span>пришли по QR iPhone</span></div>" +
-    '<div class="tile"><b>' + (s.invited || 0) + "</b><span>пришли по приглашению друга</span></div></div>";
-  h += '<div class="card"><h2>Установки за 14 дней</h2><div class="bars">' + s.days.map(function (d) { return '<div style="height:' + Math.round(d.n / mx * 100) + '%" title="' + esc(d.d) + ": " + d.n + '"><i>' + (d.n || "") + "</i></div>"; }).join("") + '</div><div class="bl">' + s.days.map(function (d) { return "<span>" + esc(d.d.slice(8)) + "</span>"; }).join("") + "</div></div>";
-  h += '<div class="card"><h2>Заведения</h2>' + (s.orgs.length ? '<div class="scroll"><table><tr><th>Название</th><th class="n">Открыли</th><th class="n">Прайс</th><th class="n">Звонки</th><th class="n">Маршрут</th></tr>' +
-    s.orgs.map(function (o) { return "<tr><td>" + esc(o.org) + '</td><td class="n">' + o.views + '</td><td class="n">' + o.prices + '</td><td class="n">' + o.calls + '</td><td class="n">' + o.routes + "</td></tr>"; }).join("") + "</table></div>" : '<div class="note">Пока данных нет.</div>') + "</div>";
-  h += '<div class="card"><h2>Действия</h2><div class="note">Открыли новости: <b>' + g(s.events, "news_open") + "</b> · Позвонили из карточек: <b>" + g(s.events, "call_click") + "</b> · Открыли раздел для владельцев: <b>" + g(s.events, "owner_info") + "</b></div></div>";
-  if (s.refs && s.refs.length) h += '<div class="card"><h2>Кто приглашает друзей</h2><div class="scroll"><table><tr><th>Номер</th><th class="n">Привёл</th></tr>' + s.refs.map(function (r) { return "<tr><td><b>" + esc(r.id) + '</b></td><td class="n">' + r.n + "</td></tr>"; }).join("") + "</table></div></div>";
-  if (s.recent) h += '<div class="card"><h2>Последние участники</h2><div class="scroll"><table><tr><th>Номер</th><th>Когда</th><th>Кто</th><th>Телефон</th></tr>' +
-    s.recent.map(function (r) { return "<tr><td><b>" + esc(r.id) + "</b></td><td>" + esc(r.date) + "</td><td>" + esc(r.role) + "</td><td>" + esc(r.plat) + "</td></tr>"; }).join("") + "</table></div></div>";
+    '<label>Статус для себя<select id="pst">' + PST.map(function (x) { return '<option value="' + esc(x) + '"' + (e.status === x ? " selected" : "") + ">" + (x || "без статуса") + "</option>"; }).join("") + "</select></label>" +
+    '<label>Заметка для себя<textarea id="pmemo" maxlength="500" style="min-height:80px" placeholder="Например: логотип пришлёт в пятницу">' + esc(e.memo) + "</textarea></label>" +
+    '<div class="note">Обновлено: ' + (e.upd ? esc(fmt(e.upd)) : "нет данных") + " · Проверено: " + (e.chk ? esc(fmt(e.chk)) : "ни разу") + "</div>" +
+    '<div class="big"><button type="button" class="btn alt sm" data-echk="1"' + (e.id ? "" : " disabled") + '>Проверено сегодня</button><button type="button" class="btn alt sm" data-ehide="1"' + (e.id ? "" : " disabled") + ">" + (e.hidden ? "Показать на сайте" : "Скрыть с сайта") + "</button></div>" +
+    (e.id ? (EDS.delAsk ? '<div class="big" style="align-items:center"><b style="flex:1 1 100%">Точно удалить насовсем?</b><button type="button" class="btn red sm" data-edel="1">Да</button><button type="button" class="btn alt sm" data-edelno="1">Нет</button></div>' : '<button type="button" class="btn red sm" data-edelask="1">Удалить насовсем…</button>') : ""), false);
+  h += '<div class="savest ' + EDS.cls + '" id="savest" role="status" aria-live="polite">' + esc(EDS.msg) + "</div>";
+  h += '<div class="row2"><button type="button" class="btn" data-edone="1">Готово</button><button type="button" class="btn alt" data-ecancel="1">Отмена</button></div>';
   return h;
 }
-function drawTab() {
-  return '<form class="card" id="df"><h2>Розыгрыш призов</h2><div class="note">Победители выбираются случайно среди всех, у кого есть номер. Результат записывается в таблицу.</div>' +
-    '<label>Что разыгрываем<input id="dpr" maxlength="100" placeholder="Например: сертификат на 2 000 ₽"></label>' +
-    '<label>Сколько победителей<select id="dn">' + [1, 2, 3, 5, 10].map(function (n) { return "<option>" + n + "</option>"; }).join("") + "</select></label>" +
-    '<button class="btn" type="submit"' + (BUSY ? " disabled" : "") + ">Выбрать победителей</button></form>" +
-    (WIN ? '<div class="card"><h2>Победители</h2>' + WIN.winners.map(function (w) { return '<div class="win">' + esc(w) + "</div>"; }).join("") + '<div class="note">Участников в розыгрыше: ' + WIN.total + ". Сделайте снимок экрана и объявите итоги в новостях.</div></div>" : "") +
-    '<div class="note">Розыгрыш должен быть бесплатным, без обязательной покупки. Дорогие призы могут облагаться налогом у победителя — уточняйте заранее.</div>';
+function setSt(t, cls) { if (!EDS) return; EDS.msg = t; EDS.cls = cls || ""; var el = document.getElementById("savest"); if (el) { el.textContent = t; el.className = "savest " + (cls || ""); } }
+function readDraft() {
+  if (!ED || !document.getElementById("pnm")) return;
+  var g = val;
+  ED.cat = g("pcat"); ED.name = g("pnm").trim(); ED.about = g("pab"); ED.addr = g("pad"); ED.note = g("pno"); ED.quotesText = g("pqt");
+  ED.hours = g("pho"); ED.phone = g("pph").trim(); ED.wa = g("pwa"); ED.tg = g("ptg"); ED.vk = g("pvk"); ED.max = g("pmx"); ED.site = g("psi"); ED.reviews = g("prv");
+  ED.priceText = readPrice(); ED.priceNote = g("ppn"); ED.rec = document.getElementById("prec").checked; ED.status = g("pst"); ED.memo = g("pmemo");
 }
-function contactLinks(c) {
-  c = String(c || "").trim();
-  var digits = c.replace(/\D/g, ""), out = "";
-  var st = 'class="btn alt sm" style="flex:1;display:flex;align-items:center;justify-content:center;text-decoration:none" target="_blank" rel="noopener"';
-  if (/^@?[A-Za-z][A-Za-z0-9_]{4,}$/.test(c)) out = '<a ' + st + ' href="https://t.me/' + esc(c.replace("@", "")) + '">Написать в Telegram</a>';
-  else if (digits.length >= 10) {
-    if (digits.length === 11 && digits.charAt(0) === "8") digits = "7" + digits.slice(1);
-    out = '<a ' + st + ' href="tel:+' + digits + '">Позвонить</a><a ' + st + ' href="https://wa.me/' + digits + '">WhatsApp</a>';
-  }
-  return out ? '<div style="display:flex;gap:8px">' + out + "</div>" : "";
+function updateChecks() {
+  ["main", "hours", "link", "photo", "price"].forEach(function (k) {
+    var el = document.querySelector('[data-bc="' + k + '"]'); if (!el) return;
+    var d = blockDone(k); el.className = "bc" + (d ? " on" : ""); el.innerHTML = d ? IC.check : "";
+  });
+  var t = document.querySelector(".eh h1"); if (t) t.textContent = ED.name || "Новое заведение";
 }
-function ticketsTab() {
-  var open = TICKETS.filter(function (x) { return !x.done; }), done = TICKETS.filter(function (x) { return x.done; });
-  function one(x) {
-    var d = String(x.date || "").replace("T", " ").slice(0, 16);
-    return '<div class="ni"><b>' + esc(x.kind) + (x.biz ? ": " + esc(x.biz) : "") + '</b><div class="m"><span>' + esc(d) + "</span>" + (x.name ? "<span>" + esc(x.name) + "</span>" : "") + (x.pid ? "<span>" + esc(x.pid) + "</span>" : "") + "</div>" +
-      '<div class="m"><b>Связь: ' + esc(x.contact) + "</b></div>" + (x.msg ? "<p>" + esc(x.msg) + "</p>" : "") + contactLinks(x.contact) +
-      '<button class="btn ' + (x.done ? "alt" : "") + ' sm" data-tdone="' + esc(x.id) + '" data-tval="' + (x.done ? "0" : "1") + '">' + (x.done ? "Вернуть в новые" : "Отвечено") + "</button></div>";
-  }
-  return "<h2>Ждут ответа: " + open.length + "</h2>" + (open.length ? open.map(one).join("") : '<div class="note">Новых обращений нет.</div>') +
-    (done.length ? "<h2>Отвечено: " + done.length + "</h2>" + done.map(one).join("") : "");
+function scheduleSave() {
+  if (!ED || !EDS) return;
+  readDraft(); updateChecks(); EDS.dirty = true;
+  setSt("Изменения…", "");
+  clearTimeout(EDS.t); EDS.t = setTimeout(function () { doSave(); }, 1500);
 }
-var ADEL = "", ADCLR = 0;
-var ADCN = { prodazha: "Продам", kuplyu: "Куплю", tehnika: "Техника и электроника", avto: "Авто и запчасти", nedvizh: "Недвижимость", rabota: "Работа", uslugi: "Услуги", zhivotnye: "Животные", dacha: "Дом, дача, огород", darom: "Отдам даром", raznoe: "Разное" };
-var CATN = {};
-function ownersTab() {
-  var wait = OWN.filter(function (x) { return x.status === "ждёт"; });
-  var ok = OWN.filter(function (x) { return x.status === "подтверждён"; });
-  var other = OWN.filter(function (x) { return x.status !== "ждёт" && x.status !== "подтверждён"; });
-  function one(x) {
-    var d = String(x.date || "").slice(0, 10), t = "", b = "";
-    if (x.status === "ждёт" && x.req) {
-      if (x.req.type === "claim") t = "<p><b>Хочет управлять карточкой:</b> " + esc(x.req.placeName || ("№" + x.req.pid)) + "</p>";
-      else { var p = x.req.place || {}; t = "<p><b>Новое заведение:</b> " + esc(p.name) + "<br>Раздел: " + esc(p.cat) + "<br>Телефон: " + esc(p.phone) + (p.addr ? "<br>Адрес: " + esc(p.addr) : "") + (p.hours ? "<br>Часы: " + esc(p.hours) : "") + (p.about ? "<br>" + esc(p.about) : "") + "</p>"; }
-      b = '<button class="btn sm" data-oact="approve" data-oem="' + esc(x.email) + '">Подтвердить</button> <button class="btn alt sm" data-oact="reject" data-oem="' + esc(x.email) + '">Отклонить</button>';
-    } else if (x.status === "подтверждён") {
-      t = "<p>Карточка: " + esc(x.placeName || ("№" + x.pid)) + (x.edit ? "<br>Последняя правка: " + esc(x.edit.slice(0, 10)) : "") + "</p>";
-      b = ODEL === "u" + x.email ? '<button class="btn sm" data-oact="unlink" data-oem="' + esc(x.email) + '">Точно отвязать?</button> <button class="btn alt sm" data-oact="nodel">Нет</button>' : '<button class="btn alt sm" data-oact="askunlink" data-oem="' + esc(x.email) + '">Отвязать</button>';
-    } else {
-      b = ODEL === "d" + x.email ? '<button class="btn sm" data-oact="delete" data-oem="' + esc(x.email) + '">Точно удалить?</button> <button class="btn alt sm" data-oact="nodel">Нет</button>' : '<button class="btn alt sm" data-oact="askdel" data-oem="' + esc(x.email) + '">Удалить</button>';
-    }
-    return '<div class="ni"><b>' + esc(x.email) + '</b><div class="m"><span>' + esc(d) + "</span><span>Статус: " + esc(x.status) + "</span>" + (x.name ? "<span>" + esc(x.name) + "</span>" : "") + (x.phone ? "<span>" + esc(x.phone) + "</span>" : "") + "</div>" + t + (b ? "<div>" + b + "</div>" : "") + "</div>";
-  }
-  return '<div class="note">Владелец входит по коду из письма и сам меняет свою карточку. Вам нужно только подтвердить заявку.</div><h2>Ждут подтверждения: ' + wait.length + "</h2>" + (wait.length ? wait.map(one).join("") : '<div class="note">Новых заявок нет.</div>') +
-    (ok.length ? "<h2>Свои кабинеты: " + ok.length + "</h2>" + ok.map(one).join("") : "") +
-    (other.length ? "<h2>Вошли, но без заявки или отклонены: " + other.length + "</h2>" + other.map(one).join("") : "");
-}
-function adsTab() {
-  var wait = ADS.filter(function (x) { return x.status === "ждёт оплаты" || x.status === "на проверке" || x.status === "оплачено"; }).sort(function (p, q) { return (q.status === "на проверке" ? 1 : 0) - (p.status === "на проверке" ? 1 : 0); });
-  var live = ADS.filter(function (x) { return x.status === "опубликовано"; });
-  var other = ADS.filter(function (x) { return x.status === "отклонено" || x.status === "снято" || x.status === "срок вышел"; });
-  function one(x) {
-    var d = String(x.date || "").replace("T", " ").slice(0, 16), b = "";
-    if (x.status === "опубликовано") b = '<button class="btn sm" data-adact="extend" data-adid="' + esc(x.id) + '">Продлить на 5 дней</button> <button class="btn alt sm" data-adact="remove" data-adid="' + esc(x.id) + '">Снять</button>';
-    else if (x.status === "отклонено" || x.status === "снято" || x.status === "срок вышел") b = ADEL === x.id ? '<button class="btn sm" data-adact="delete" data-adid="' + esc(x.id) + '">Точно удалить?</button> <button class="btn alt sm" data-adact="nodel">Нет</button>' : '<button class="btn alt sm" data-adact="askdel" data-adid="' + esc(x.id) + '">Удалить</button>';
-    else {
-      if (x.status === "ждёт оплаты") b += '<button class="btn alt sm" data-adact="paid" data-adid="' + esc(x.id) + '">Оплата пришла</button> ';
-      b += '<button class="btn sm" data-adact="publish" data-adid="' + esc(x.id) + '">Опубликовать на 5 дней</button> <button class="btn alt sm" data-adact="reject" data-adid="' + esc(x.id) + '">Отклонить</button>';
-    }
-    return '<div class="ni"><b>' + esc(x.title) + '</b><div class="m"><span>' + esc(ADCN[x.cat] || x.cat) + "</span><span>" + esc(d) + "</span><span>Статус: " + esc(x.status) + "</span>" + (x.sum && x.sum !== "0" ? "<span>К оплате: " + esc(x.sum) + " ₽</span>" : "") + (x.till ? "<span>до " + esc(fmt(x.till)) + "</span>" : "") + "</div>" +
-      "<p>" + esc(x.text) + "</p>" + (x.price ? '<div class="m"><b>Цена: ' + esc(x.price) + "</b></div>" : "") +
-      ((x.photos && x.photos.length) ? '<div class="m">' + x.photos.map(function (u) { return '<a href="' + esc(u) + '" target="_blank" rel="noopener"><img src="' + esc(u) + '" alt="" style="width:90px;height:90px;object-fit:cover;border-radius:10px"></a>'; }).join(" ") + "</div>" : "") +
-      '<div class="m"><b>Связь: ' + esc(x.contact) + "</b>" + (x.name ? "<span>" + esc(x.name) + "</span>" : "") + (x.pid ? "<span>" + esc(x.pid) + "</span>" : "") + "</div>" + contactLinks(x.contact) + (x.reason ? '<div class="m"><b>' + (x.status === "отклонено" ? "Причина отказа: " : "") + esc(x.reason) + "</b></div>" : "") + (b ? "<div>" + b + "</div>" : "") + "</div>";
-  }
-  return "<h2>Ждут проверки: " + wait.length + "</h2>" + (wait.length ? wait.map(one).join("") : '<div class="note">Новых объявлений нет.</div>') +
-    (live.length ? "<h2>На доске: " + live.length + "</h2>" + live.map(one).join("") : "") +
-    (other.length ? "<h2>Отклонены, сняты и с истёкшим сроком: " + other.length + '</h2><button class="btn alt sm" data-adact="clear">Очистить все ненужные</button>' + other.map(one).join("") : "");
-}
-function mainView() {
-  var body = TAB === "news" ? newsTab() : TAB === "places" ? placesTab() : TAB === "stats" ? statsTab() : TAB === "tickets" ? ticketsTab() : TAB === "ads" ? adsTab() : TAB === "owners" ? ownersTab() : TAB === "plist" ? plistTab() : TAB === "banners" ? bannersTab() : drawTab();
-  return '<div class="top"><div><h1>Администратор Б-56</h1><div class="who">' + "Администратор" + (DEMO ? " · пробный режим" : "") + '</div></div><button class="btn alt sm" data-out="1">Выйти</button></div>' +
-    (MSG ? '<div class="msg' + (MSG.err ? " err" : "") + '">' + esc(MSG.t) + "</div>" : "") + tabsHtml() + body;
-}
-function draw() {
-  var ids = ["nty", "nti", "nte", "nor", "nun", "dpr", "dn", "pw"], pids = ["pcat", "pnm", "pab", "pad", "pno", "pph", "pho", "psi", "pwa", "ptg", "pvk", "prv", "pqt", "ppr", "ppn", "bcat", "bti", "bte", "bur"], keep = {}, rec = null;
-  if (!FRESH) pids.forEach(function (i) { ids.push(i); });
-  ids.forEach(function (i) { var e = document.getElementById(i); if (e) keep[i] = e.value; });
-  var re = document.getElementById("prec"); if (re && !FRESH) rec = re.checked;
-  root.innerHTML = ROLE ? mainView() : loginView();
-  Object.keys(keep).forEach(function (i) { var e = document.getElementById(i); if (e) e.value = keep[i]; });
-  if (rec !== null) { var r2 = document.getElementById("prec"); if (r2) r2.checked = rec; }
-  FRESH = false;
-  hrsLoadAll();
-}
-
-/* ---------- действия ---------- */
-function say(t, err) { MSG = { t: t, err: !!err }; }
-function afterAuthFail(r) { if (r && /парол/i.test(r.err || "")) { PW = ""; ROLE = ""; sdel("b56_adm"); MSG = r.err; } else say((r && r.err) || "Ошибка", true); }
-function loadTab() {
-  if (TAB === "news") call({ a: "news_list", pw: PW }).then(function (r) { if (r.ok) NEWS = r.items; else afterAuthFail(r); draw(); });
-  else if (TAB === "plist") call({ a: "places_list", pw: PW }).then(function (r) { if (r.ok) PLACES = r.items; else afterAuthFail(r); draw(); });
-  else if (TAB === "places") call({ a: "places_list", pw: PW }).then(function (r) { if (r.ok) PLACES = r.items; else afterAuthFail(r); draw(); });
-  else if (TAB === "banners") call({ a: "banners_list", pw: PW }).then(function (r) { if (r.ok) BANNERS = r.items; else afterAuthFail(r); draw(); });
-  else if (TAB === "tickets") call({ a: "tickets_list", pw: PW }).then(function (r) { if (r.ok) { TICKETS = r.items; OPEN_T = TICKETS.filter(function (x) { return !x.done; }).length; } else afterAuthFail(r); draw(); });
-  else if (TAB === "owners") call({ a: "owners_admin", pw: PW }).then(function (r) { if (r.ok) { OWN = r.items; OPEN_O = OWN.filter(function (x) { return x.status === "ждёт"; }).length; } else afterAuthFail(r); draw(); });
-  else if (TAB === "ads") call({ a: "ads_admin", pw: PW }).then(function (r) { if (r.ok) { ADS = r.items; OPEN_A = ADS.filter(function (x) { return x.status === "ждёт оплаты" || x.status === "на проверке" || x.status === "оплачено"; }).length; } else afterAuthFail(r); draw(); });
-  else if (TAB === "stats") { STATS = null; draw(); call({ a: "stats", pw: PW }).then(function (r) { if (r.ok) STATS = r; else afterAuthFail(r); draw(); }); }
-  else draw();
-}
-function login(pw, remember) {
-  BUSY = true; MSG = null; draw();
-  call({ a: "login", pw: pw }).then(function (r) {
-    BUSY = false;
-    if (r.ok) { PW = pw; ROLE = r.role; TGOK = !!r.tg; if (remember) sset("b56_adm", pw); TAB = "plist"; MSG = null; loadTab(); call({ a: "owners_admin", pw: pw }).then(function (q) { if (q.ok) { OPEN_O = q.items.filter(function (x) { return x.status === "ждёт"; }).length; draw(); } }); call({ a: "ads_admin", pw: pw }).then(function (q) { if (q.ok) { OPEN_A = q.items.filter(function (x) { return x.status === "ждёт оплаты" || x.status === "на проверке" || x.status === "оплачено"; }).length; draw(); } }); call({ a: "tickets_list", pw: pw }).then(function (q) { if (q.ok) { OPEN_T = q.items.filter(function (x) { return !x.done; }).length; draw(); } }); }
-    else { MSG = r.err || "Не получилось войти."; draw(); }
+function doSave(cb) {
+  if (!ED || !EDS) { if (cb) cb(false); return; }
+  var S = EDS;
+  clearTimeout(S.t);
+  if (S.saving) { S.dirty = true; S.after = cb || S.after; return; }
+  readDraft();
+  if (!ED.name || !ED.cat || !ED.phone) { setSt("Чтобы сохранить, заполните раздел, название и телефон.", "warn"); if (cb) cb(false); return; }
+  S.saving = true; S.dirty = false; setSt("Сохраняю…", "");
+  var e = ED, pl = { id: e.id || undefined, cat: e.cat, name: e.name, about: e.about, addr: e.addr, note: e.note, phone: e.phone, hours: e.hours, site: e.site, wa: e.wa, tg: e.tg, vk: e.vk, max: e.max, reviews: e.reviews, quotes: e.quotesText, rec: e.rec, price: e.priceText, priceNote: e.priceNote };
+  call({ a: "place_save", pw: PW, place: pl }).then(function (r) {
+    S.saving = false;
+    if (EDS !== S || !ED) return;
+    if (r.ok) {
+      var firstSave = !ED.id; if (firstSave) ED.id = r.id;
+      mergePlace(); if (firstSave) afterFirstSave();
+      var after = function () {
+        if (EDS !== S) return;
+        S.savedAt = hhmm();
+        var f = cb || S.after;
+        if (S.dirty) { S.after = f; setSt("Изменения…", ""); S.t = setTimeout(function () { doSave(); }, 600); }
+        else { S.after = null; setSt("Сохранено · " + S.savedAt, "ok"); if (f) f(true); }
+      };
+      if (ED.status !== S.nst || ED.memo !== S.nmemo) {
+        var st = ED.status, mm = ED.memo;
+        call({ a: "place_note", pw: PW, id: ED.id, status: st, memo: mm }).then(function (q) { if (q.ok) { S.nst = st; S.nmemo = mm; mergePlace(); } after(); });
+      } else after();
+    } else if (netErr(r)) {
+      S.dirty = true; S.after = cb || S.after; setSt("Нет связи. Попробую ещё раз через 5 секунд…", "err");
+      S.t = setTimeout(function () { doSave(); }, 5000);
+    } else { if (/парол|попыт/i.test(r.err || "")) { afterAuthFail(r); draw(true); return; } setSt(r.err || "Не получилось сохранить.", "err"); if (cb) cb(false); }
   });
 }
-root.addEventListener("submit", function (e) {
-  e.preventDefault();
-  var id = e.target.id;
-  if (id === "lf") { login(document.getElementById("pw").value, document.getElementById("rem").checked); return; }
-  if (id === "nf") {
-    var nfi = document.getElementById("nfile"), nfl = nfi && nfi.files && nfi.files[0];
-    var nreq = { a: "news_add", pw: PW, tg: !!(document.getElementById("ntg") && document.getElementById("ntg").checked), type: val("nty"), title: val("nti"), text: val("nte"), org: val("nor"), until: val("nun") };
-    BUSY = true; draw();
-    (nfl ? shrink(nfl).then(function (b64) { nreq.data = b64; }, function () { return Promise.reject("img"); }) : Promise.resolve()).then(function () { return call(nreq); }, function () { return { ok: false, err: "Не получилось прочитать картинку. Нужна обычная фотография." }; }).then(function (r) {
-      BUSY = false;
-      if (r.ok) { say(r.tgSent ? "Опубликовано в приложении и в Telegram." : r.tgErr ? "Опубликовано в приложении. В Telegram не ушло: " + r.tgErr : "Опубликовано. Жители увидят это в приложении."); ["nti", "nte", "nor", "nun"].forEach(function (i) { var x = document.getElementById(i); if (x) x.value = ""; }); loadTab(); }
-      else { afterAuthFail(r); draw(); }
+function mergePlace() {
+  if (!ED || !ED.id) return;
+  var hit = false;
+  PLACES.forEach(function (p) { if (p.id === ED.id) { hit = true; for (var k in ED) if (k !== "open") p[k] = ED[k]; p.upd = new Date().toISOString().slice(0, 10); ED.upd = p.upd; } });
+  if (!hit) { var c = {}; for (var k in ED) if (k !== "open") c[k] = ED[k]; c.upd = new Date().toISOString().slice(0, 10); ED.upd = c.upd; PLACES.push(c); }
+}
+function leaveEditor(reload) {
+  if (EDS) clearTimeout(EDS.t);
+  ED = null; EDS = null; MSG = null; draw(true);
+  if (reload) loadPlaces();
+}
+function loadPlaces() { return call({ a: "places_list", pw: PW }).then(function (r) { if (r.ok) PLACES = r.items; else afterAuthFail(r); draw(); }); }
+function uploadPhotos(files) {
+  if (!ED) return;
+  readDraft();
+  var go = function () {
+    var pid = ED.id; PHBUSY = true; draw(true);
+    var chain = Promise.resolve();
+    files.forEach(function (f) { chain = chain.then(function () { return shrink(f); }).then(function (b64) { return call({ a: "photo_add", pw: PW, id: pid, data: b64 }); }).then(function (r) { if (!r.ok) say(r.err || "Не получилось загрузить фото.", true); }); });
+    chain.catch(function () { say("Не получилось прочитать файл. Нужна обычная фотография.", true); }).then(function () { PHBUSY = false; return call({ a: "places_list", pw: PW }); }).then(function (r) {
+      if (r.ok) { PLACES = r.items; var n = PLACES.filter(function (x) { return x.id === pid; })[0]; if (n && ED && ED.id === pid) { ED.photoIds = n.photoIds || []; ED.photos = n.photos || []; } }
+      if (ED) { ED.open.photo = true; draw(true); }
     });
-  }
-  if (id === "pf") {
-    BUSY = true; draw();
-    var pl = { id: EDIT && EDIT.id, cat: val("pcat"), name: val("pnm"), about: val("pab"), addr: val("pad"), note: val("pno"), phone: val("pph"), hours: val("pho"), site: val("psi"), wa: val("pwa"), tg: val("ptg"), vk: val("pvk"), max: val("pmx"), reviews: val("prv"), quotes: val("pqt"), rec: document.getElementById("prec").checked, price: val("ppr"), priceNote: val("ppn"), stars: STARS };
-    call({ a: "place_save", pw: PW, place: pl }).then(function (r) {
-      BUSY = false;
-      if (r.ok) { say(EDIT && EDIT.id ? "Сохранено. В приложении изменится при следующем открытии." : "Добавлено. Жители увидят карточку в приложении."); EDIT = null; STARS = []; FRESH = true; loadTab(); window.scrollTo(0, 0); }
-      else { afterAuthFail(r); draw(); window.scrollTo(0, 0); }
-    });
-  }
-  if (id === "bf") {
-    BUSY = true; draw();
-    call({ a: "banner_save", pw: PW, banner: { cat: val("bcat"), title: val("bti"), text: val("bte"), url: val("bur") } }).then(function (r) {
-      BUSY = false;
-      if (r.ok) { say("Плашка сохранена. В приложении появится при следующем открытии раздела."); BEDIT = null; FRESH = true; loadTab(); window.scrollTo(0, 0); }
-      else { afterAuthFail(r); draw(); window.scrollTo(0, 0); }
-    });
-  }
-  if (id === "df") {
-    BUSY = true; WIN = null; draw();
-    call({ a: "draw", pw: PW, n: Number(val("dn")), prize: val("dpr") }).then(function (r) {
-      BUSY = false; if (r.ok) { WIN = r; MSG = null; } else afterAuthFail(r); draw();
-    });
-  }
-});
-function val(i) { var e = document.getElementById(i); return e ? e.value : ""; }
+  };
+  if (ED.id) go(); else doSave(function (ok) { if (ok) go(); else { say("Сначала заполните раздел, название и телефон: тогда карточка сохранится и появится место для фото.", true); draw(true); } });
+}
 function shrink(file) {
   return new Promise(function (ok, fail) {
     var img = new Image(), url = URL.createObjectURL(file);
@@ -600,99 +600,375 @@ function shrink(file) {
     img.src = url;
   });
 }
-root.addEventListener("input", function (e) {
-  if (e.target.id === "psq") { PSQ = e.target.value; var pl = document.getElementById("plist"); if (pl) pl.innerHTML = plistHtml(); }
-});
-function uploadPhotos(files) {
-  var pid = EDIT.id;
-  PHBUSY = true; draw();
-  var chain = Promise.resolve();
-  files.forEach(function (f) {
-    chain = chain.then(function () { return shrink(f); }).then(function (b64) { return call({ a: "photo_add", pw: PW, id: pid, data: b64 }); }).then(function (r) { if (!r.ok) say(r.err || "Не получилось загрузить фото.", true); });
+/* предпросмотр: как карточка выглядит в приложении */
+function nowYek() {
+  try {
+    var parts = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Yekaterinburg", weekday: "short", hour: "2-digit", minute: "2-digit", hour12: false }).formatToParts(new Date()), o = {};
+    parts.forEach(function (p) { o[p.type] = p.value; });
+    return { d: { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 7 }[o.weekday] || 1, m: (Number(o.hour) % 24) * 60 + Number(o.minute) };
+  } catch (e) { var n = new Date(); return { d: n.getDay() || 7, m: n.getHours() * 60 + n.getMinutes() }; }
+}
+function openNow(hours) {
+  var p = hrsParse(hours); if (!p) return null;
+  if (p.all) return { o: true, t: "Открыто круглосуточно" };
+  var n = nowYek(), r = p.sch[n.d];
+  if (!r || r === "off") return { o: false, t: "Сегодня выходной" };
+  if (n.m < r[0]) return { o: false, t: "Закрыто · откроется в " + hrsT(r[0]) };
+  if (r.length > 2 && n.m >= r[2] && n.m < r[3]) return { o: false, t: "Обед · откроется в " + hrsT(r[3]) };
+  if (n.m < r[1]) return { o: true, t: "Открыто до " + hrsT(r.length > 2 && n.m < r[2] ? r[2] : r[1]) };
+  return { o: false, t: "Закрыто" };
+}
+function showPreview() {
+  readDraft();
+  var e = ED, oi = openNow(e.hours), pr = priceParse(e.priceText), lk = [];
+  if (e.phone) lk.push("Позвонить"); if (e.wa) lk.push("WhatsApp"); if (e.tg) lk.push("Telegram"); if (e.max) lk.push("MAX"); if (e.vk) lk.push("ВКонтакте"); if (e.site) lk.push("Сайт"); if (e.reviews) lk.push("Яндекс Карты");
+  var h = '<div class="pv">' + ((e.photos && e.photos.length) ? '<div class="ph">' + e.photos.slice(0, 3).map(function (u) { return '<img src="' + esc(u) + '" alt="">'; }).join("") + "</div>" : "") +
+    (e.rec ? '<span class="nt gold" style="width:fit-content">Рекомендуем</span>' : "") + "<h3>" + esc(e.name || "Название") + "</h3>" +
+    '<div class="note">' + esc(catName(e.cat) || "Раздел не выбран") + "</div>" +
+    (oi ? '<span class="chip ' + (oi.o ? "o" : "c") + '">' + esc(oi.t) + "</span>" : "") +
+    (e.about ? "<div>" + esc(e.about) + "</div>" : "") +
+    (e.addr ? '<div><b>Адрес:</b> ' + esc(e.addr) + (e.note ? "<br><small>" + esc(e.note) + "</small>" : "") + "</div>" : "") +
+    (e.hours ? "<div><b>Часы работы:</b> " + esc(e.hours) + "</div>" : "") +
+    (lk.length ? '<div class="lk">' + lk.map(function (x) { return "<span>" + x + "</span>"; }).join("") + "</div>" : "") +
+    (pr.length ? "<div><b>Прайс</b>" + pr.map(function (r) { return '<div class="pl"><span>' + esc(r[0]) + "</span><b>" + esc(r[1]) + "</b></div>"; }).join("") + (e.priceNote ? '<div class="note">' + esc(e.priceNote) + "</div>" : "") + "</div>" : "") + "</div>";
+  var d = document.createElement("div"); d.className = "ovl"; d.id = "prev";
+  d.innerHTML = '<div class="ovl-in" role="dialog" aria-label="Как увидят в приложении"><h2>Как увидят в приложении</h2>' + h + '<button type="button" class="btn" data-pclose="1">Закрыть</button></div>';
+  document.body.appendChild(d);
+}
+
+/* ---------- входящие ---------- */
+var WAIT_AD = { "ждёт оплаты": 1, "на проверке": 1, "оплачено": 1 };
+function inboxItems() {
+  var out = [];
+  TICKETS.forEach(function (x) { out.push({ k: "t:" + x.id, type: "t", title: x.kind + (x.biz ? ": " + x.biz : ""), sub: x.msg || x.contact || "", time: x.date, isNew: !x.done, x: x }); });
+  ADS.forEach(function (x) { out.push({ k: "a:" + x.id, type: "a", title: x.title, sub: (ADCN[x.cat] || x.cat) + " · " + x.status, time: x.date, isNew: !!WAIT_AD[x.status], x: x }); });
+  OWN.forEach(function (x) {
+    var t = x.req && x.req.type === "claim" ? "Хочет управлять карточкой: " + (x.req.placeName || "№" + x.req.pid) : x.req && x.req.place ? "Новое заведение: " + x.req.place.name : x.status === "подтверждён" ? "Кабинет: " + (x.placeName || "№" + x.pid) : "Вход без заявки";
+    out.push({ k: "o:" + x.email, type: "o", title: t, sub: x.email, time: x.date, isNew: x.status === "ждёт", x: x });
   });
-  chain.catch(function () { say("Не получилось прочитать файл. Нужна обычная фотография.", true); }).then(function () {
-    PHBUSY = false;
-    call({ a: "places_list", pw: PW }).then(function (r) { if (r.ok) { PLACES = r.items; EDIT = PLACES.filter(function (x) { return x.id === pid; })[0] || null; } FRESH = false; draw(); });
+  return out.sort(function (a, b) { return toTs(b.time) - toTs(a.time); });
+}
+function inboxNew() { return TICKETS.filter(function (x) { return !x.done; }).length + ADS.filter(function (x) { return WAIT_AD[x.status]; }).length + OWN.filter(function (x) { return x.status === "ждёт"; }).length; }
+function contactLinks(c) {
+  c = String(c || "").trim();
+  var digits = c.replace(/\D/g, ""), out = "";
+  var st = 'class="btn alt sm" target="_blank" rel="noopener"';
+  if (/^@?[A-Za-z][A-Za-z0-9_]{4,}$/.test(c)) out = '<a ' + st + ' href="https://t.me/' + esc(c.replace("@", "")) + '">Ответить в Telegram</a>';
+  else if (digits.length >= 10) {
+    if (digits.length === 11 && digits.charAt(0) === "8") digits = "7" + digits.slice(1);
+    out = '<a ' + st + ' href="tel:+' + digits + '">Позвонить</a><a ' + st + ' href="https://wa.me/' + digits + '">Ответить в WhatsApp</a>';
+  }
+  return out;
+}
+function yn(q, yes, no) { return '<b style="flex:1 1 100%">' + q + '</b><button type="button" class="btn sm" ' + yes + '>Да</button><button type="button" class="btn alt sm" ' + no + ">Нет</button>"; }
+function detailHtml(it) {
+  var x = it.x, b = "", h = "";
+  if (it.type === "t") {
+    h = '<div class="m note">' + esc(String(x.date || "").replace("T", " ").slice(0, 16)) + (x.name ? " · " + esc(x.name) : "") + (x.pid ? " · " + esc(x.pid) : "") + "</div>" + (x.msg ? "<p>" + esc(x.msg) + "</p>" : "") + '<div class="note"><b>Связь: ' + esc(x.contact) + "</b></div>";
+    b = contactLinks(x.contact) + '<button type="button" class="btn ' + (x.done ? "alt" : "") + ' sm" data-tdone="' + esc(x.id) + '" data-tval="' + (x.done ? "0" : "1") + '">' + (x.done ? "Вернуть в новые" : "Отвечено") + "</button>";
+  } else if (it.type === "a") {
+    h = '<div class="note">' + esc(ADCN[x.cat] || x.cat) + " · " + esc(String(x.date || "").replace("T", " ").slice(0, 16)) + " · Статус: " + esc(x.status) + (x.sum && x.sum !== "0" ? " · К оплате: " + esc(x.sum) + " ₽" : "") + (x.till ? " · до " + esc(fmt(x.till)) : "") + "</div><p>" + esc(x.text) + "</p>" + (x.price ? "<div><b>Цена: " + esc(x.price) + "</b></div>" : "") +
+      ((x.photos && x.photos.length) ? '<div class="row2">' + x.photos.map(function (u) { return '<a href="' + esc(u) + '" target="_blank" rel="noopener"><img src="' + esc(u) + '" alt="" style="width:90px;height:90px;object-fit:cover;border-radius:10px"></a>'; }).join("") + "</div>" : "") +
+      '<div class="note"><b>Связь: ' + esc(x.contact) + "</b>" + (x.name ? " · " + esc(x.name) : "") + (x.pid ? " · " + esc(x.pid) : "") + "</div>" + (x.reason ? '<div class="note"><b>' + (x.status === "отклонено" ? "Причина отказа: " : "") + esc(x.reason) + "</b></div>" : "");
+    var id = esc(x.id);
+    if (x.status === "опубликовано") b = contactLinks(x.contact) + '<button type="button" class="btn sm" data-adact="extend" data-adid="' + id + '">Продлить на 5 дней</button><button type="button" class="btn alt sm" data-adact="remove" data-adid="' + id + '">Снять</button>';
+    else if (x.status === "отклонено" || x.status === "снято" || x.status === "срок вышел") b = contactLinks(x.contact) + (IDEL === "a:" + x.id ? yn("Точно удалить?", 'data-adact="delete" data-adid="' + id + '"', 'data-adact="nodel"') : '<button type="button" class="btn alt sm" data-adact="askdel" data-adid="' + id + '">Удалить</button>');
+    else b = contactLinks(x.contact) + (x.status === "ждёт оплаты" ? '<button type="button" class="btn alt sm" data-adact="paid" data-adid="' + id + '">Оплата пришла</button>' : "") + '<button type="button" class="btn sm" data-adact="publish" data-adid="' + id + '">Одобрить на 5 дней</button><button type="button" class="btn alt sm" data-adact="reject" data-adid="' + id + '">Отклонить</button>';
+  } else {
+    var d = String(x.date || "").slice(0, 10);
+    h = '<div class="note">' + esc(d) + " · Статус: " + esc(x.status) + (x.name ? " · " + esc(x.name) : "") + (x.phone ? " · " + esc(x.phone) : "") + "</div>";
+    if (x.status === "ждёт" && x.req) {
+      if (x.req.type === "claim") h += "<p><b>Хочет управлять карточкой:</b> " + esc(x.req.placeName || ("№" + x.req.pid)) + "</p>";
+      else { var p = x.req.place || {}; h += "<p><b>Новое заведение:</b> " + esc(p.name) + "\nРаздел: " + esc(catName(p.cat)) + "\nТелефон: " + esc(p.phone) + (p.addr ? "\nАдрес: " + esc(p.addr) : "") + (p.hours ? "\nЧасы: " + esc(p.hours) : "") + (p.about ? "\n" + esc(p.about) : "") + "</p>"; }
+    } else if (x.status === "подтверждён") h += "<p>Карточка: " + esc(x.placeName || ("№" + x.pid)) + (x.edit ? "\nПоследняя правка: " + esc(String(x.edit).slice(0, 10)) : "") + "</p>";
+    var em = esc(x.email), reply = '<a class="btn alt sm" href="mailto:' + em + '">Ответить письмом</a>' + (x.phone ? contactLinks(x.phone) : "");
+    if (x.status === "ждёт") b = '<button type="button" class="btn sm" data-oact="approve" data-oem="' + em + '">Одобрить</button><button type="button" class="btn alt sm" data-oact="reject" data-oem="' + em + '">Отклонить</button>' + reply;
+    else if (x.status === "подтверждён") b = reply + (IDEL === "u:" + x.email ? yn("Точно отвязать?", 'data-oact="unlink" data-oem="' + em + '"', 'data-oact="nodel"') : '<button type="button" class="btn alt sm" data-oact="askunlink" data-oem="' + em + '">Отвязать</button>');
+    else b = reply + (IDEL === "d:" + x.email ? yn("Точно удалить?", 'data-oact="delete" data-oem="' + em + '"', 'data-oact="nodel"') : '<button type="button" class="btn alt sm" data-oact="askdel" data-oem="' + em + '">Удалить</button>');
+  }
+  return '<div class="idt">' + h + '<div class="big">' + b + "</div></div>";
+}
+function inboxView() {
+  var all = inboxItems(), news = all.filter(function (i) { return i.isNew; }), arch = all.filter(function (i) { return !i.isNew; }), list = IBF === "new" ? news : arch;
+  var clear = IBF === "arch" && ADS.some(function (a) { return a.status === "отклонено" || a.status === "снято" || a.status === "срок вышел"; });
+  var h = '<h1>Входящие</h1><div class="seg" role="group"><button type="button" data-ibf="new" aria-pressed="' + (IBF === "new") + '">Новые ' + news.length + '</button><button type="button" data-ibf="arch" aria-pressed="' + (IBF === "arch") + '">Архив ' + arch.length + "</button></div>";
+  if (clear) h += '<button type="button" class="btn alt sm" data-adact="clear">' + (ADCLR ? "Точно очистить? Нажмите ещё раз" : "Очистить отклонённые и снятые объявления") + "</button>";
+  if (!list.length) return h + '<div class="note">' + (IBF === "new" ? "Новых обращений нет." : "В архиве пока пусто.") + "</div>";
+  return h + list.map(function (it) {
+    var open = IOPEN === it.k, icon = it.type === "t" ? IC.chat : it.type === "a" ? IC.tag : IC.user;
+    return '<div><button type="button" class="ib' + (open ? " open" : "") + '" data-iopen="' + esc(it.k) + '" aria-expanded="' + open + '"><span class="ic">' + icon + '</span><span class="tx"><span class="tt">' + esc(it.title) + '</span><span class="sb">' + esc(it.sub) + '</span></span><span class="tm">' + esc(agoTxt(it.time)) + "</span></button>" + (open ? detailHtml(it) : "") + "</div>";
+  }).join("");
+}
+
+/* ---------- публикации ---------- */
+function newsTab() {
+  return '<form class="card" id="nf"><h2>Новая запись</h2>' +
+    '<label>Что это<select id="nty"><option>Акция</option><option>Новость</option><option>Розыгрыш</option></select></label>' +
+    '<label>Заголовок<small>до 120 знаков</small><input id="nti" maxlength="120" required placeholder="Например: Красотка дарит скидку 10%"></label>' +
+    '<label>Текст<small>до 1000 знаков, можно не писать</small><textarea id="nte" maxlength="1000"></textarea></label>' +
+    '<label>Кто объявляет<small>название заведения, можно не писать</small><input id="nor" maxlength="80"></label>' +
+    '<label>Картинка<small>одна фотография, можно не добавлять. Лучше горизонтальная</small><input id="nfile" type="file" accept="image/*"></label>' +
+    '<label>Показывать до<small>можно не указывать: тогда висит, пока вы не уберёте</small><input id="nun" type="date"></label>' +
+    (TGOK ? '<label class="check"><input type="checkbox" id="ntg" checked> Отправить также в Telegram-канал</label>' : '<div class="note">Отправка в Telegram пока не подключена.</div>') +
+    '<button class="btn" type="submit"' + (BUSY ? " disabled" : "") + ">Опубликовать</button></form>" +
+    "<h2>Сейчас в приложении</h2>" +
+    (NEWS.length ? NEWS.map(function (n) {
+      var cls = n.type === "Акция" ? "gold" : n.type === "Розыгрыш" ? "mint" : "";
+      return '<div class="ni"><div class="m"><span class="nt ' + cls + '">' + esc(n.type) + "</span><span>" + esc(fmt(n.date)) + "</span>" + (n.until ? "<span>до " + esc(fmt(n.until)) + "</span>" : "") + (n.expired ? '<span style="color:#B3261E;font-weight:700">срок вышел</span>' : "") + "</div>" + (n.img ? '<img src="' + esc(n.img) + '" alt="" style="width:100%;max-height:150px;object-fit:cover;border-radius:10px">' : "") + "<b>" + esc(n.title) + "</b>" +
+        (n.org ? '<div class="m">' + esc(n.org) + "</div>" : "") +
+        (PENDING_DEL === n.id ? '<div class="big" style="align-items:center">' + yn("Точно убрать?", 'data-del="' + esc(n.id) + '"', 'data-nodel="1"') + "</div>" : '<button type="button" class="btn alt sm" data-askdel="' + esc(n.id) + '">Убрать</button>') + "</div>";
+    }).join("") : '<div class="note">Пока ничего нет.</div>');
+}
+function bannersTab() {
+  var e = BEDIT || {}, f = function (k) { return esc(e[k] || ""); };
+  var opts = '<option value="">— выберите —</option>' + CATS.slice().sort(function (a, b) { return a.name.localeCompare(b.name, "ru"); }).map(function (c) { return '<option value="' + esc(c.id) + '"' + (e.cat === c.id ? " selected" : "") + ">" + esc(c.name) + "</option>"; }).join("");
+  var form = '<form class="card" id="bf"><h2>' + (BEDIT ? "Изменить плашку" : "Новая плашка") + "</h2>" +
+    '<div class="note">Плашка показывается вверху раздела, над списком заведений. В одном разделе одна плашка. Если выбрать раздел, где плашка уже есть, она заменится.</div>' +
+    '<label>Раздел<select id="bcat">' + opts + "</select></label>" +
+    '<label>Заголовок<small>до 80 знаков</small><input id="bti" maxlength="80" value="' + f("title") + '"></label>' +
+    '<label>Текст<small>до 300 знаков, можно не писать</small><textarea id="bte" maxlength="300" style="min-height:90px">' + f("text") + "</textarea></label>" +
+    '<label>Ссылка<small>начинается с https://. Можно не писать</small><input id="bur" maxlength="300" value="' + f("url") + '"></label>' +
+    '<button class="btn" type="submit"' + (BUSY ? " disabled" : "") + ">" + (BEDIT ? "Сохранить плашку" : "Показать плашку") + "</button>" +
+    (BEDIT ? '<button class="btn alt sm" type="button" data-bnew="1">Отмена, добавить другую</button>' : "") + "</form>";
+  var list = "<h2>Сейчас в приложении: " + BANNERS.length + "</h2>" + (BANNERS.length ? BANNERS.map(function (b) {
+    return '<div class="ni"><b>' + esc(catName(b.cat)) + "</b>" + (b.title ? '<div class="m"><b>' + esc(b.title) + "</b></div>" : "") + (b.text ? "<p>" + esc(b.text) + "</p>" : "") +
+      '<div class="big"><button type="button" class="btn alt sm" data-bedit="' + esc(b.cat) + '">Изменить</button>' +
+      (BDEL === b.cat ? yn("Точно убрать?", 'data-delb="' + esc(b.cat) + '"', 'data-nobdel="1"') : '<button type="button" class="btn red sm" data-askdelb="' + esc(b.cat) + '">Убрать</button>') + "</div></div>";
+  }).join("") : '<div class="note">Пока ни одной плашки.</div>');
+  return form + list;
+}
+function drawTab() {
+  return '<form class="card" id="df"><h2>Розыгрыш призов</h2><div class="note">Победители выбираются случайно среди всех, у кого есть номер. Результат записывается в таблицу.</div>' +
+    '<label>Что разыгрываем<input id="dpr" maxlength="100" placeholder="Например: сертификат на 2 000 ₽"></label>' +
+    '<label>Сколько победителей<select id="dn">' + [1, 2, 3, 5, 10].map(function (n) { return "<option>" + n + "</option>"; }).join("") + "</select></label>" +
+    '<button class="btn" type="submit"' + (BUSY ? " disabled" : "") + ">Выбрать победителей</button></form>" +
+    (WIN ? '<div class="card"><h2>Победители</h2>' + WIN.winners.map(function (w) { return '<div class="win">' + esc(w) + "</div>"; }).join("") + '<div class="note">Участников в розыгрыше: ' + WIN.total + ". Сделайте снимок экрана и объявите итоги в новостях.</div></div>" : "") +
+    '<div class="note">Розыгрыш должен быть без обязательной покупки. Дорогие призы могут облагаться налогом у победителя, уточняйте заранее.</div>';
+}
+function pubView() {
+  var seg = [["news", "Новости"], ["banners", "Плашки"], ["draw", "Розыгрыш"]];
+  return '<h1>Публикации</h1><div class="seg" role="group">' + seg.map(function (s) { return '<button type="button" data-pub="' + s[0] + '" aria-pressed="' + (PUB === s[0]) + '">' + s[1] + "</button>"; }).join("") + "</div>" +
+    (PUB === "news" ? newsTab() : PUB === "banners" ? bannersTab() : drawTab());
+}
+function statsTab() {
+  var s = STATS; if (!s) return '<h1>Статистика</h1><div class="note">Загружаю…</div>';
+  var g = function (o, k) { return (o && o[k]) || 0; };
+  var mx = Math.max.apply(null, s.days.map(function (d) { return d.n; }).concat([1]));
+  var h = '<h1>Статистика</h1><div class="tiles"><div class="tile"><b>' + s.total + "</b><span>установили приложение</span></div>" +
+    '<div class="tile"><b>' + g(s.roles, "житель") + "</b><span>жителей</span></div>" +
+    '<div class="tile"><b>' + g(s.roles, "владелец") + "</b><span>владельцев бизнеса</span></div>" +
+    '<div class="tile"><b>' + g(s.roles, "не выбрано") + "</b><span>не ответили</span></div>" +
+    '<div class="tile"><b>' + g(s.plats, "android") + "</b><span>Android</span></div>" +
+    '<div class="tile"><b>' + g(s.plats, "iphone") + "</b><span>iPhone</span></div>" +
+    '<div class="tile"><b>' + g(s.srcs, "QR Android") + "</b><span>пришли по QR Android</span></div>" +
+    '<div class="tile"><b>' + g(s.srcs, "QR iPhone") + "</b><span>пришли по QR iPhone</span></div>" +
+    '<div class="tile"><b>' + (s.invited || 0) + "</b><span>пришли по приглашению друга</span></div></div>";
+  h += '<div class="card"><h2>Установки за 14 дней</h2><div class="bars">' + s.days.map(function (d) { return '<div style="height:' + Math.round(d.n / mx * 100) + '%" title="' + esc(d.d) + ": " + d.n + '"><i>' + (d.n || "") + "</i></div>"; }).join("") + '</div><div class="bl">' + s.days.map(function (d) { return "<span>" + esc(d.d.slice(8)) + "</span>"; }).join("") + "</div></div>";
+  h += '<div class="card"><h2>Заведения за 30 дней</h2>' + (s.orgs.length ? "<table><tr><th>Название</th><th class=\"n\">Откр.</th><th class=\"n\">Прайс</th><th class=\"n\">Зво&shy;нки</th><th class=\"n\">Мар&shy;шрут</th></tr>" +
+    s.orgs.map(function (o) { return "<tr><td>" + esc(o.org) + '</td><td class="n">' + o.views + '</td><td class="n">' + o.prices + '</td><td class="n">' + o.calls + '</td><td class="n">' + o.routes + "</td></tr>"; }).join("") + "</table>" : '<div class="note">Пока данных нет.</div>') + "</div>";
+  h += '<div class="card"><h2>Действия</h2><div class="note">Открыли новости: <b>' + g(s.events, "news_open") + "</b> · Позвонили из карточек: <b>" + g(s.events, "call_click") + "</b> · Открыли раздел для владельцев: <b>" + g(s.events, "owner_info") + "</b></div></div>";
+  if (s.refs && s.refs.length) h += '<div class="card"><h2>Кто приглашает друзей</h2><table><tr><th>Номер</th><th class="n">Привёл</th></tr>' + s.refs.map(function (r) { return "<tr><td><b>" + esc(r.id) + '</b></td><td class="n">' + r.n + "</td></tr>"; }).join("") + "</table></div>";
+  if (s.recent) h += '<div class="card"><h2>Последние участники</h2><table><tr><th>Номер</th><th>Когда</th><th>Кто</th><th>Телефон</th></tr>' +
+    s.recent.map(function (r) { return "<tr><td><b>" + esc(r.id) + "</b></td><td>" + esc(r.date) + "</td><td>" + esc(r.role) + "</td><td>" + esc(r.plat) + "</td></tr>"; }).join("") + "</table></div>";
+  return h;
+}
+
+/* ---------- каркас ---------- */
+function loginView() {
+  return "<h1>Администратор «Бугуруслан всё в одном месте»</h1>" + (MSG ? '<div class="msg err">' + esc(typeof MSG === "string" ? MSG : MSG.t) + "</div>" : "") +
+    '<form class="card" id="lf"><label>Пароль<input id="pw" type="password" autocomplete="current-password" autocapitalize="off" required></label>' +
+    '<label class="check"><input type="checkbox" id="rem"> Запомнить на этом телефоне</label>' +
+    '<button class="btn" type="submit"' + (BUSY ? " disabled" : "") + ">" + (BUSY ? "Проверяю…" : "Войти") + "</button></form>" +
+    (DEMO ? '<div class="card"><div class="note"><b>Пробный режим.</b> Здесь примеры, не настоящие данные.</div><button class="btn alt sm" data-demo="admin">Войти в пробном режиме</button></div>' : "");
+}
+function navHtml() {
+  var n = inboxNew(), t = [["places", "Заведения", IC.store], ["inbox", "Входящие", IC.inbox], ["pub", "Публикации", IC.news], ["stats", "Статистика", IC.chart]];
+  return t.map(function (x) { return '<button type="button" data-tab="' + x[0] + '"' + (TAB === x[0] ? ' aria-current="page"' : "") + ">" + x[2] + x[1] + (x[0] === "inbox" && n ? '<span class="bdg" id="ibdg">' + n + "</span>" : "") + "</button>"; }).join("");
+}
+function mainView() {
+  var body = ED ? editorView() : TAB === "places" ? placesView() : TAB === "inbox" ? inboxView() : TAB === "pub" ? pubView() : statsTab();
+  var top = ED ? "" : '<div class="top" style="gap:8px"><div class="who">Администратор Б-56' + (DEMO ? " · пробный режим" : "") + '</div><button type="button" class="btn alt sm" data-out="1" style="min-height:44px;font-size:14px">Выйти</button></div>';
+  return top + (MSG ? '<div class="msg' + (MSG.err ? " err" : "") + '">' + esc(MSG.t) + "</div>" : "") + body;
+}
+function draw(force) {
+  var bn = document.getElementById("bnav"), bi = document.getElementById("bnavin");
+  if (ED && !force && document.getElementById("pnm")) { if (bi) bi.innerHTML = navHtml(); return; }
+  var keep = {}, ids = ["nty", "nti", "nte", "nor", "nun", "dpr", "dn", "pw", "bcat", "bti", "bte", "bur", "psq"];
+  ids.forEach(function (i) { var e = document.getElementById(i); if (e) keep[i] = e.value; });
+  if (ED && document.getElementById("pnm")) readDraft();
+  root.innerHTML = ROLE ? mainView() : loginView();
+  Object.keys(keep).forEach(function (i) { var e = document.getElementById(i); if (e) e.value = keep[i]; });
+  bn.hidden = !ROLE; if (ROLE) document.getElementById("bnavin").innerHTML = navHtml();
+  hrsLoadAll();
+}
+
+/* ---------- действия ---------- */
+function say(t, err) { MSG = { t: t, err: !!err }; }
+function afterAuthFail(r) { if (r && /парол|попыт/i.test(r.err || "")) { PW = ""; ROLE = ""; sdel("b56_adm"); MSG = r.err; } else say((r && r.err) || "Ошибка", true); }
+function loadInbox() {
+  return Promise.all([call({ a: "tickets_list", pw: PW }), call({ a: "owners_admin", pw: PW }), call({ a: "ads_admin", pw: PW })]).then(function (rs) {
+    if (rs[0].ok) TICKETS = rs[0].items; if (rs[1].ok) OWN = rs[1].items; if (rs[2].ok) ADS = rs[2].items;
+    for (var i = 0; i < 3; i++) if (!rs[i].ok) { afterAuthFail(rs[i]); break; }
+    draw();
   });
 }
+function loadStats() { return call({ a: "stats", pw: PW }).then(function (r) { if (r.ok) { STATS = r; STORG = {}; (r.orgs || []).forEach(function (o) { STORG[o.org] = { views: o.views, calls: o.calls }; }); } else if (TAB === "stats") afterAuthFail(r); draw(); }); }
+function loadPub() {
+  return Promise.all([call({ a: "news_list", pw: PW }), call({ a: "banners_list", pw: PW })]).then(function (rs) { if (rs[0].ok) NEWS = rs[0].items; else afterAuthFail(rs[0]); if (rs[1].ok) BANNERS = rs[1].items; draw(); });
+}
+function loadTab() {
+  if (TAB === "places") return loadPlaces();
+  if (TAB === "inbox") return loadInbox();
+  if (TAB === "pub") return loadPub();
+  if (TAB === "stats") { return loadStats(); }
+  draw();
+}
+function login(pw, remember) {
+  BUSY = true; MSG = null; draw();
+  call({ a: "login", pw: pw }).then(function (r) {
+    BUSY = false;
+    if (r.ok) { PW = pw; ROLE = r.role; TGOK = !!r.tg; if (remember) sset("b56_adm", pw); TAB = "places"; MSG = null; draw(); loadPlaces(); loadInbox(); loadStats(); }
+    else { MSG = r.err || "Не получилось войти."; draw(); }
+  });
+}
+function val(i) { var e = document.getElementById(i); return e ? e.value : ""; }
+root.addEventListener("submit", function (e) {
+  e.preventDefault();
+  var id = e.target.id;
+  if (id === "lf") { login(document.getElementById("pw").value, document.getElementById("rem").checked); return; }
+  if (id === "nf") {
+    var nfi = document.getElementById("nfile"), nfl = nfi && nfi.files && nfi.files[0];
+    var nreq = { a: "news_add", pw: PW, tg: !!(document.getElementById("ntg") && document.getElementById("ntg").checked), type: val("nty"), title: val("nti"), text: val("nte"), org: val("nor"), until: val("nun") };
+    BUSY = true; draw();
+    (nfl ? shrink(nfl).then(function (b64) { nreq.data = b64; }, function () { return Promise.reject("img"); }) : Promise.resolve()).then(function () { return call(nreq); }, function () { return { ok: false, err: "Не получилось прочитать картинку. Нужна обычная фотография." }; }).then(function (r) {
+      BUSY = false;
+      if (r.ok) { say(r.tgSent ? "Опубликовано в приложении и в Telegram." : r.tgErr ? "Опубликовано в приложении. В Telegram не ушло: " + r.tgErr : "Опубликовано. Жители увидят это в приложении."); ["nti", "nte", "nor", "nun"].forEach(function (i) { var x = document.getElementById(i); if (x) x.value = ""; }); loadPub(); }
+      else { afterAuthFail(r); draw(); }
+    });
+  }
+  if (id === "bf") {
+    BUSY = true; draw();
+    call({ a: "banner_save", pw: PW, banner: { cat: val("bcat"), title: val("bti"), text: val("bte"), url: val("bur") } }).then(function (r) {
+      BUSY = false;
+      if (r.ok) { say("Плашка сохранена. В приложении появится при следующем открытии раздела."); BEDIT = null; loadPub(); window.scrollTo(0, 0); }
+      else { afterAuthFail(r); draw(); window.scrollTo(0, 0); }
+    });
+  }
+  if (id === "df") {
+    BUSY = true; WIN = null; draw();
+    call({ a: "draw", pw: PW, n: Number(val("dn")), prize: val("dpr") }).then(function (r) { BUSY = false; if (r.ok) { WIN = r; MSG = null; } else afterAuthFail(r); draw(); });
+  }
+});
+/* ввод в карточке: автосохранение */
+root.addEventListener("input", function (e) {
+  var t = e.target;
+  if (t.id === "psq") { PSQ = t.value; var pl = document.getElementById("plist"); if (pl) pl.innerHTML = plistHtml(); return; }
+  if (!ED || !t.closest) return;
+  if (t.id === "pcs") { var sel = val("pcat"), s = document.getElementById("pcat"); s.innerHTML = catOpts(t.value, sel); if (!sel && s.options.length === 2) { s.selectedIndex = 1; scheduleSave(); } return; }
+  if (t.closest(".hrs")) return;
+  if (t.closest("#prl") || t.closest(".bb")) scheduleSave();
+});
+root.addEventListener("hrschange", function () { if (ED) scheduleSave(); });
 root.addEventListener("change", function (e) {
-  if (e.target.id !== "pfile" || !e.target.files.length || !EDIT) return;
-  uploadPhotos(Array.prototype.slice.call(e.target.files));
+  var t = e.target;
+  if (t.id === "pfile" && t.files.length && ED) { uploadPhotos(Array.prototype.slice.call(t.files)); return; }
+  if (ED && t.closest && t.closest(".bb") && !t.closest(".hrs") && t.id !== "pfile") scheduleSave();
+});
+root.addEventListener("focusout", function (e) {
+  var t = e.target;
+  if (ED && t.id === "pph") { var f = fPhone(t.value); if (f !== t.value) { t.value = f; scheduleSave(); } }
 });
 function imgFiles(dt) { return dt ? Array.prototype.slice.call(dt.files || []).filter(function (f) { return /^image\//.test(f.type); }) : []; }
-document.addEventListener("paste", function (e) {
-  if (!ROLE || TAB !== "places" || !EDIT || PHBUSY) return;
-  var f = imgFiles(e.clipboardData); if (!f.length) return;
-  e.preventDefault(); uploadPhotos(f);
+document.addEventListener("paste", function (e) { if (!ROLE || !ED || PHBUSY) return; var f = imgFiles(e.clipboardData); if (!f.length) return; e.preventDefault(); uploadPhotos(f); });
+document.addEventListener("dragover", function (e) { if (ED) e.preventDefault(); });
+document.addEventListener("drop", function (e) { if (!ROLE || !ED || PHBUSY) return; var f = imgFiles(e.dataTransfer); if (!f.length) return; e.preventDefault(); uploadPhotos(f); });
+/* перетаскивание строк прайса */
+var DRAG = null;
+document.addEventListener("pointerdown", function (e) {
+  var h = e.target.closest && e.target.closest("[data-prh]"); if (!h) return;
+  var row = h.closest(".pr-row"); DRAG = { row: row, list: row.parentNode }; row.classList.add("drag");
+  try { h.setPointerCapture(e.pointerId); } catch (x) {} e.preventDefault();
 });
-document.addEventListener("dragover", function (e) { if (TAB === "places" && EDIT) e.preventDefault(); });
-document.addEventListener("drop", function (e) {
-  if (!ROLE || TAB !== "places" || !EDIT || PHBUSY) return;
-  var f = imgFiles(e.dataTransfer); if (!f.length) return;
-  e.preventDefault(); uploadPhotos(f);
+document.addEventListener("pointermove", function (e) {
+  if (!DRAG) return;
+  var y = e.clientY, row = DRAG.row, prev = row.previousElementSibling, next = row.nextElementSibling;
+  if (prev) { var r = prev.getBoundingClientRect(); if (y < r.top + r.height / 2) DRAG.list.insertBefore(row, prev); }
+  if (next) { var r2 = next.getBoundingClientRect(); if (y > r2.top + r2.height / 2) DRAG.list.insertBefore(next, row); }
 });
-root.addEventListener("click", function (e) {
-  var t = e.target.closest("button"); if (!t) return;
-  if (t.dataset.demo) { login(t.dataset.demo, false); return; }
-  if (t.dataset.tab) { FROMLIST = false; TAB = t.dataset.tab; MSG = null; WIN = null; EDIT = null; BEDIT = null; STARS = []; FRESH = true; loadTab(); return; }
-  if (t.dataset.popen) { var po = Number(t.dataset.popen); POPEN = POPEN === po ? 0 : po; draw(); return; }
-  if (t.dataset.psf !== undefined) { PSF = t.dataset.psf; draw(); return; }
-  if (t.dataset.psave) {
-    var prow = t.closest("[data-prow]"), pid9 = Number(t.dataset.psave), st9 = prow.querySelector("[data-pst]").value, mm9 = prow.querySelector("[data-pmemo]").value;
-    t.disabled = true; t.textContent = "Сохраняю…";
-    call({ a: "place_note", pw: PW, id: pid9, status: st9, memo: mm9 }).then(function (r) {
-      t.disabled = false;
-      if (r.ok) { PLACES.forEach(function (x) { if (x.id === pid9) { x.status = st9; x.memo = mm9; } }); POPEN = 0; draw(); }
-      else { t.textContent = "Сохранить"; say(r.err || "Ошибка", true); draw(); }
-    });
+function endDrag() { if (!DRAG) return; DRAG.row.classList.remove("drag"); DRAG = null; scheduleSave(); }
+document.addEventListener("pointerup", endDrag); document.addEventListener("pointercancel", endDrag);
+
+function doAction(t) {
+  var d = t.dataset;
+  if (d.demo) { login(d.demo, false); return; }
+  if (d.out) { PW = ""; ROLE = ""; MSG = null; ED = null; sdel("b56_adm"); draw(); return; }
+  if (d.tab) { if (ED) { readDraft(); if (EDS.dirty || EDS.saving) doSave(); else clearTimeout(EDS.t); ED = null; EDS = null; } TAB = d.tab; MSG = null; WIN = null; BEDIT = null; draw(true); window.scrollTo(0, 0); loadTab(); return; }
+  /* список заведений */
+  if (d.psf !== undefined) { PSF = d.psf; draw(); return; }
+  if (d.padd) { openEditor(null); return; }
+  if (d.pedit) { var pid = Number(d.pedit); openEditor(PLACES.filter(function (x) { return x.id === pid; })[0] || null); return; }
+  /* карточка */
+  if (d.blk) { ED.open[d.blk] = !ED.open[d.blk]; t.setAttribute("aria-expanded", String(!!ED.open[d.blk])); var bb = t.nextElementSibling; if (bb) bb.hidden = !ED.open[d.blk]; return; }
+  if (d.pradd) { var l = document.getElementById("prl"), tmp = document.createElement("div"); tmp.innerHTML = priceRowHtml("", ""); l.appendChild(tmp.firstChild); l.lastChild.querySelector(".pr-s").focus(); return; }
+  if (d.prdel) { var rw = t.closest(".pr-row"), lst = rw.parentNode; if (lst.children.length > 1) rw.parentNode.removeChild(rw); else { rw.querySelector(".pr-s").value = ""; rw.querySelector(".pr-p").value = ""; } scheduleSave(); return; }
+  if (d.wafrom) { var dg = val("pph").replace(/\D/g, ""); if (dg.length === 11 && dg[0] === "8") dg = "7" + dg.slice(1); if (dg.length === 10) dg = "7" + dg; document.getElementById("pwa").value = dg; scheduleSave(); return; }
+  if (d.prev) { showPreview(); return; }
+  if (d.pclose) { var pv = document.getElementById("prev"); if (pv) pv.parentNode.removeChild(pv); return; }
+  if (d.edone) {
+    readDraft();
+    if (!EDS.dirty && !EDS.saving) { var had = !!ED.id; leaveEditor(had); if (had) { say("Готово.", false); draw(); } return; }
+    doSave(function (ok) { if (ok) { leaveEditor(true); say("Сохранено.", false); draw(); } });
     return;
   }
-  if (t.dataset.pchk) {
-    var pc = Number(t.dataset.pchk); t.disabled = true;
-    call({ a: "place_check", pw: PW, id: pc }).then(function (r) { if (r.ok) { var td = new Date().toISOString().slice(0, 10); PLACES.forEach(function (x) { if (x.id === pc) x.chk = td; }); say("Отмечено: проверено сегодня.", false); } else say(r.err || "Ошибка", true); draw(); });
+  if (d.ecancel) { leaveEditor(true); return; }
+  if (d.delph && ED) { var pid2 = ED.id, ff = d.delph; readDraft(); call({ a: "photo_del", pw: PW, id: pid2, fid: ff }).then(function (r) { if (!r.ok) say(r.err || "Ошибка", true); return call({ a: "places_list", pw: PW }); }).then(function (r) { if (r.ok) { PLACES = r.items; var n = PLACES.filter(function (x) { return x.id === pid2; })[0]; if (n && ED) { ED.photoIds = n.photoIds || []; ED.photos = n.photos || []; } } if (ED) { ED.open.photo = true; draw(true); } }); return; }
+  if (d.echk && ED && ED.id) { call({ a: "place_check", pw: PW, id: ED.id }).then(function (r) { if (r.ok) { ED.chk = new Date().toISOString().slice(0, 10); mergePlace(); readDraft(); ED.open.sett = true; say("Отмечено: проверено сегодня.", false); draw(true); } else { say(r.err || "Ошибка", true); draw(true); } }); return; }
+  if (d.ehide && ED && ED.id) { var hv = !ED.hidden; call({ a: "place_hide", pw: PW, id: ED.id, hide: hv }).then(function (r) { if (r.ok) { ED.hidden = hv; mergePlace(); readDraft(); ED.open.sett = true; say(hv ? "Скрыто: в приложении карточки больше нет." : "Снова показывается в приложении.", false); } else say(r.err || "Ошибка", true); draw(true); }); return; }
+  if (d.edelask) { readDraft(); EDS.delAsk = true; ED.open.sett = true; draw(true); return; }
+  if (d.edelno) { readDraft(); EDS.delAsk = false; ED.open.sett = true; draw(true); return; }
+  if (d.edel && ED) { var did = ED.id; clearTimeout(EDS.t); call({ a: "place_del", pw: PW, id: did }).then(function (r) { if (r.ok) { PLACES = PLACES.filter(function (x) { return x.id !== did; }); ED = null; EDS = null; say("Заведение удалено насовсем.", false); draw(true); loadPlaces(); } else { say(r.err || "Ошибка", true); draw(true); } }); return; }
+  /* входящие */
+  if (d.ibf) { IBF = d.ibf; IOPEN = ""; IDEL = ""; draw(); return; }
+  if (d.iopen) { IOPEN = IOPEN === d.iopen ? "" : d.iopen; IDEL = ""; draw(); return; }
+  if (d.tdone) { call({ a: "ticket_done", pw: PW, id: d.tdone, done: d.tval === "1" }).then(function (r) { if (!r.ok) afterAuthFail(r); IOPEN = ""; loadInbox(); }); return; }
+  if (d.oact) {
+    var oa = d.oact;
+    if (oa === "askdel") { IDEL = "d:" + d.oem; draw(); return; }
+    if (oa === "askunlink") { IDEL = "u:" + d.oem; draw(); return; }
+    if (oa === "nodel") { IDEL = ""; draw(); return; }
+    IDEL = ""; IOPEN = "";
+    call({ a: "owner_set", pw: PW, email: d.oem, act: oa }).then(function (r) { if (!r.ok) say(r.err || "Ошибка", true); else say(oa === "approve" ? "Одобрено. Владельцу ушло письмо." : oa === "reject" ? "Отклонено." : oa === "unlink" ? "Карточка отвязана." : "Удалено.", false); loadInbox(); });
     return;
   }
-  if (t.dataset.phide) {
-    var ph9 = Number(t.dataset.phide), hv9 = t.dataset.hv === "1"; t.disabled = true;
-    call({ a: "place_hide", pw: PW, id: ph9, hide: hv9 }).then(function (r) { if (r.ok) { PLACES.forEach(function (x) { if (x.id === ph9) x.hidden = hv9; }); say(hv9 ? "Скрыто: в приложении карточки больше нет." : "Снова показывается в приложении.", false); } else say(r.err || "Ошибка", true); draw(); });
-    return;
-  }
-  if (t.dataset.oact) {
-    var oa = t.dataset.oact;
-    if (oa === "askdel") { ODEL = "d" + t.dataset.oem; draw(); return; }
-    if (oa === "askunlink") { ODEL = "u" + t.dataset.oem; draw(); return; }
-    if (oa === "nodel") { ODEL = ""; draw(); return; }
-    ODEL = "";
-    call({ a: "owner_set", pw: PW, email: t.dataset.oem, act: oa }).then(function (r) { if (!r.ok) say(r.err || "Ошибка", true); else say(oa === "approve" ? "Подтверждено. Владельцу ушло письмо." : oa === "reject" ? "Отклонено." : oa === "unlink" ? "Карточка отвязана." : "Удалено.", false); loadTab(); });
-    return;
-  }
-  if (t.dataset.adact) {
-    var aa = t.dataset.adact;
-    if (aa === "askdel") { ADEL = t.dataset.adid; draw(); return; }
-    if (aa === "nodel") { ADEL = ""; draw(); return; }
-    if (aa === "clear" && ADCLR !== 1) { ADCLR = 1; t.textContent = "Точно очистить? Нажмите ещё раз"; return; }
-    ADEL = ""; ADCLR = 0;
-    var ao = { a: "ad_set", pw: PW, id: t.dataset.adid, act: aa };
+  if (d.adact) {
+    var aa = d.adact;
+    if (aa === "askdel") { IDEL = "a:" + d.adid; draw(); return; }
+    if (aa === "nodel") { IDEL = ""; draw(); return; }
+    if (aa === "clear" && !ADCLR) { ADCLR = 1; draw(); return; }
+    IDEL = ""; ADCLR = 0; if (aa !== "extend" && aa !== "paid") IOPEN = "";
+    var ao = { a: "ad_set", pw: PW, id: d.adid, act: aa };
     if (aa === "reject") ao.reason = "Не соответствует правилам";
-    call(ao).then(function (r) { if (!r.ok) say(r.err || "Ошибка", true); else say(aa === "publish" ? "Объявление опубликовано." : aa === "extend" ? "Продлено." : aa === "reject" ? "Отклонено." : aa === "remove" ? "Снято с доски." : aa === "delete" ? "Удалено." : aa === "clear" ? "Очищено." : "Отмечено: оплата пришла.", false); loadTab(); });
+    call(ao).then(function (r) { if (!r.ok) say(r.err || "Ошибка", true); else say(aa === "publish" ? "Объявление опубликовано." : aa === "extend" ? "Продлено." : aa === "reject" ? "Отклонено." : aa === "remove" ? "Снято с доски." : aa === "delete" ? "Удалено." : aa === "clear" ? "Очищено." : "Отмечено: оплата пришла.", false); loadInbox(); });
     return;
   }
-  if (t.dataset.tdone) { call({ a: "ticket_done", pw: PW, id: t.dataset.tdone, done: t.dataset.tval === "1" }).then(function (r) { if (!r.ok) afterAuthFail(r); loadTab(); }); return; }
-  if (t.dataset.out) { PW = ""; ROLE = ""; MSG = null; sdel("b56_adm"); draw(); return; }
-  if (t.dataset.edit) { if (t.dataset.gotoplaces) { TAB = "places"; FROMLIST = true; } var pid = Number(t.dataset.edit); EDIT = PLACES.filter(function (x) { return x.id === pid; })[0] || null; STARS = (EDIT && EDIT.stars) ? [].concat(EDIT.stars) : []; FRESH = true; MSG = null; draw(); window.scrollTo(0, 0); return; }
-  if (t.dataset.delph && EDIT) { var pid2 = EDIT.id, ff = t.dataset.delph; call({ a: "photo_del", pw: PW, id: pid2, fid: ff }).then(function (r) { if (!r.ok) say(r.err || "Ошибка", true); return call({ a: "places_list", pw: PW }); }).then(function (r) { if (r.ok) { PLACES = r.items; EDIT = PLACES.filter(function (x) { return x.id === pid2; })[0] || null; } FRESH = false; draw(); }); return; }
-  if (t.dataset.newp) { EDIT = null; STARS = []; FRESH = true; draw(); return; }
-  if (t.dataset.star) { var sn = Number(t.dataset.star), si = STARS.indexOf(sn); if (si >= 0) STARS.splice(si, 1); else STARS.push(sn); FRESH = false; draw(); return; }
-  if (t.dataset.bedit) { var bc = t.dataset.bedit; BEDIT = BANNERS.filter(function (x) { return x.cat === bc; })[0] || null; FRESH = true; MSG = null; draw(); window.scrollTo(0, 0); return; }
-  if (t.dataset.bnew) { BEDIT = null; FRESH = true; draw(); return; }
-  if (t.dataset.askdelb) { BDEL = t.dataset.askdelb; draw(); return; }
-  if (t.dataset.delb) { var bd = t.dataset.delb; BDEL = ""; call({ a: "banner_del", pw: PW, cat: bd }).then(function (r) { if (r.ok) { say("Плашка убрана."); BEDIT = null; FRESH = true; } else afterAuthFail(r); loadTab(); }); return; }
-  if (t.dataset.askdelp) { PDEL = t.dataset.askdelp; draw(); return; }
-  if (t.dataset.delp) { var pd = t.dataset.delp; PDEL = ""; call({ a: "place_del", pw: PW, id: Number(pd) }).then(function (r) { if (r.ok) say("Убрано из приложения."); else afterAuthFail(r); loadTab(); }); return; }
-  if (t.dataset.askdel) { PENDING_DEL = t.dataset.askdel; draw(); return; }
-  if (t.dataset.nodel) { PENDING_DEL = ""; draw(); return; }
-  if (t.dataset.del) { var id = t.dataset.del; PENDING_DEL = ""; call({ a: "news_del", pw: PW, id: id }).then(function (r) { if (r.ok) say("Убрано. Из приложения пропадёт при следующем открытии."); else afterAuthFail(r); loadTab(); }); }
+  /* публикации */
+  if (d.pub) { PUB = d.pub; MSG = null; draw(); return; }
+  if (d.bedit) { var bc = d.bedit; BEDIT = BANNERS.filter(function (x) { return x.cat === bc; })[0] || null; MSG = null; draw(); window.scrollTo(0, 0); return; }
+  if (d.bnew) { BEDIT = null; draw(); return; }
+  if (d.askdelb) { BDEL = d.askdelb; draw(); return; }
+  if (d.nobdel) { BDEL = ""; draw(); return; }
+  if (d.delb) { var bd = d.delb; BDEL = ""; call({ a: "banner_del", pw: PW, cat: bd }).then(function (r) { if (r.ok) { say("Плашка убрана."); BEDIT = null; } else afterAuthFail(r); loadPub(); }); return; }
+  if (d.askdel) { PENDING_DEL = d.askdel; draw(); return; }
+  if (d.nodel) { PENDING_DEL = ""; draw(); return; }
+  if (d.del) { var nid = d.del; PENDING_DEL = ""; call({ a: "news_del", pw: PW, id: nid }).then(function (r) { if (r.ok) say("Убрано. Из приложения пропадёт при следующем открытии."); else afterAuthFail(r); loadPub(); }); return; }
+}
+document.addEventListener("click", function (e) {
+  var t = e.target.closest && e.target.closest("button"); if (!t || t.closest(".hrs")) return;
+  if (!root.contains(t) && !t.closest("#bnav") && !t.closest("#prev")) return;
+  doAction(t);
 });
+document.addEventListener("click", function (e) { var o = e.target; if (o && o.id === "prev") o.parentNode.removeChild(o); });
+window.addEventListener("beforeunload", function () { if (ED && EDS && (EDS.dirty || EDS.saving)) { try { doSave(); } catch (e) {} } });
 
 draw();
 (function () { var p = sget("b56_adm"); if (p && !DEMO) login(p, true); })();
