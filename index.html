@@ -673,12 +673,22 @@ function adRefresh() { var p = document.getElementById("adph"), m = document.get
 function adDoneHtml(r) {
   var sum = r && r.sum != null ? r.sum : 0;
   return '<div class="formmsg">Спасибо! Объявление принято.</div>' +
-    (sum ? '<div class="adsum">К оплате: <b>' + sum + ' ₽</b></div>' + (r && r.pay ? '<a class="bigbtn" style="text-decoration:none;text-align:center" href="' + esc(r.pay) + '" target="_blank" rel="noopener">Оплатить</a><div class="note">После оплаты проверка занимает 1–3 минуты, и объявление появится на доске.</div>' : '<div class="note">Оплата скоро заработает. Администратор свяжется с вами по указанному контакту и подскажет, как оплатить. После оплаты проверка занимает 1–3 минуты, и объявление появится на доске.</div>') : '<div class="note">Проверка занимает 1–3 минуты, объявление скоро появится на доске.</div>') +
+    (sum ? '<div class="adsum">К оплате: <b>' + sum + ' ₽</b></div>' + (r && r.yk && r.code && r.key ? '<button type="button" class="bigbtn" data-adpay="' + esc(r.code) + '" data-adkey="' + esc(r.key) + '">Оплатить ' + sum + ' ₽</button><div class="note">Откроется страница оплаты ЮKassa. После оплаты вы вернётесь сюда, проверка занимает 1–3 минуты, и объявление появится на доске.</div>' : r && r.pay ? '<a class="bigbtn" style="text-decoration:none;text-align:center" href="' + esc(r.pay) + '" target="_blank" rel="noopener">Оплатить</a><div class="note">После оплаты проверка занимает 1–3 минуты, и объявление появится на доске.</div>' : '<div class="note">Оплата скоро заработает. Администратор свяжется с вами по указанному контакту и подскажет, как оплатить. После оплаты проверка занимает 1–3 минуты, и объявление появится на доске.</div>') : '<div class="note">Проверка занимает 1–3 минуты, объявление скоро появится на доске.</div>') +
     '<button type="button" class="btn2" data-go="myads">Мои объявления</button> <button type="button" class="btn2" data-go="board">К доске объявлений</button>';
 }
 function myAds() { try { var a = JSON.parse(sget("b56_myads") || "[]"); return a instanceof Array ? a : []; } catch (e) { return []; } }
 function addMyAd(code, key) { var a = myAds(); a.unshift({ code: code, key: key }); sset("b56_myads", JSON.stringify(a.slice(0, 30))); MY = null; }
-var MY = null, MYBUSY = "";
+var MY = null, MYBUSY = "", MYYK = false;
+function adPayGo(code, key, btn) {
+  if (!API) { alert("В пробном режиме оплата не работает."); return; }
+  var lbl = btn ? btn.textContent : ""; if (btn) { btn.disabled = true; btn.textContent = "Открываем оплату…"; }
+  apiPost({ a: "ad_pay", code: code, key: key }, 30000).then(function (r) {
+    if (r && r.ok && r.url) { location.href = r.url; return; }
+    if (r && r.ok && r.paid) { go("myads"); loadMyAds(); return; }
+    if (btn) { btn.disabled = false; btn.textContent = lbl; }
+    alert((r && r.err) || "Не получилось. Попробуйте ещё раз.");
+  }, function () { if (btn) { btn.disabled = false; btn.textContent = lbl; } alert("Нет связи. Проверьте интернет."); });
+}
 function myStatusText(it) {
   var s = it.status;
   if (s === "опубликовано") return "Опубликовано" + (fmtDate(it.till) ? " до " + fmtDate(it.till) : "");
@@ -696,6 +706,7 @@ function myAdsHtml() {
   return MY.map(function (it) {
     var btns = "";
     if (it.status === "опубликовано") btns = MYBUSY === it.code ? '<button type="button" class="btn2" data-myact="remove" data-mycode="' + esc(it.code) + '">Точно снять?</button> <button type="button" class="btn2" data-myact="cancel">Нет</button>' : '<button type="button" class="btn2" data-myact="ask" data-mycode="' + esc(it.code) + '">Снять с публикации</button>';
+    else if (it.status === "ждёт оплаты" && MYYK) { var mk = (myAds().filter(function (x) { return x.code === it.code; })[0] || {}).key || ""; btns = '<button type="button" class="bigbtn" data-adpay="' + esc(it.code) + '" data-adkey="' + esc(mk) + '">Оплатить ' + esc(it.sum) + ' ₽</button> <button type="button" class="btn2" data-myrefresh="1">Я оплатил(а), проверить</button>'; }
     else if (it.status === "снято" || it.status === "срок вышел") btns = '<button type="button" class="bigbtn" data-myact="repub" data-mycode="' + esc(it.code) + '">Опубликовать ещё раз</button>';
     return '<div class="ad"><div class="tags"><span class="tag mint">' + esc(adCatName(it.cat)) + "</span></div><h3>" + esc(it.title) + '</h3><div class="meta">' + esc(myStatusText(it)) + "</div>" + (btns ? "<div>" + btns + "</div>" : "") + "</div>";
   }).join("");
@@ -713,7 +724,7 @@ function loadMyAds() {
   var items = myAds();
   if (!items.length) { MY = []; drawMyAds(); return; }
   if (!API) { MY = items.map(function (x, i) { return { code: x.code, title: "Пробное объявление", cat: "raznoe", status: "опубликовано", till: "2026-10-25", sum: "100" }; }); drawMyAds(); return; }
-  apiPost({ a: "ad_mine", items: items }).then(function (r) { MY = (r && r.ok) ? r.items : []; drawMyAds(); }, function () { MY = []; drawMyAds(); });
+  apiPost({ a: "ad_mine", items: items }).then(function (r) { MY = (r && r.ok) ? r.items : []; MYYK = !!(r && r.yk); drawMyAds(); }, function () { MY = []; drawMyAds(); });
 }
 function myActDo(act, code) {
   var it = myAds().filter(function (x) { return x.code === code; })[0];
@@ -1300,6 +1311,9 @@ document.addEventListener("click", function (e) {
   if (apk) { if (adPh.length >= 3) { var fr = document.getElementById("f_res"); if (fr) { fr.className = "formmsg err"; fr.textContent = "Можно не больше 3 фото."; } return; } var fi = document.getElementById("ad_file"); if (fi) fi.click(); return; }
   var arm = e.target.closest("[data-adrm]");
   if (arm) { adPh.splice(Number(arm.getAttribute("data-adrm")), 1); adRefresh(); return; }
+  var apy = e.target.closest("[data-adpay]");
+  if (apy) { adPayGo(apy.getAttribute("data-adpay"), apy.getAttribute("data-adkey"), apy); return; }
+  if (e.target.closest("[data-myrefresh]")) { MY = null; drawMyAds(); loadMyAds(); return; }
   var asd = e.target.closest("[data-adsend]");
   if (asd) { sendAd(asd); return; }
   var sd = e.target.closest("[data-send]");
