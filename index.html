@@ -332,6 +332,19 @@ button.soon { width: 100%; text-align: left; font: inherit; cursor: pointer; }
 .st { background: none; padding: 0; border-radius: 0; font-size: 15px; font-weight: 800; color: #9B2C2C; }
 .st.on { background: none; color: #0A6B1F; }
 .oacts a, .oacts a.fill { border: 0; background: #CDEBC9; color: var(--green); }
+.hrs { display: flex; flex-direction: column; gap: 8px; }
+.hrs > b { font-size: 15px; font-weight: 800; }
+.hrs .hrs-h { font-size: 13px; font-weight: 400; color: var(--muted); }
+.hrs .hrs-days { display: flex; flex-direction: column; gap: 6px; }
+.hrs .hrs-row { display: grid; grid-template-columns: 28px 26px minmax(0, 1fr) 10px minmax(0, 1fr); align-items: center; gap: 6px; }
+.hrs .hrs-d { width: 26px; font-weight: 800; font-size: 15px; }
+.hrs label.hrs-w { display: flex; flex-direction: row; align-items: center; min-width: 0; }
+.hrs input[type="checkbox"] { width: 24px; height: 24px; min-height: 0; padding: 0; flex: none; }
+.hrs input[type="time"] { width: 100%; min-width: 0; min-height: 44px; padding: 4px 4px; font: inherit; font-size: 15px; border: 2px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); }
+.hrs input[type="time"]:disabled { opacity: .45; }
+.hrs .hrs-txt { min-height: 48px; padding: 10px 12px; font: inherit; font-size: 16px; border: 2px solid var(--line); border-radius: 12px; width: 100%; }
+.hrs .hrs-act { display: flex; flex-wrap: wrap; gap: 6px; }
+.hrs .hrs-act button { min-height: 40px; padding: 0 12px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--ink); font: inherit; font-size: 13px; font-weight: 800; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -1058,6 +1071,130 @@ function cabApi(o) {
   if (API) return apiPost(o, 30000);
   return new Promise(function (ok) { setTimeout(function () { ok(cabDemo(o)); }, 200); });
 }
+/* ===== редактор часов работы по дням ===== */
+var HRS_D = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+var HRS_I = { "пн": 1, "по": 1, "вт": 2, "ср": 3, "чт": 4, "пт": 5, "сб": 6, "су": 6, "вс": 7, "во": 7 };
+function hrsDaysOf(seg) {
+  var re = /(^|[^а-я])(пн|вт|ср|чт|пт|сб|вс|понедельник|вторник|сред[ауы]|четверг|пятниц[ауы]|суббот[ауы]|воскресень[ея])(?![а-я])/g, m, toks = [];
+  while ((m = re.exec(seg))) { var s = m.index + m[1].length; toks.push({ d: HRS_I[m[2].slice(0, 2)], s: s, e: s + m[2].length }); }
+  if (toks.length) {
+    var res = [];
+    for (var i = 0; i < toks.length; i++) {
+      var t = toks[i], n = toks[i + 1];
+      if (n && /^\s*[-–—]\s*$/.test(seg.slice(t.e, n.s))) { var d = t.d; for (var g = 0; g < 7; g++) { res.push(d); if (d === n.d) break; d = d % 7 + 1; } i++; }
+      else res.push(t.d);
+    }
+    return res;
+  }
+  if (/ежедневно|каждый день|без выходных/.test(seg)) return null;
+  if (/будн/.test(seg)) return [1, 2, 3, 4, 5];
+  if (/выходные/.test(seg)) return [6, 7];
+  return null;
+}
+/* разбор текста часов: null, если не поняли; {all:true} или {sch:[..8]} */
+function hrsParse(s) {
+  s = String(s || "").toLowerCase().replace(/ё/g, "е");
+  if (!s || s.indexOf("укаж") !== -1) return null;
+  if (/круглосут|24 ?(часа|ч)|24\/7/.test(s)) return { all: true };
+  var sch = [null, null, null, null, null, null, null, null], defs = [], any = false;
+  var rx = /(?:с\s*)?(\d{1,2})(?:[:.](\d{2}))?\s*(?:-|–|—|до)\s*(\d{1,2})(?:[:.](\d{2}))?/;
+  s.split(/[;,\n]+/).forEach(function (seg) {
+    var t = rx.exec(seg), days = hrsDaysOf(seg);
+    if (t) {
+      var a = Number(t[1]) * 60 + Number(t[2] || 0), b = Number(t[3]) * 60 + Number(t[4] || 0);
+      if (b <= a) b += 1440;
+      any = true;
+      if (days) days.forEach(function (d) { sch[d] = [a, b]; }); else defs.push([a, b]);
+    } else if (/выходн|не работает|закрыто/.test(seg) && days) days.forEach(function (d) { sch[d] = "off"; });
+  });
+  if (!any) return null;
+  if (defs.length) for (var d = 1; d <= 7; d++) if (sch[d] === null) sch[d] = defs[0];
+  return { sch: sch };
+}
+function hrsT(m) { m = m % 1440; return ("0" + Math.floor(m / 60)).slice(-2) + ":" + ("0" + (m % 60)).slice(-2); }
+/* rows: массив из 7 элементов: null (выходной) или [минуты начала, минуты конца] */
+function hrsBuild(rows) {
+  var vals = rows.map(function (r) { return r ? hrsT(r[0]) + "–" + hrsT(r[1]) : "off"; });
+  if (vals.every(function (v) { return v === "off"; })) return "";
+  if (vals.every(function (v) { return v === "00:00–23:59"; })) return "Круглосуточно";
+  if (vals.every(function (v) { return v === vals[0]; })) return "Ежедневно " + vals[0];
+  var out = [], s = 0;
+  for (var i = 1; i <= 7; i++) {
+    if (i === 7 || vals[i] !== vals[s]) {
+      var e = i - 1;
+      out.push((s === e ? HRS_D[s] : HRS_D[s] + "–" + HRS_D[e]) + " " + (vals[s] === "off" ? "выходной" : vals[s]));
+      s = i;
+    }
+  }
+  return out.join(", ");
+}
+function hrsEsc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+function hrsEditor(id, label, hint, value) {
+  var rows = HRS_D.map(function (n, d) {
+    return '<div class="hrs-row"><span class="hrs-d">' + n + '</span><label class="hrs-w"><input type="checkbox" data-hw="' + d + '" aria-label="' + n + ': работаем"></label>' +
+      '<input type="time" data-ha="' + d + '" value="09:00" aria-label="' + n + ': с"><span>–</span><input type="time" data-hb="' + d + '" value="18:00" aria-label="' + n + ': до"></div>';
+  }).join("");
+  return '<div class="hrs" data-hrs="' + id + '"><b>' + hrsEsc(label) + "</b>" + (hint ? '<span class="hrs-h">' + hrsEsc(hint) + "</span>" : "") +
+    '<input type="hidden" id="' + id + '" value="' + hrsEsc(value) + '">' +
+    '<div class="hrs-days">' + rows + "</div>" +
+    '<input type="text" class="hrs-txt" maxlength="120" placeholder="Например: по записи" aria-label="Часы работы текстом" hidden>' +
+    '<div class="hrs-act"><button type="button" data-hrsact="weekdays">Как в Пн: все будни</button><button type="button" data-hrsact="all">Как в Пн: все дни</button><button type="button" data-hrsact="24">Круглосуточно</button><button type="button" data-hrsact="text">Написать своими словами</button></div></div>';
+}
+function hrsRows(box) {
+  var out = [];
+  for (var d = 0; d < 7; d++) {
+    var w = box.querySelector('[data-hw="' + d + '"]'), a = box.querySelector('[data-ha="' + d + '"]'), b = box.querySelector('[data-hb="' + d + '"]');
+    var ma = /^(\d{2}):(\d{2})$/.exec(a.value), mb = /^(\d{2}):(\d{2})$/.exec(b.value);
+    out.push(w.checked && ma && mb ? [Number(ma[1]) * 60 + Number(ma[2]), Number(mb[1]) * 60 + Number(mb[2])] : null);
+  }
+  return out;
+}
+function hrsSync(box) {
+  var hid = box.querySelector('input[type="hidden"]'), txt = box.querySelector(".hrs-txt");
+  for (var d = 0; d < 7; d++) {
+    var w = box.querySelector('[data-hw="' + d + '"]');
+    box.querySelector('[data-ha="' + d + '"]').disabled = !w.checked;
+    box.querySelector('[data-hb="' + d + '"]').disabled = !w.checked;
+  }
+  hid.value = box.getAttribute("data-mode") === "text" ? txt.value.trim().slice(0, 120) : hrsBuild(hrsRows(box));
+}
+function hrsLoad(box) {
+  var hid = box.querySelector('input[type="hidden"]'), txt = box.querySelector(".hrs-txt"), days = box.querySelector(".hrs-days"), tb = box.querySelector('[data-hrsact="text"]');
+  var v = hid.value || "", p = v ? hrsParse(v) : null;
+  if (v && !p) { box.setAttribute("data-mode", "text"); txt.value = v; txt.hidden = false; days.hidden = true; tb.textContent = "Выбрать по дням"; return; }
+  box.removeAttribute("data-mode"); txt.hidden = true; days.hidden = false; tb.textContent = "Написать своими словами";
+  for (var d = 0; d < 7; d++) {
+    var r = p ? (p.all ? [0, 1439] : (p.sch[d + 1] && p.sch[d + 1] !== "off" ? p.sch[d + 1] : null)) : null;
+    var w = box.querySelector('[data-hw="' + d + '"]');
+    w.checked = !!r;
+    if (r) { box.querySelector('[data-ha="' + d + '"]').value = hrsT(r[0]); box.querySelector('[data-hb="' + d + '"]').value = hrsT(r[1]); }
+    box.querySelector('[data-ha="' + d + '"]').disabled = !r; box.querySelector('[data-hb="' + d + '"]').disabled = !r;
+  }
+}
+function hrsLoadAll() { var bs = document.querySelectorAll(".hrs"); for (var i = 0; i < bs.length; i++) hrsLoad(bs[i]); }
+document.addEventListener("input", function (e) { var b = e.target.closest && e.target.closest(".hrs"); if (b) hrsSync(b); });
+document.addEventListener("change", function (e) { var b = e.target.closest && e.target.closest(".hrs"); if (b) hrsSync(b); });
+document.addEventListener("click", function (e) {
+  var btn = e.target.closest && e.target.closest("[data-hrsact]");
+  if (!btn) return;
+  var box = btn.closest(".hrs"), act = btn.getAttribute("data-hrsact"), hid = box.querySelector('input[type="hidden"]'), txt = box.querySelector(".hrs-txt");
+  e.preventDefault();
+  if (act === "text") {
+    if (box.getAttribute("data-mode") === "text") { hid.value = txt.value.trim().slice(0, 120); hrsLoad(box); }
+    else { txt.value = hid.value; box.setAttribute("data-mode", "text"); txt.hidden = false; box.querySelector(".hrs-days").hidden = true; btn.textContent = "Выбрать по дням"; }
+    hrsSync(box); return;
+  }
+  var a0 = box.querySelector('[data-ha="0"]').value, b0 = box.querySelector('[data-hb="0"]').value;
+  for (var d = 0; d < 7; d++) {
+    var on = act === "24" || act === "all" || (act === "weekdays" && d < 5);
+    if (!on) continue;
+    box.querySelector('[data-hw="' + d + '"]').checked = true;
+    box.querySelector('[data-ha="' + d + '"]').value = act === "24" ? "00:00" : a0;
+    box.querySelector('[data-hb="' + d + '"]').value = act === "24" ? "23:59" : b0;
+  }
+  hrsSync(box);
+});
+
 function cabF(id, label, hint, tag, val, ph, max) {
   var inp = tag === "textarea" ? '<textarea id="' + id + '" maxlength="' + (max || 400) + '" placeholder="' + esc(ph || "") + '">' + esc(val || "") + "</textarea>" :
     '<input id="' + id + '" maxlength="' + (max || 120) + '" autocomplete="off" placeholder="' + esc(ph || "") + '" value="' + esc(val || "") + '">';
@@ -1105,7 +1242,7 @@ function drawCab() {
       cabF("cp_name", "Название", "", "input", p.name, "", 120) +
       cabF("cp_phone", "Телефон", "", "input", p.phone, "+7 ...", 40) +
       cabF("cp_addr", "Адрес", "", "input", p.addr === "Бугуруслан" ? "" : p.addr, "ул. ..., дом", 150) +
-      cabF("cp_hours", "Часы работы", "", "input", p.hours, "Пн–Пт 9:00–18:00", 120) +
+      hrsEditor("cp_hours", "Часы работы", "поставьте галочку у рабочих дней и укажите время. Дни без галочки считаются выходными", p.hours) +
       cabF("cp_about", "Чем занимаетесь", "коротко, до 400 знаков. Телефон и ссылки сюда не пишите, для них есть поля ниже", "textarea", p.about, "", 400) +
       cabF("cp_price", "Прайс-лист", "по одной услуге в строке: название | цена", "textarea", p.price, "Замена масла | от 800 ₽", 4000) +
       cabF("cp_pnote", "Пояснение к прайсу", "необязательно", "input", p.priceNote, "", 300) +
@@ -1142,6 +1279,7 @@ function drawCab() {
   }
   if (CAB.step === "main") h += '<button type="button" class="help-link" data-cab="out">Выйти из кабинета</button>';
   e.innerHTML = h;
+  hrsLoadAll();
 }
 function cabClick(b) {
   var act = b.getAttribute("data-cab");
