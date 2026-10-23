@@ -10,6 +10,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
+<meta name="description" content="Бугуруслан всё в одном месте: магазины, сервисы и услуги города. Адрес, телефон и часы работы под рукой.">
 <title>Бугуруслан всё в одном месте</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -228,7 +229,7 @@ h2 { margin: 0; font-size: 18px; font-weight: 800; }
 
 :root { --tb: 62px; }
 .tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; background: var(--white); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom); }
-.tabbar .in { max-width: 480px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.tabbar .in { max-width: 480px; margin: 0 auto; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
 .tabbar button { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; height: var(--tb); padding: 6px 2px; border: 0; background: none; color: var(--muted); font-size: 12px; font-weight: 700; cursor: pointer; }
 .tabbar button.on { color: var(--green); }
 .tabbar button.on::before { content: ""; position: absolute; top: 0; left: 28%; right: 28%; height: 3px; border-radius: 0 0 3px 3px; background: var(--green); }
@@ -282,6 +283,55 @@ button.soon { width: 100%; text-align: left; font: inherit; cursor: pointer; }
 .qrbox b { font-size: 18px; font-weight: 800; }
 .qrbox span { font-size: 15px; color: var(--muted); line-height: 1.4; }
 .qrlink { width: 100%; min-height: 56px; margin-top: 12px; border-radius: 16px; border: 2px solid var(--green); background: var(--white); color: var(--green); font: inherit; font-size: 16px; font-weight: 800; }
+.sbar { position: sticky; top: 0; z-index: 6; margin-inline: -20px; padding: 8px 20px; background: var(--bg); }
+.hero h1 { flex: 1; min-width: 0; }
+.hq { margin-left: auto; flex: none; min-height: 44px; padding: 0 10px; font-size: 13px !important; border: 1px solid var(--line); border-radius: 12px; background: var(--white); color: var(--green); font-size: 14px; font-weight: 800; cursor: pointer; }
+.org { position: relative; }
+.org .orgmain { display: flex; flex-direction: column; gap: 10px; }
+.org .nm { padding-right: 0; }
+.heart { position: absolute; top: 8px; right: 8px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 50%; background: transparent; color: var(--muted); cursor: pointer; }
+.heart.on { color: #D93025; }
+.heart.on svg { fill: currentColor; }
+.heart.cardh { position: static; border: 1px solid var(--line); background: var(--white); align-self: flex-end; }
+.st { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 13px; font-weight: 800; background: #E6EBE8; color: var(--muted); }
+.st.on { background: var(--mint); color: var(--green); }
+.oacts { display: flex; flex-wrap: wrap; gap: 8px; }
+.oacts a { display: flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 16px; border-radius: 12px; border: 2px solid var(--green); background: var(--white); color: var(--green); font-size: 15px; font-weight: 800; }
+.oacts a.fill { background: var(--green); color: var(--white); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips button, .sug, .hist button { min-height: 44px; padding: 0 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--white); color: var(--ink); font-size: 14px; font-weight: 800; cursor: pointer; }
+.chips button[aria-pressed="true"] { background: var(--green); color: var(--white); border-color: var(--green); }
+.sugs, .hist { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.sug { background: var(--mint); color: var(--green); border-color: #BFDCC8; }
+.hist .hl { font-size: 13px; color: var(--muted); font-weight: 700; }
+.tile .cn { margin-left: auto; flex: none; font-size: 12px; font-weight: 800; opacity: .8; }
+.tabbar .in { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.tabbar button { font-size: 11px; }
+@media (max-width: 359px) { .tabbar button { font-size: 10px; } }
+.tabbar .in { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.tabbar button { font-size: 12px; }
+.app.home { padding-block-start: 12px; gap: 14px; }
+.hbar { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.hbar h1 { flex: 1; min-width: 0; font-size: 18px; line-height: 1.15; }
+.grow { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.cc { flex: none; font-size: 16px; font-weight: 800; color: var(--muted); }
+.ptiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.ptile { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 76px; padding: 10px 4px; border: 1px solid var(--line); border-radius: 14px; background: var(--white); color: var(--ink); font-size: 12px; font-weight: 800; cursor: pointer; text-align: center; overflow-wrap: anywhere; }
+.ptile span { max-width: 100%; }
+.ptile.all { background: var(--mint); color: var(--green); }
+.mini { display: flex; gap: 12px; align-items: center; padding: 10px; background: var(--white); border: 1px solid var(--line); border-radius: 16px; min-width: 0; }
+.mini .th { flex: none; width: 64px; height: 64px; border-radius: 12px; background: var(--mint); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.mini .th img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.mini .tx { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.mini .tx b { font-size: 16px; font-weight: 800; overflow-wrap: anywhere; }
+.mini .tx span { font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+.org .pic { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 12px; display: block; background: var(--mint); }
+.org .nmrow { display: flex; align-items: flex-start; gap: 8px; }
+.org .nmrow .nm { flex: 1; min-width: 0; padding-right: 0; }
+.org .heart.ohrt { top: 8px; right: 8px; }
+.st { background: none; padding: 0; border-radius: 0; font-size: 15px; font-weight: 800; color: #9B2C2C; }
+.st.on { background: none; color: #0A6B1F; }
+.oacts a, .oacts a.fill { border: 0; background: #CDEBC9; color: var(--green); }
 </style>
 </head>
 <body>
@@ -369,6 +419,148 @@ function itemById(id) { for (var i = 0; i < ITEMS.length; i++) if (ITEMS[i].id =
 function itemsOf(catId) { return ITEMS.filter(function (it) { return [].concat(it.cat).indexOf(catId) !== -1; }); }
 function telHref(p) { return "tel:" + String(p).replace(/[^\d+]/g, ""); }
 
+/* ===== поиск, часы работы, избранное ===== */
+var SYN = {
+  avto: "шиномонтаж сто ремонт авто машина машины автомобиль диагностика масло колодки развал схождение покраска кузов",
+  moyki: "мойка помыть машину автомойка химчистка",
+  zapchasti: "запчасти детали шины колеса аккумулятор",
+  produkty: "магазин продукты еда продуктовый хлеб молоко мясо овощи",
+  odezhda: "одежда обувь куртка платье кроссовки",
+  remont: "ремонт квартир стройка строительство отделка плитка сантехник электрик мастер",
+  okna: "окна пластиковые пвх жалюзи балкон двери москитные сетки подоконник",
+  turizm: "туры путевка отдых тур",
+  shtory: "шторы текстиль занавески",
+  mebel: "мебель диван кухня шкаф кровать",
+  tehnika: "техника телевизор холодильник стиральная",
+  "remont-tehniki": "ремонт телефона ноутбука компьютера техники холодильников",
+  stomat: "стоматолог зубы зуб врач лечение",
+  krasota: "парикмахерская стрижка маникюр салон красоты барбер ногти брови педикюр",
+  fitnes: "фитнес спорт тренажерный зал тренер йога",
+  kafe: "кафе ресторан еда кофе пицца суши обед поесть столовая бар",
+  cvety: "цветы букет подарки подарок",
+  prazdniki: "праздник день рождения шары аниматор",
+  detyam: "дети детям игрушки детский",
+  gruz: "грузоперевозки грузчики переезд газель доставка перевозка такси",
+  nedvizhimost: "недвижимость квартира дом риэлтор аренда продать купить",
+  yuristy: "юрист бухгалтер адвокат документы налоги",
+  gostinicy: "гостиница отель ночлег хостел",
+  foto: "фото печать фотография копия ксерокс",
+  dosug: "досуг развлечения отдых",
+  uslugi: "услуги сайт приложение сайты разработка",
+  kursy: "курсы обучение репетитор школа",
+  konditery: "торт торты кондитер пирожные выпечка",
+  bani: "баня сауна коттедж",
+  video: "фотограф видеосъемка видео съемка свадьба",
+  magaziny: "магазин магазины",
+  "rynok-gorod": "рынок", "rynok-yug": "рынок",
+  "baza-shirokaya": "база склад оптом", "baza-kontrakt": "база склад оптом"
+};
+function stem(w) { return w.length >= 7 ? w.slice(0, -2) : (w.length >= 5 ? w.slice(0, -1) : w); }
+function words(q) { return norm(q).split(/[^а-яa-z0-9]+/).filter(function (w) { return w; }); }
+function hasAll(text, ws) { for (var i = 0; i < ws.length; i++) if (text.indexOf(stem(ws[i])) === -1) return false; return true; }
+function catText(c) { return norm(c.name + " " + (SYN[c.id] || "")); }
+function itemText(it) {
+  var cs = [].concat(it.cat).map(function (id) { var c = catById(id); return c ? catText(c) : ""; }).join(" ");
+  return norm(it.name + " " + (it.about || "") + " " + it.addr + " " + cs);
+}
+function catCount(id) { return itemsOf(id).length; }
+
+var DAYI = { "пн": 1, "по": 1, "вт": 2, "ср": 3, "чт": 4, "пт": 5, "сб": 6, "су": 6, "вс": 7, "во": 7 };
+function daysOf(seg) {
+  var re = /(^|[^а-я])(пн|вт|ср|чт|пт|сб|вс|понедельник|вторник|сред[ауы]|четверг|пятниц[ауы]|суббот[ауы]|воскресень[ея])(?![а-я])/g, m, toks = [];
+  while ((m = re.exec(seg))) { var s = m.index + m[1].length; toks.push({ d: DAYI[m[2].slice(0, 2)], s: s, e: s + m[2].length }); }
+  if (toks.length) {
+    var res = [];
+    for (var i = 0; i < toks.length; i++) {
+      var t = toks[i], n = toks[i + 1];
+      if (n && /^\s*[-–—]\s*$/.test(seg.slice(t.e, n.s))) { var d = t.d; for (var g = 0; g < 7; g++) { res.push(d); if (d === n.d) break; d = d % 7 + 1; } i++; }
+      else res.push(t.d);
+    }
+    return res;
+  }
+  if (/ежедневно|каждый день|без выходных/.test(seg)) return null;
+  if (/будн/.test(seg)) return [1, 2, 3, 4, 5];
+  if (/выходные/.test(seg)) return [6, 7];
+  return null;
+}
+function parseHours(s) {
+  s = norm(s || "");
+  if (!s || s.indexOf("укаж") !== -1) return null;
+  if (/круглосут|24 ?(часа|ч)|24\/7/.test(s)) return { all: true };
+  var sch = [null, null, null, null, null, null, null, null], defs = [], any = false;
+  var rx = /(?:с\s*)?(\d{1,2})(?:[:.](\d{2}))?\s*(?:-|–|—|до)\s*(\d{1,2})(?:[:.](\d{2}))?/;
+  s.split(/[;,\n]+/).forEach(function (seg) {
+    var t = rx.exec(seg), days = daysOf(seg);
+    if (t) {
+      var a = Number(t[1]) * 60 + Number(t[2] || 0), b = Number(t[3]) * 60 + Number(t[4] || 0);
+      if (b <= a) b += 1440;
+      any = true;
+      if (days) days.forEach(function (d) { sch[d] = [a, b]; }); else defs.push([a, b]);
+    } else if (/выходн|не работает|закрыто/.test(seg) && days) days.forEach(function (d) { sch[d] = "off"; });
+  });
+  if (!any) return null;
+  if (defs.length) for (var d = 1; d <= 7; d++) if (sch[d] === null) sch[d] = defs[0];
+  return { sch: sch };
+}
+function nowParts() {
+  try {
+    var parts = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Yekaterinburg", weekday: "short", hour: "2-digit", minute: "2-digit", hour12: false }).formatToParts(new Date()), o = {};
+    parts.forEach(function (p) { o[p.type] = p.value; });
+    return { d: { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 7 }[o.weekday] || 1, m: (Number(o.hour) % 24) * 60 + Number(o.minute) };
+  } catch (e) { var n = new Date(); return { d: n.getDay() || 7, m: n.getHours() * 60 + n.getMinutes() }; }
+}
+function fmtMin(m) { m = m % 1440; return ("0" + Math.floor(m / 60)).slice(-2) + ":" + ("0" + (m % 60)).slice(-2); }
+function openInfo(hours, now) {
+  var p = parseHours(hours);
+  if (!p) return null;
+  if (p.all) return { open: true, text: "Открыто круглосуточно" };
+  now = now || nowParts();
+  var prev = p.sch[now.d === 1 ? 7 : now.d - 1];
+  if (prev && prev !== "off" && prev[1] > 1440 && now.m < prev[1] - 1440) return { open: true, text: "Открыто до " + fmtMin(prev[1]) };
+  var r = p.sch[now.d];
+  if (!r || r === "off") return { open: false, text: "Сегодня выходной" };
+  if (now.m < r[0]) return { open: false, text: "Закрыто · откроется в " + fmtMin(r[0]) };
+  if (now.m < r[1]) return { open: true, text: "Открыто до " + fmtMin(r[1]) };
+  return { open: false, text: "Закрыто" };
+}
+function favGet() { try { var a = JSON.parse(sget("b56_fav") || "[]"); return a instanceof Array ? a : []; } catch (e) { return []; } }
+function isFav(id) { return favGet().indexOf(Number(id)) !== -1; }
+function favToggle(id) {
+  id = Number(id); var a = favGet(), i = a.indexOf(id);
+  if (i === -1) a.push(id); else a.splice(i, 1);
+  sset("b56_fav", JSON.stringify(a));
+  return i === -1;
+}
+var HEART = '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/>';
+function heartBtn(it, cls) {
+  var on = isFav(it.id);
+  return '<button type="button" class="heart' + (on ? " on" : "") + (cls ? " " + cls : "") + '" data-fav="' + it.id + '" aria-pressed="' + on + '" aria-label="' + (on ? "Убрать из избранного" : "В избранное") + ": " + esc(it.name) + '">' + ico(HEART, 24, "currentColor") + "</button>";
+}
+function histGet() { try { var a = JSON.parse(sget("b56_hist") || "[]"); return a instanceof Array ? a : []; } catch (e) { return []; } }
+function histAdd(q) {
+  q = String(q || "").trim().slice(0, 40);
+  if (q.length < 2) return;
+  var a = histGet().filter(function (x) { return norm(x) !== norm(q); });
+  a.unshift(q); sset("b56_hist", JSON.stringify(a.slice(0, 5)));
+}
+var flt = { open: false, deliv: false, rec: false, high: false }, fltRoute = "";
+function isDeliv(it) { return [].concat(it.cat).indexOf("gruz") !== -1 || /достав/.test(norm((it.name || "") + " " + (it.about || "") + " " + (it.note || ""))); }
+function isHighRated(it) { return !!(it.stars && it.stars.length >= 4); }
+function anyFlt() { return flt.open || flt.deliv || flt.rec || flt.high; }
+function passF(it) {
+  if (flt.open) { var o = openInfo(it.hours); if (!(o && o.open)) return false; }
+  if (flt.deliv && !isDeliv(it)) return false;
+  if (flt.rec && !it.rec) return false;
+  if (flt.high && !isHighRated(it)) return false;
+  return true;
+}
+function chipsHtml() {
+  function c(k, t) { return '<button type="button" data-flt="' + k + '" aria-pressed="' + flt[k] + '">' + t + "</button>"; }
+  var hasHigh = ITEMS.some(isHighRated);
+  return '<div class="chips" role="group" aria-label="Фильтры">' + c("open", "Открыто сейчас") + c("deliv", "Доставка") + c("rec", "Рекомендуем") + (hasHigh ? c("high", "Высокий рейтинг") : "") + "</div>";
+}
+function validPhone(p) { var d = String(p || "").replace(/\D/g, ""); return d.length >= 10 && !/0{5,}/.test(d); }
+
 var app = document.getElementById("app");
 var state = { route: "home", stack: [] };
 
@@ -376,6 +568,8 @@ function parse(r) {
   if (r.indexOf("cat-") === 0) return { v: "cat", id: r.slice(4) };
   if (r.indexOf("card-") === 0) return { v: "card", id: Number(r.slice(5)) };
   if (r.indexOf("price-") === 0) return { v: "price", id: Number(r.slice(6)) };
+  if (r === "catalog") return { v: "catalog" };
+  if (r === "fav") return { v: "fav" };
   if (r === "owner") return { v: "owner" };
   if (r === "install") return { v: "install" };
   if (r === "news") return { v: "news" };
@@ -402,8 +596,8 @@ function backBtn(label) {
   return '<a class="back" href="#back" data-back="1" aria-label="' + esc(label) + '">' + ico(P.left, 22, "#0B2417") + "</a>";
 }
 function searchBox(placeholder, label) {
-  return '<label class="search">' + ico(P.search, 22, "#14532D") +
-    '<input id="q" type="search" placeholder="' + esc(placeholder) + '" aria-label="' + esc(label) + '" autocomplete="off"></label>';
+  return '<div class="sbar"><label class="search">' + ico(P.search, 22, "#14532D") +
+    '<input id="q" type="search" placeholder="' + esc(placeholder) + '" aria-label="' + esc(label) + '" autocomplete="off" enterkeyhint="search"></label></div>';
 }
 function starsHtml(arr) {
   arr = [].concat(arr || []).map(Number);
@@ -421,26 +615,43 @@ function bannerHtml(catId) {
   return '<div class="banner">' + (b.title ? "<b>" + esc(b.title) + "</b>" : "") + (b.text ? "<span>" + esc(b.text) + "</span>" : "") + link + "</div>";
 }
 function orgCard(it, showCat) {
-  var tags = "";
-  if (it.rec || it.price) {
-    tags = '<div class="tags">' + (it.rec ? '<span class="tag gold">Рекомендуем</span>' : "") + (it.price ? '<span class="tag mint">Есть прайс-лист</span>' : "") + "</div>";
-  }
+  var tags = "", oi = openInfo(it.hours), ph = (it.photos || [])[0];
+  if (it.rec || it.price) tags = '<div class="tags">' + (it.rec ? '<span class="tag gold">Рекомендуем</span>' : "") + (it.price ? '<span class="tag mint">Есть прайс-лист</span>' : "") + "</div>";
   var c = showCat ? catById([].concat(it.cat)[0]) : null;
-  return '<a class="org' + (it.rec ? " rec" : "") + '" href="#card-' + it.id + '" data-go="card-' + it.id + '">' + tags +
+  var call = validPhone(it.phone), wa = /^https:\/\//.test(it.wa || "");
+  var tg = /^https:\/\//.test(it.tg || ""), mx = /^https:\/\//.test(it.max || "");
+  function ob(on, href, t) { return on ? '<a href="' + esc(href) + '" target="_blank" rel="noopener" data-org="' + esc(it.name) + '">' + t + "</a>" : ""; }
+  var acts = (call || wa || tg || mx) ? '<div class="oacts">' + (call ? '<a class="fill" href="' + telHref(it.phone) + '" data-org="' + esc(it.name) + '">Позвонить</a>' : "") + ob(wa, it.wa, "WhatsApp") + ob(tg, it.tg, "Telegram") + ob(mx, it.max, "MAX") + "</div>" : "";
+  return '<div class="org' + (it.rec ? " rec" : "") + '"><a class="orgmain" href="#card-' + it.id + '" data-go="card-' + it.id + '">' +
+    (ph ? '<img class="pic" src="' + esc(ph) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : "") + tags +
     (c ? '<div class="cat">' + esc(c.name) + "</div>" : "") +
-    '<div class="nm">' + esc(it.name) + "</div>" + starsHtml(it.stars) +
+    '<div class="nmrow"><div class="nm">' + esc(it.name) + '</div><span style="width:28px;flex:none"></span></div>' + starsHtml(it.stars) +
     '<div class="line">' + ico(P.pin, 18, "#14532D") + "<span>" + esc(it.addr) + "</span></div>" +
-    '<div class="line">' + ico(P.phone, 18, "#14532D") + '<span class="phone-t">' + esc(it.phone) + "</span></div></a>";
+    (oi ? '<div class="st' + (oi.open ? " on" : "") + '">' + esc(oi.text) + "</div>" : "") +
+    (call ? "" : '<div class="line">' + ico(P.phone, 18, "#14532D") + '<span class="phone-t">' + esc(it.phone) + "</span></div>") + "</a>" + acts + heartBtn(it, "ohrt") + "</div>";
 }
-function tiles() {
-  /* сначала разделы, где уже есть заведения (зелёные), потом пустые; внутри групп порядок по алфавиту, «Другое» в конце */
-  var _on = [], _off = [], _dr = null;
-  CATS.forEach(function (c) { if (itemsOf(c.id).length > 0) _on.push(c); else if (c.id === "drugoe") _dr = c; else _off.push(c); });
-  var _ord = _on.concat(_off); if (_dr) _ord.push(_dr);
-  return '<div class="grid">' + _ord.map(function (c) {
-    var on = itemsOf(c.id).length > 0;
-    return '<button type="button" class="tile' + (on ? " on" : "") + '" lang="ru" data-go="cat-' + c.id + '"><span class="ic">' + ico(c.p, 18, on ? "#FFFFFF" : "#14532D") + '</span><span class="tx">' + esc(c.name) + "</span></button>";
-  }).join("") + "</div>";
+function orgMini(it) {
+  var c = catById([].concat(it.cat)[0]), ph = (it.photos || [])[0], oi = openInfo(it.hours);
+  return '<a class="mini" href="#card-' + it.id + '" data-go="card-' + it.id + '"><span class="th">' + (ph ? '<img src="' + esc(ph) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : (c ? ico(c.p, 26, "#14532D") : "")) + '</span><span class="tx"><b>' + esc(it.name) + "</b><span>" + esc((c ? c.name + " · " : "") + it.addr) + "</span>" + (oi ? '<span class="st' + (oi.open ? " on" : "") + '">' + esc(oi.text) + "</span>" : "") + "</span></a>";
+}
+function tileHtml(c) {
+  var n = catCount(c.id);
+  return '<button type="button" class="tile on" lang="ru" data-go="cat-' + c.id + '"><span class="ic">' + ico(c.p, 18, "#FFFFFF") + '</span><span class="tx">' + esc(c.name) + '</span><span class="cn">' + n + "</span></button>";
+}
+function liveCats() { return CATS.filter(function (c) { return catCount(c.id) > 0; }); }
+function tiles(list) {
+  list = list || liveCats();
+  return '<div class="grid">' + list.map(tileHtml).join("") + "</div>";
+}
+var SHORT = { avto: "Авто", moyki: "Мойки", zapchasti: "Запчасти", produkty: "Продукты", odezhda: "Одежда", remont: "Ремонт", okna: "Окна", turizm: "Туризм", shtory: "Шторы", mebel: "Мебель", tehnika: "Техника", "remont-tehniki": "Ремонт техники", stomat: "Зубы", krasota: "Красота", fitnes: "Спорт", kafe: "Кафе", cvety: "Цветы", prazdniki: "Праздники", detyam: "Детям", gruz: "Грузы", nedvizhimost: "Жильё", yuristy: "Юристы", gostinicy: "Отели", foto: "Фото", dosug: "Досуг", uslugi: "Услуги", kursy: "Курсы", konditery: "Торты", bani: "Бани", video: "Видео", magaziny: "Магазины", "rynok-gorod": "Рынок", "rynok-yug": "Рынок юг", "baza-shirokaya": "Широкая", "baza-kontrakt": "Контракт" };
+function popularCats() {
+  var l = liveCats().slice().sort(function (a, b) { return catCount(b.id) - catCount(a.id); });
+  return l.slice(0, 3);
+}
+function popularTiles() {
+  var live = liveCats(), pop = popularCats();
+  return '<div class="ptiles">' + pop.map(function (c) { return '<button type="button" class="ptile" data-go="cat-' + c.id + '">' + ico(c.p, 26, "#14532D") + "<span>" + esc(SHORT[c.id] || c.name.split(" ")[0]) + "</span></button>"; }).join("") +
+    '<button type="button" class="ptile all" data-go="catalog">' + ico('<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>', 26, "#14532D") + "<span>Все " + live.length + "</span></button></div>";
 }
 function emptyBlock(title, text) { return '<div class="empty"><b>' + esc(title) + "</b><span>" + esc(text) + "</span></div>"; }
 
@@ -453,48 +664,78 @@ function viewQr() {
 }
 function viewHome() {
   return '<div class="app home">' +
-    '<div class="hero"><div class="row">' +
-    '<svg width="68" height="80" viewBox="0 0 64 76" role="img" aria-label="Значок приложения: Б-56" style="flex:none">' +
+    '<div class="hbar"><svg width="36" height="42" viewBox="0 0 64 76" role="img" aria-label="Значок приложения: Б-56" style="flex:none">' +
     '<path d="M32 2C16 2 4 14 4 29c0 20 28 45 28 45s28-25 28-45C60 14 48 2 32 2z" fill="#14532D"></path>' +
     '<circle cx="32" cy="29" r="19" fill="#FFFFFF" stroke="#FFD166" stroke-width="3"></circle>' +
     '<text x="32" y="34" text-anchor="middle" font-family="Manrope, system-ui, sans-serif" font-size="14" font-weight="800" fill="#14532D">Б-56</text></svg>' +
-    "<h1>Бугуруслан всё в одном месте</h1></div>" +
-    "<p>Магазины, сервисы и услуги города. Адрес и телефон под рукой.</p></div>" +
-    searchBox("Найти: автосервис, кафе, окна", "Поиск по городу") +
-    homeTop() +
+    '<h1>Бугуруслан всё в одном месте</h1><button type="button" class="hq" data-go="help">Помощь</button></div>' +
+    searchBox("Что ищете? Шиномонтаж, торт…", "Поиск по городу") +
+    chipsHtml() +
     '<div class="list" id="results"></div>' +
+    homeTop() +
     installBanner() +
     '<button type="button" class="qrlink" data-go="qr">Показать QR-код приложения</button>' +
     '<button type="button" class="soon" data-tab="board"><span class="badge">Скоро</span><b>Доска объявлений Бугуруслана</b><span>Продать, купить, найти мастера или отдать в хорошие руки. Запуск совсем скоро.</span></button>' +
     '<div class="owner"><div class="tt"><b>Вы владелец бизнеса?</b><span>Добавим вашу карточку в приложение</span></div>' +
     '<button type="button" data-go="owner">Узнать как</button></div>' +
+    '<button type="button" class="help-link" data-go="ask">Не нашли нужное? Напишите нам</button>' +
     '<button type="button" class="help-link" data-go="help">Техподдержка</button></div>';
 }
+function homeDefault() {
+  if (anyFlt()) {
+    var l = ITEMS.filter(passF);
+    return "<h2>Найдено: " + l.length + "</h2>" + (l.length ? l.map(function (it) { return orgCard(it, true); }).join("") : emptyBlock("Ничего не подошло", "Снимите фильтр, чтобы увидеть остальные."));
+  }
+  var h = histGet(), out = "";
+  if (h.length) out += '<div class="hist"><span class="hl">Вы искали:</span>' + h.map(function (x) { return '<button type="button" data-hist="' + esc(x) + '">' + esc(x) + "</button>"; }).join("") + "</div>";
+  out += "<h2>Популярное</h2>" + (liveCats().length ? popularTiles() : emptyBlock("Разделы скоро появятся", "Заведения добавляются каждый день."));
+  var fresh = ITEMS.slice().filter(function (it) { return !/Пример/.test(it.name); }).sort(function (a, b) { return Number(b.id) - Number(a.id); }).slice(0, 3);
+  if (fresh.length) out += "<h2>Новые в городе</h2>" + '<div class="list">' + fresh.map(orgMini).join("") + "</div>";
+  return out;
+}
 function homeResults(q) {
-  q = norm(q).trim();
-  if (!q) return '<h2>Что ищете?</h2>' + tiles();
-  var found = ITEMS.filter(function (it) {
-    var names = [].concat(it.cat).map(function (id) { var c = catById(id); return c ? c.name : ""; }).join(" ");
-    return norm(it.name + " " + (it.about || "") + " " + it.addr + " " + names).indexOf(q) !== -1;
-  });
-  if (found.length) return '<h2>Найдено: ' + found.length + "</h2>" + found.map(function (it) { return orgCard(it, true); }).join("");
-  return emptyBlock("Ничего не нашли", "Попробуйте другое слово или выберите раздел ниже.") + "<h2>Разделы</h2>" + tiles();
+  var ws = words(q);
+  if (!ws.length) return homeDefault();
+  var sug = liveCats().filter(function (c) { return hasAll(catText(c), ws); });
+  var found = ITEMS.filter(function (it) { return hasAll(itemText(it), ws); });
+  found.sort(function (a, b) { return (hasAll(norm(a.name), ws) ? 0 : 1) - (hasAll(norm(b.name), ws) ? 0 : 1); });
+  var out = "";
+  if (sug.length) out += '<div class="sugs">' + sug.slice(0, 4).map(function (c) { return '<button type="button" class="sug" data-go="cat-' + c.id + '">' + esc(c.name) + " (" + catCount(c.id) + ") →</button>"; }).join("") + "</div>";
+  if (!found.length) return out + emptyBlock("Ничего не нашли", "Попробуйте другое слово или выберите раздел.") + "<h2>Разделы</h2>" + tiles(popularCats());
+  var shown = found.filter(passF);
+  out += "<h2>Найдено: " + shown.length + "</h2>";
+  return out + (shown.length ? shown.map(function (it) { return orgCard(it, true); }).join("") : emptyBlock("Ничего не подошло", "Снимите фильтр, чтобы увидеть остальные."));
 }
 
 function viewCat(c) {
-  return '<div class="app"><div class="row">' + backBtn("Назад на главную") + "<h1>" + esc(c.name) + "</h1></div>" +
+  return '<div class="app"><div class="row">' + backBtn("Назад на главную") + '<h1 class="grow">' + esc(c.name) + '</h1><span class="cc" aria-label="Заведений: ' + catCount(c.id) + '">' + catCount(c.id) + "</span></div>" +
     bannerHtml(c.id) +
     searchBox("Название или адрес", "Поиск в разделе " + c.name) +
     '<div class="list" id="results"></div>' +
     '<div class="foot">© 2026 «Бугуруслан всё в одном месте» · Б-56. Все права защищены</div></div>';
 }
 function catResults(c, q) {
-  q = norm(q).trim();
+  var ws = words(q);
   var all = itemsOf(c.id);
   if (!all.length) return emptyBlock("Здесь пока никого нет", "Организации этого раздела скоро появятся.");
-  var found = all.filter(function (it) { return !q || norm(it.name + " " + it.addr).indexOf(q) !== -1; });
+  var found = all.filter(function (it) { return !ws.length || hasAll(norm(it.name + " " + it.addr + " " + (it.about || "")), ws); });
   if (!found.length) return emptyBlock("Ничего не нашли", "Попробуйте другое слово.");
-  return found.map(function (it) { return orgCard(it, false); }).join("");
+  var shown = found.filter(passF);
+  return chipsHtml() + (shown.length ? shown.map(function (it) { return orgCard(it, false); }).join("") : emptyBlock("Ничего не подошло", "Снимите фильтр, чтобы увидеть остальные."));
+}
+function viewCatalog() {
+  var live = liveCats();
+  return '<div class="app"><div class="row">' + backBtn("Назад на главную") + "<h1>Все разделы</h1></div>" +
+    (live.length ? tiles(live) : emptyBlock("Разделы скоро появятся", "Заведения добавляются каждый день.")) +
+    '<div class="note">Пустые разделы скрыты: они появятся, как только в них добавятся заведения.</div>' +
+    '<button type="button" class="qrlink" style="margin-top:0" data-go="ask">Нет нужного раздела? Напишите нам</button>' +
+    '<div class="foot">© 2026 «Бугуруслан всё в одном месте» · Б-56. Все права защищены</div></div>';
+}
+function viewFav() {
+  var f = favGet(), list = ITEMS.filter(function (it) { return f.indexOf(Number(it.id)) !== -1; });
+  return '<div class="app"><div class="row"><h1>Избранное</h1></div>' +
+    (list.length ? '<div class="list">' + list.map(function (it) { return orgCard(it, true); }).join("") + "</div>" : emptyBlock("Пока пусто", "Нажмите сердечко на карточке заведения, и оно появится здесь. Регистрация не нужна.")) +
+    '<div class="foot">© 2026 «Бугуруслан всё в одном месте» · Б-56. Все права защищены</div></div>';
 }
 
 function photosBlock(it) {
@@ -507,7 +748,7 @@ function photosBlock(it) {
 function viewCard(it) {
   var c = catById([].concat(it.cat)[0]);
   var web = "";
-  var links = [["Отзывы на Яндекс Картах", it.reviews], ["WhatsApp", it.wa], ["Сайт", it.site], ["ВКонтакте", it.vk], ["Telegram", it.tg]].filter(function (l) { return l[1]; });
+  var links = [["Отзывы на Яндекс Картах", it.reviews], ["WhatsApp", it.wa], ["Сайт", it.site], ["ВКонтакте", it.vk], ["Telegram", it.tg], ["MAX", it.max]].filter(function (l) { return l[1]; });
   if (links.length) {
     web = '<div class="web"><h2>Мы в интернете</h2><div class="links">' + links.map(function (l) {
       return '<a href="' + esc(l[1]) + '" target="_blank" rel="noopener">' + l[0] + "</a>";
@@ -521,10 +762,10 @@ function viewCard(it) {
   var map = "https://yandex.ru/maps/?text=" + encodeURIComponent("Бугуруслан, " + it.addr);
   return '<div class="app"><div class="row">' + backBtn("Назад к списку") + '<div class="sub" style="font-size:15px;font-weight:700">' + esc(c ? c.name : "") + "</div></div>" +
     photosBlock(it) +
-    '<div class="title-block">' + (it.rec ? '<span class="tag gold">Рекомендуем</span>' : "") + "<h1>" + esc(it.name) + "</h1>" + starsHtml(it.stars) + (it.about ? '<div class="sub" style="font-size:15px;line-height:1.4">' + esc(it.about) + "</div>" : "") + "</div>" +
+    '<div class="title-block">' + (it.rec ? '<span class="tag gold">Рекомендуем</span>' : "") + "<h1>" + esc(it.name) + "</h1>" + heartBtn(it, "cardh") + starsHtml(it.stars) + (it.about ? '<div class="sub" style="font-size:15px;line-height:1.4">' + esc(it.about) + "</div>" : "") + "</div>" +
     '<div class="panel">' +
     '<div class="it">' + ico(P.pin, 22, "#14532D") + "<span>г. Бугуруслан" + (it.addr === "Бугуруслан" ? "" : ", " + esc(it.addr)) + (it.note ? '<br><small style="font-size:14px;color:#4D6657">' + esc(it.note) + "</small>" : "") + "</span></div>" +
-    (it.hours ? '<div class="it">' + ico(P.clock, 22, "#14532D") + "<span>Часы работы: " + esc(it.hours) + "</span></div>" : "") +
+    (it.hours ? '<div class="it">' + ico(P.clock, 22, "#14532D") + "<span>Часы работы: " + esc(it.hours) + (function () { var o = openInfo(it.hours); return o ? '<br><b style="color:' + (o.open ? "#14532D" : "#4D6657") + '">' + esc(o.text) + "</b>" : ""; })() + "</span></div>" : "") +
     '<div class="it">' + ico(P.phone, 22, "#14532D") + '<span class="phone-t">' + esc(it.phone) + "</span></div></div>" +
     price + quotes + web +
     '<div class="actions"><a class="btn fill" href="' + telHref(it.phone) + '">' + ico(P.phone, 20, "#FFFFFF") + "<span>Позвонить</span></a>" +
@@ -872,6 +1113,7 @@ function drawCab() {
       cabF("cp_vk", "ВКонтакте", "необязательно", "input", p.vk, "https://vk.ru/название", 200) +
       cabF("cp_tg", "Telegram", "необязательно", "input", p.tg, "@имя или телефон", 200) +
       cabF("cp_wa", "WhatsApp", "необязательно", "input", p.wa, "телефон", 200) +
+      cabF("cp_max", "MAX", "необязательно", "input", p.max, "https://max.ru/...", 200) +
       cabF("cp_note", "Как нас найти", "необязательно", "input", p.note, "Вход со двора", 200) +
       cabOut() +
       '<button type="button" class="bigbtn" data-cab="save">Сохранить</button>' +
@@ -933,7 +1175,7 @@ function cabClick(b) {
     body = { a: "own_new", name: cabVal("cn_name"), place: { cat: cabVal("cn_cat"), name: cabVal("cn_name"), phone: cabVal("cn_phone"), addr: cabVal("cn_addr"), hours: cabVal("cn_hours"), about: cabVal("cn_about") } };
     if (!body.place.name || !body.place.phone) { cabShow("Напишите название и телефон.", true); return; }
   } else if (act === "save") {
-    body = { a: "own_save", place: { name: cabVal("cp_name"), phone: cabVal("cp_phone"), addr: cabVal("cp_addr"), hours: cabVal("cp_hours"), about: cabVal("cp_about"), price: cabVal("cp_price"), priceNote: cabVal("cp_pnote"), site: cabVal("cp_site"), vk: cabVal("cp_vk"), tg: cabVal("cp_tg"), wa: cabVal("cp_wa"), note: cabVal("cp_note") } };
+    body = { a: "own_save", place: { name: cabVal("cp_name"), phone: cabVal("cp_phone"), addr: cabVal("cp_addr"), hours: cabVal("cp_hours"), about: cabVal("cp_about"), price: cabVal("cp_price"), priceNote: cabVal("cp_pnote"), site: cabVal("cp_site"), vk: cabVal("cp_vk"), tg: cabVal("cp_tg"), wa: cabVal("cp_wa"), max: cabVal("cp_max"), note: cabVal("cp_note") } };
   }
   if (!body) return;
   b.disabled = true; b.textContent = "Отправляем…";
@@ -1214,11 +1456,11 @@ function setRole(v) {
 /* ---------- показ и переходы ---------- */
 var TABS = [
   ["home", "Главная", '<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>'],
-  ["news", "Новости", '<path d="M18 16v-5a6 6 0 0 0-12 0v5l-2 2h16z"/><path d="M10 21h4"/>'],
-  ["board", "Объявления", '<path d="M20 12l-8 8-9-9V3h8z"/><circle cx="7.5" cy="7.5" r="1.2"/>'],
-  ["help", "Помощь", '<path d="M21 12a8 8 0 0 1-11.5 7.2L4 20l1-4.5A8 8 0 1 1 21 12z"/>']
+  ["catalog", "Каталог", '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>'],
+  ["fav", "Избранное", HEART],
+  ["board", "Объявления", '<path d="M20 12l-8 8-9-9V3h8z"/><circle cx="7.5" cy="7.5" r="1.2"/>']
 ];
-function tabOf(v) { return v === "news" ? "news" : (v === "board" || v === "adnew" || v === "myads") ? "board" : (v === "help" || v === "ask" || v === "owner" || v === "apply" || v === "cab") ? "help" : "home"; }
+function tabOf(v) { return v === "news" ? "news" : (v === "board" || v === "adnew" || v === "myads") ? "board" : (v === "catalog" || v === "cat") ? "catalog" : v === "fav" ? "fav" : (v === "help" || v === "ask" || v === "owner" || v === "apply" || v === "cab") ? "" : "home"; }
 function renderTabs() {
   var el = document.getElementById("tabbar");
   if (!el) return;
@@ -1228,9 +1470,14 @@ function renderTabs() {
     return '<button type="button" data-tab="' + t[0] + '" class="' + (t[0] === cur ? "on" : "") + '"' + (t[0] === cur ? ' aria-current="page"' : "") + ">" + ico(t[2], 24, "currentColor") + "<span>" + t[1] + "</span>" + (t[0] === "news" && unseen && cur !== "news" ? '<i class="nd" aria-label="Есть новое"></i>' : "") + "</button>";
   }).join("") + "</div>";
 }
+var RES = null;
+function rerunResults() { var b = document.getElementById("results"), q = document.getElementById("q"); if (b && q && RES) b.innerHTML = RES(q.value); }
 function render() {
   var r = parse(state.route), html, results = null;
+  if (fltRoute !== state.route) { flt = { open: false, deliv: false, rec: false, high: false }; fltRoute = state.route; }
   if (r.v === "cat") { var c = catById(r.id); html = viewCat(c); results = function (q) { return catResults(c, q); }; }
+  else if (r.v === "catalog") html = viewCatalog();
+  else if (r.v === "fav") html = viewFav();
   else if (r.v === "card") html = viewCard(itemById(r.id));
   else if (r.v === "price") html = viewPrice(itemById(r.id));
   else if (r.v === "owner") html = viewOwner();
@@ -1251,6 +1498,7 @@ function render() {
   app.id = "app";
   if (results) {
     var box = document.getElementById("results"), q = document.getElementById("q");
+    RES = results;
     box.innerHTML = results("");
     q.addEventListener("input", function () { box.innerHTML = results(q.value); var tp = document.getElementById("top"); if (tp) tp.hidden = !!q.value.trim(); });
   }
@@ -1296,6 +1544,23 @@ function back() {
 
 document.addEventListener("click", function (e) {
   if (e.target.closest("[data-idok]")) { var m = document.getElementById("idm"); if (m) m.remove(); return; }
+  var fv = e.target.closest("[data-fav]");
+  if (fv) {
+    e.preventDefault();
+    var fid = fv.getAttribute("data-fav"), on = favToggle(fid), hs = document.querySelectorAll('[data-fav="' + fid + '"]');
+    for (var hi = 0; hi < hs.length; hi++) { hs[hi].classList.toggle("on", on); hs[hi].setAttribute("aria-pressed", String(on)); }
+    if (parse(state.route).v === "fav" && !on) render();
+    return;
+  }
+  var fl = e.target.closest("[data-flt]");
+  if (fl) {
+    var fk = fl.getAttribute("data-flt"); flt[fk] = !flt[fk];
+    var fbs = document.querySelectorAll("[data-flt]");
+    for (var fi = 0; fi < fbs.length; fi++) fbs[fi].setAttribute("aria-pressed", String(!!flt[fbs[fi].getAttribute("data-flt")]));
+    rerunResults(); return;
+  }
+  var hb = e.target.closest("[data-hist]");
+  if (hb) { var hq = document.getElementById("q"); if (hq) { hq.value = hb.getAttribute("data-hist"); rerunResults(); var tp0 = document.getElementById("top"); if (tp0) tp0.hidden = true; } return; }
   var tb = e.target.closest("[data-tab]");
   if (tb) {
     e.preventDefault();
@@ -1341,7 +1606,7 @@ document.addEventListener("click", function (e) {
   if (g) { e.preventDefault(); go(g.getAttribute("data-go")); return; }
   var a = e.target.closest("a[href]");
   if (a) {
-    var h = a.getAttribute("href") || "", org = currentOrg();
+    var h = a.getAttribute("href") || "", org = a.getAttribute("data-org") || currentOrg();
     if (a.hasAttribute("data-k")) track("owner_contact");
     else if (h.indexOf("tel:") === 0) track("call_click", { org: org });
     else if (h.indexOf("yandex.ru/maps") !== -1) track("route_click", { org: org });
@@ -1349,6 +1614,7 @@ document.addEventListener("click", function (e) {
   }
 });
 document.addEventListener("change", function (e) {
+  if (e.target.id === "q") { histAdd(e.target.value); return; }
   if (e.target.id === "ad_cat") { adRefresh(); return; }
   if (e.target.id !== "ad_file" || !e.target.files.length) return;
   var files = Array.prototype.slice.call(e.target.files), chain = Promise.resolve();
@@ -1390,6 +1656,7 @@ window.addEventListener("appinstalled", function () { sset("b56_inst", "1"); tra
   loadNews();
   render();
   if (getRole()) ensureId();
+  try { if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(function () {}); } catch (e) {}
 })();
 </script>
 

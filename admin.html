@@ -182,7 +182,7 @@ function pcard(p) {
   if (!(p.photoIds && p.photoIds.length)) miss.push("нет фото");
   if (!(p.price && p.price.length)) miss.push("нет прайса");
   if (!p.hours) miss.push("нет часов");
-  if (!(p.vk || p.site || p.tg || p.wa)) miss.push("нет ссылок");
+  if (!(p.vk || p.site || p.tg || p.wa || p.max)) miss.push("нет ссылок");
   var open = POPEN === p.id;
   var head = '<button type="button" data-popen="' + p.id + '" aria-expanded="' + open + '" style="all:unset;display:flex;flex-direction:column;gap:6px;cursor:pointer;width:100%">' +
     '<span style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><b style="font-size:17px;overflow-wrap:anywhere">' + esc(p.name) + "</b>" + pchip(st || "без статуса", c[0], c[1]) + "</span>" +
@@ -223,6 +223,7 @@ function placesTab() {
     inp("pwa", "WhatsApp", "wa", "номер телефона или ссылка. Можно не писать", 'maxlength="200"') +
     inp("ptg", "Telegram", "tg", "@имя, номер или ссылка. Можно не писать", 'maxlength="200"') +
     inp("pvk", "ВКонтакте", "vk", "ссылка. Можно не писать", 'maxlength="200"') +
+    inp("pmx", "MAX", "max", "ссылка на профиль или канал в MAX (max.ru/...). Можно не писать", 'maxlength="200"') +
     inp("prv", "Отзывы на Яндекс Картах", "reviews", "ссылка на карточку заведения на Яндекс Картах. Можно не писать", 'maxlength="200"') +
     '<label>Что говорят клиенты<small>по одной строке: имя | отзыв. Например: Анна, установка окон | Всё сделали быстро и аккуратно. Только настоящие отзывы, с согласия человека. Можно не заполнять</small><textarea id="pqt" maxlength="3000" style="min-height:120px">' + esc(e.quotesText || "") + "</textarea></label>" +
     '<div class="stars-ed"><b style="font-size:15px">Звёзды заведения</b><small style="display:block;color:#4D6657;margin:2px 0 8px">Нажмите на звезду, и она станет зелёной. Нажмите ещё раз, и она снова станет прозрачной</small><div style="display:flex;gap:6px">' + [1, 2, 3, 4, 5].map(function (n) { return '<button type="button" data-star="' + n + '" aria-label="' + n + ' звезда" aria-pressed="' + (STARS.indexOf(n) >= 0) + '" style="width:52px;height:52px;border-radius:14px;border:2px solid #14532D;background:' + (STARS.indexOf(n) >= 0 ? "#14532D" : "transparent") + ';cursor:pointer;display:flex;align-items:center;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="' + (STARS.indexOf(n) >= 0 ? "#FFFFFF" : "none") + '" stroke="' + (STARS.indexOf(n) >= 0 ? "#FFFFFF" : "#14532D") + '" stroke-width="2" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>'; }).join("") + "</div></div>" +
@@ -415,7 +416,7 @@ root.addEventListener("submit", function (e) {
   }
   if (id === "pf") {
     BUSY = true; draw();
-    var pl = { id: EDIT && EDIT.id, cat: val("pcat"), name: val("pnm"), about: val("pab"), addr: val("pad"), note: val("pno"), phone: val("pph"), hours: val("pho"), site: val("psi"), wa: val("pwa"), tg: val("ptg"), vk: val("pvk"), reviews: val("prv"), quotes: val("pqt"), rec: document.getElementById("prec").checked, price: val("ppr"), priceNote: val("ppn"), stars: STARS };
+    var pl = { id: EDIT && EDIT.id, cat: val("pcat"), name: val("pnm"), about: val("pab"), addr: val("pad"), note: val("pno"), phone: val("pph"), hours: val("pho"), site: val("psi"), wa: val("pwa"), tg: val("ptg"), vk: val("pvk"), max: val("pmx"), reviews: val("prv"), quotes: val("pqt"), rec: document.getElementById("prec").checked, price: val("ppr"), priceNote: val("ppn"), stars: STARS };
     call({ a: "place_save", pw: PW, place: pl }).then(function (r) {
       BUSY = false;
       if (r.ok) { say(EDIT && EDIT.id ? "Сохранено. В приложении изменится при следующем открытии." : "Добавлено. Жители увидят карточку в приложении."); EDIT = null; STARS = []; FRESH = true; loadTab(); window.scrollTo(0, 0); }
