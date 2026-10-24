@@ -273,6 +273,7 @@ button.soon { width: 100%; text-align: left; font: inherit; cursor: pointer; }
 .adph { display: flex; gap: 8px; flex-wrap: wrap; }
 .adph .it { position: relative; }
 .adph img { width: 84px; height: 84px; object-fit: cover; border-radius: 12px; display: block; }
+.adph .it .wait { position: absolute; left: 0; right: 0; bottom: 0; background: rgba(15,61,34,.88); color: #fff; font-size: 11px; font-weight: 700; text-align: center; padding: 3px 0; border-radius: 0 0 12px 12px; }
 .adph .it button { position: absolute; top: -6px; right: -6px; width: 28px; height: 28px; border-radius: 50%; border: 0; background: var(--ink); color: #fff; font-size: 16px; line-height: 1; }
 .adsum { padding: 12px 14px; border-radius: 14px; background: #F1F7F3; font-size: 15px; line-height: 1.4; }
 .adsum b { font-size: 18px; }
@@ -1071,6 +1072,8 @@ function cabDemo(o) {
   if (a === "own_claim") { DEMO_OWN.status = "ждёт"; DEMO_OWN.req = { type: "claim", name: "Заведение" }; return { ok: true }; }
   if (a === "own_new") { DEMO_OWN.status = "ждёт"; DEMO_OWN.req = { type: "new", name: o.place.name }; return { ok: true }; }
   if (a === "own_save") { for (var k in o.place) DEMO_OWN.place[k] = o.place[k]; return { ok: true }; }
+  if (a === "own_photo_add") { var dp = DEMO_OWN.place; dp.pending = dp.pending || []; dp.photos = dp.photos || []; if (dp.pending.length + dp.photos.length >= 6) return { ok: false, err: "Можно не больше 6 фото." }; dp.pending.push({ id: "d" + Math.random().toString(36).slice(2, 7), url: "data:image/jpeg;base64," + o.data }); return { ok: true }; }
+  if (a === "own_photo_del") { var dq = DEMO_OWN.place; dq.photos = (dq.photos || []).filter(function (x) { return x.id !== o.fid; }); dq.pending = (dq.pending || []).filter(function (x) { return x.id !== o.fid; }); return { ok: true }; }
   return { ok: false, err: "?" };
 }
 function cabApi(o) {
@@ -1291,7 +1294,7 @@ function drawCab() {
       cabOut() +
       '<button type="button" class="bigbtn" data-cab="save">Сохранить</button>' +
       '<button type="button" class="btn2" data-go="card-' + p.id + '">Посмотреть свою карточку</button></div>' +
-      '<div class="note">Фото в карточку добавляем мы. Напишите нам через «Техподдержку».</div>';
+      '<div class="panel">' + cabPhotos(p) + "</div>";
   } else if (m.status === "ждёт") {
     h = '<div class="panel"><p><b>Заявка отправлена.</b> ' + (m.req && m.req.name ? "«" + esc(m.req.name) + "». " : "") + "Мы проверим её и подтвердим в течение рабочего дня. Письмо придёт на " + esc(m.email) + ".</p></div>";
   } else {
@@ -1316,6 +1319,43 @@ function drawCab() {
   if (CAB.step === "main") h += '<button type="button" class="help-link" data-cab="out">Выйти из кабинета</button>';
   e.innerHTML = h;
   hrsLoadAll();
+}
+var CABRM = "";
+function cabPhItem(x, wait) { return '<div class="it"><img alt="" src="' + esc(x.url) + '">' + (wait ? '<span class="wait">На проверке</span>' : "") + '<button type="button" data-cphrm="' + esc(x.id) + '" aria-label="Удалить фото">×</button></div>'; }
+function cabPhotos(p) {
+  var ph = p.photos || [], pe = p.pending || [], n = ph.length + pe.length;
+  return '<div id="cph_wrap"><div class="fld"><b>Фото</b><span>до 6 штук. Администратор быстро проверит фото, и оно появится в вашей карточке</span>' +
+    (n ? '<div class="adph">' + ph.map(function (x) { return cabPhItem(x, false); }).join("") + pe.map(function (x) { return cabPhItem(x, true); }).join("") + "</div>" : "") + "</div>" +
+    (CABRM ? '<div class="formmsg err">Удалить это фото?</div><div style="display:flex;gap:8px"><button type="button" class="btn2" data-cphyes="1">Да</button><button type="button" class="btn2" data-cphno="1">Нет</button></div>' : "") +
+    '<div id="cph_res" role="status" hidden></div>' +
+    (n < 6 ? '<button type="button" class="btn2" data-cphpick="1">Добавить фото</button>' : "") +
+    '<input type="file" id="cp_file" accept="image/*" multiple style="display:none"></div>';
+}
+function cabPhRedraw() { var w = document.getElementById("cph_wrap"); if (w && CAB.me && CAB.me.place) w.outerHTML = cabPhotos(CAB.me.place); }
+function cabPhMsg(t, err) { var e = document.getElementById("cph_res"); if (e) { e.className = "formmsg" + (err ? " err" : ""); e.textContent = t; e.hidden = !t; } }
+function cabPhReload(msg, err) {
+  return cabApi({ a: "own_me" }).then(function (r) {
+    if (r && r.ok && r.place) { CAB.me = r; cabPhRedraw(); }
+    if (msg) cabPhMsg(msg, err);
+  }, function () { cabPhMsg("Нет связи. Проверьте интернет.", true); });
+}
+function cabPhUpload(files) {
+  var p = CAB.me && CAB.me.place; if (!p) return;
+  var left = 6 - (p.photos || []).length - (p.pending || []).length, list = files.slice(0, Math.max(0, left)), ok = 0, bad = "", chain = Promise.resolve();
+  if (!list.length) { cabPhMsg("Можно не больше 6 фото.", true); return; }
+  cabPhMsg("Загружаем фото…", false);
+  list.forEach(function (f) {
+    chain = chain.then(function () {
+      return adShrink(f).then(function (b) {
+        return cabApi({ a: "own_photo_add", data: b }).then(function (r) { if (r && r.ok) ok++; else bad = (r && r.err) || "Не получилось загрузить фото."; }, function () { bad = "Нет связи. Проверьте интернет."; });
+      }, function () { bad = "Не получилось прочитать фото. Нужна обычная фотография."; });
+    });
+  });
+  chain.then(function () { return cabPhReload(bad ? (ok ? "Часть фото отправлена на проверку. " + bad : bad) : "Фото отправлено на проверку. В карточке оно появится после проверки.", !!bad); });
+}
+function cabPhDel() {
+  var fid = CABRM; CABRM = ""; cabPhRedraw();
+  cabApi({ a: "own_photo_del", fid: fid }).then(function (r) { cabPhReload(r && r.ok ? "Фото удалено." : (r && r.err) || "Не получилось удалить.", !(r && r.ok)); }, function () { cabPhMsg("Нет связи. Проверьте интернет.", true); });
 }
 function cabClick(b) {
   var act = b.getAttribute("data-cab");
@@ -1680,6 +1720,11 @@ function render() {
   bindGallery();
   carSetup();
   renderTabs();
+  if (r.v === "cab" || r.v === "owner" || r.v === "apply") {
+    if (!getRole()) { memRole = "owner"; sset("b56_role", "owner"); }
+    roleAsked = true;
+    var rl = document.getElementById("role"); if (rl) rl.remove();
+  }
   if (r.v === "home") askRole();
   if (r.v === "cab") cabInit();
   try { window.scrollTo(0, 0); } catch (e) {}
@@ -1757,6 +1802,12 @@ document.addEventListener("click", function (e) {
   if (asd) { sendAd(asd); return; }
   var sd = e.target.closest("[data-send]");
   if (sd) { sendTicket(sd.getAttribute("data-send"), sd); return; }
+  var cpk = e.target.closest("[data-cphpick]");
+  if (cpk) { var cfi = document.getElementById("cp_file"); if (cfi) cfi.click(); return; }
+  var crm = e.target.closest("[data-cphrm]");
+  if (crm) { CABRM = crm.getAttribute("data-cphrm"); cabPhRedraw(); return; }
+  if (e.target.closest("[data-cphno]")) { CABRM = ""; cabPhRedraw(); return; }
+  if (e.target.closest("[data-cphyes]")) { cabPhDel(); return; }
   var cbn = e.target.closest("[data-cab]");
   if (cbn) { cabClick(cbn); return; }
   var cl = e.target.closest("[data-copylink]");
@@ -1790,6 +1841,7 @@ document.addEventListener("click", function (e) {
 document.addEventListener("change", function (e) {
   if (e.target.id === "q") { histAdd(e.target.value); return; }
   if (e.target.id === "ad_cat") { adRefresh(); return; }
+  if (e.target.id === "cp_file") { var cfl = Array.prototype.slice.call(e.target.files); e.target.value = ""; if (cfl.length) cabPhUpload(cfl); return; }
   if (e.target.id !== "ad_file" || !e.target.files.length) return;
   var files = Array.prototype.slice.call(e.target.files), chain = Promise.resolve();
   files.forEach(function (f) { chain = chain.then(function () { if (adPh.length >= 3) return; return adShrink(f).then(function (b) { adPh.push(b); }, function () {}); }); });
