@@ -711,7 +711,7 @@ function inboxView() {
 function newsTab() {
   return '<form class="card" id="nf"><h2>Новая запись</h2>' +
     '<label>Что это<select id="nty"><option>Акция</option><option>Новость</option><option>Розыгрыш</option></select></label>' +
-    '<label>Заголовок<small>до 120 знаков</small><input id="nti" maxlength="120" required placeholder="Например: Красотка дарит скидку 10%"></label>' +
+    '<label>Заголовок<small>до 120 знаков</small><input id="nti" maxlength="120" required placeholder="Например: Скидка 10% на все услуги"></label>' +
     '<label>Текст<small>до 1000 знаков, можно не писать</small><textarea id="nte" maxlength="1000"></textarea></label>' +
     '<label>Кто объявляет<small>название заведения, можно не писать</small><input id="nor" maxlength="80"></label>' +
     '<label>Картинка<small>одна фотография, можно не добавлять. Лучше горизонтальная</small><input id="nfile" type="file" accept="image/*"></label>' +
@@ -830,12 +830,12 @@ function loadTab() {
   if (TAB === "stats") { return loadStats(); }
   draw();
 }
-function login(pw, remember) {
+function login(pw, remember, auto) {
   BUSY = true; MSG = null; draw();
   call({ a: "login", pw: pw }).then(function (r) {
     BUSY = false;
-    if (r.ok) { PW = pw; ROLE = r.role; TGOK = !!r.tg; if (remember) sset("b56_adm", pw); TAB = "places"; MSG = null; draw(); loadPlaces(); loadInbox(); loadStats(); }
-    else { MSG = r.err || "Не получилось войти."; draw(); }
+    if (r.ok) { PW = r.token || pw; ROLE = r.role; TGOK = !!r.tg; if (remember && r.token) sset("b56_adm", r.token); else sdel("b56_adm"); TAB = "places"; MSG = null; draw(); loadPlaces(); loadInbox(); loadStats(); }
+    else { sdel("b56_adm"); MSG = auto && !/закрыт/.test(r.err || "") ? "Вход устарел. Введите пароль ещё раз." : (r.err || "Не получилось войти."); draw(); }
   });
 }
 function val(i) { var e = document.getElementById(i); return e ? e.value : ""; }
@@ -908,7 +908,7 @@ document.addEventListener("pointerup", endDrag); document.addEventListener("poin
 function doAction(t) {
   var d = t.dataset;
   if (d.demo) { login(d.demo, false); return; }
-  if (d.out) { PW = ""; ROLE = ""; MSG = null; ED = null; sdel("b56_adm"); draw(); return; }
+  if (d.out) { if (PW && !DEMO) call({ a: "logout", pw: PW }); PW = ""; ROLE = ""; MSG = null; ED = null; sdel("b56_adm"); draw(); return; }
   if (d.tab) { if (ED) { readDraft(); if (EDS.dirty || EDS.saving) doSave(); else clearTimeout(EDS.t); ED = null; EDS = null; } TAB = d.tab; MSG = null; WIN = null; BEDIT = null; draw(true); window.scrollTo(0, 0); loadTab(); return; }
   /* список заведений */
   if (d.psf !== undefined) { PSF = d.psf; draw(); return; }
@@ -983,7 +983,7 @@ document.addEventListener("click", function (e) { var o = e.target; if (o && o.i
 window.addEventListener("beforeunload", function () { if (ED && EDS && (EDS.dirty || EDS.saving)) { try { doSave(); } catch (e) {} } });
 
 draw();
-(function () { var p = sget("b56_adm"); if (p && !DEMO) login(p, true); })();
+(function () { var p = sget("b56_adm"); if (p && !DEMO) login(p, true, true); })();
 </script>
 </body>
 </html>

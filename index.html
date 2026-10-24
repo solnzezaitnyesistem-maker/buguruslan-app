@@ -711,7 +711,7 @@ function homeDefault() {
   var h = histGet(), out = "";
   if (h.length) out += '<div class="hist"><span class="hl">Вы искали:</span>' + h.map(function (x) { return '<button type="button" data-hist="' + esc(x) + '">' + esc(x) + "</button>"; }).join("") + "</div>";
   out += "<h2>Популярное</h2>" + (liveCats().length ? popularTiles() : emptyBlock("Разделы скоро появятся", "Заведения добавляются каждый день."));
-  var fresh = ITEMS.slice().filter(function (it) { return !/Пример/.test(it.name); }).sort(function (a, b) { return Number(b.id) - Number(a.id); }).slice(0, 3);
+  var fresh = ITEMS.slice().sort(function (a, b) { return Number(b.id) - Number(a.id); }).slice(0, 3);
   if (fresh.length) out += "<h2>Новые в городе</h2>" + '<div class="list">' + fresh.map(orgMini).join("") + "</div>";
   return out;
 }
@@ -885,7 +885,7 @@ function adCatsHtml() {
   return '<button type="button" data-adcat="" class="' + (!adCat ? "on" : "") + '">Все</button>' + ADCATS.map(function (c) { return '<button type="button" data-adcat="' + c[0] + '" class="' + (adCat === c[0] ? "on" : "") + '">' + esc(c[1]) + "</button>"; }).join("");
 }
 function loadAds() {
-  if (DEMO) { ADS = [{ id: "1", cat: "prodazha", title: "Детская коляска", text: "Состояние хорошее, самовывоз.", price: "5 000 ₽", contact: "8 900 000-00-00", name: "Пример", photos: [], date: "2026-10-18", till: "2026-10-23" }]; adLoaded = true; return; }
+  if (DEMO) { ADS = []; adLoaded = true; return; }
   try { var c = JSON.parse(sget("b56_ads") || "null"); if (c) { ADS = c; adLoaded = true; } } catch (e) {}
   apiGet("ads").then(function (r) {
     if (!r || !r.ok || !r.items) return;
@@ -1406,11 +1406,7 @@ function cabClick(b) {
 /* ---------- связь с сервером, новости, номер участника ---------- */
 var API = "https://script.google.com/macros/s/AKfycbyRiGD8kP3YnhLAa_FDMo_iwgBYz6Ld5zBhYERvGnK7sBLXAfRRuBSYR6HKCmobh0HeSQ/exec"; /* сюда вставляется адрес сервера (Google Apps Script). Пусто = пробный режим */
 var DEMO = !API;
-var DEMO_NEWS = [
-  { id: "20261013100003", date: "2026-10-13", type: "Розыгрыш", title: "Розыгрыш призов среди пользователей приложения", text: "Ваш номер участника — на главном экране. Сохраните его! Итоги объявим здесь.", org: "", until: "" },
-  { id: "20261013100002", date: "2026-10-12", type: "Акция", title: "Салон красоты «Красотка» дарит скидку 10%", text: "На все услуги до конца месяца. Назовите запись из приложения «Б-56».", org: "Салон красоты «Красотка»", until: "2026-10-31" },
-  { id: "20261013100001", date: "2026-10-10", type: "Новость", title: "В приложении появились новые разделы", text: "Кондитеры, бани и сауны, фото и видео, курсы.", org: "", until: "" }
-];
+var DEMO_NEWS = [];
 var SEND = { card_open: 1, price_open: 1, call_click: 1, route_click: 1, link_click: 1, owner_info: 1, owner_contact: 1, news_open: 1, qr_open: 1, install: 1, open_from_icon: 1, role_resident: 1, role_owner: 1, install_howto: 1, owner_request: 1, support_open: 1, support_send: 1, ad_send: 1, cab_open: 1, cab_save: 1 };
 var evq = [], newsData = [], memRole = "", memId = "";
 
@@ -1451,7 +1447,7 @@ function loadNews() {
   }, function () {});
 }
 function loadBanners() {
-  if (DEMO) { BANNERS = { okna: { title: "Пример плашки раздела", text: "Здесь администратор может написать важное для этого раздела.", url: "" } }; return; }
+  if (DEMO) { BANNERS = {}; return; }
   try { var c = JSON.parse(sget("b56_banners") || "null"); if (c) BANNERS = c; } catch (e) {}
   apiGet("banners").then(function (r) {
     if (!r || !r.ok || !r.items) return;
