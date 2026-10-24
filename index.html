@@ -863,8 +863,7 @@ function adListHtml() {
   if (!list.length) return '<div class="note">' + (adLoaded ? "В этом разделе пока нет объявлений. Подайте своё первым." : "Загружаем объявления…") + "</div>";
   return list.map(adCard).join("");
 }
-var BOARD_OPEN = false;
-try { if (location.search.indexOf("board=1") >= 0) sset("b56_board", "1"); BOARD_OPEN = sget("b56_board") === "1"; } catch (e) {}
+var BOARD_OPEN = true;
 function viewBoardSoon() {
   return '<div class="app"><div class="row"><h1>Доска объявлений</h1></div>' +
     '<div class="soon big"><span class="badge">Скоро</span><b>Доска объявлений Бугуруслана</b><span>Продать, купить, найти мастера или отдать в хорошие руки. Объявления жителей города в одном месте.</span><span>Запуск совсем скоро. Узнайте первыми в нашем канале:</span></div>' +
