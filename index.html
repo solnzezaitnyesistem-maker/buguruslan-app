@@ -369,6 +369,58 @@ button.soon { width: 100%; text-align: left; font: inherit; cursor: pointer; }
 .hrs .hrs-txt { min-height: 48px; padding: 10px 12px; font: inherit; font-size: 16px; border: 2px solid var(--line); border-radius: 12px; width: 100%; }
 .hrs .hrs-act { display: flex; flex-wrap: wrap; gap: 6px; }
 .hrs .hrs-act button { min-height: 40px; padding: 0 12px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--ink); font: inherit; font-size: 13px; font-weight: 800; cursor: pointer; }
+
+/* ===== витрина магазинов ===== */
+.shop h2 { margin-bottom: 10px; }
+.gg { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.gc { display: flex; flex-direction: column; gap: 4px; min-width: 0; color: var(--ink); }
+.gi { position: relative; display: block; aspect-ratio: 3 / 4; border-radius: 14px; overflow: hidden; background: var(--mint); }
+.gi img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gd { position: absolute; left: 6px; top: 6px; padding: 2px 8px; border-radius: 999px; background: #B42318; color: #fff; font-size: 13px; font-weight: 800; font-style: normal; }
+.gv { position: absolute; right: 6px; top: 6px; width: 26px; height: 26px; border-radius: 50%; background: rgba(11,36,23,.72); color: #fff; font-size: 11px; font-style: normal; display: flex; align-items: center; justify-content: center; padding-left: 2px; }
+.gs { position: absolute; left: 0; right: 0; bottom: 0; padding: 6px 4px; background: rgba(11,36,23,.78); color: #fff; font-size: 13px; font-weight: 800; text-align: center; font-style: normal; }
+.gc.off .gi img { filter: grayscale(1); opacity: .55; }
+.gc.off .gn, .gc.off .gp { color: var(--muted); }
+.gn { font-size: 15px; font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.gp { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 8px; }
+.gp b { font-size: 17px; font-weight: 800; }
+.gp s { font-size: 14px; color: var(--muted); }
+.gh { font-size: 12px; color: var(--muted); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pr2 { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
+.pr2 b { font-size: 28px; font-weight: 800; }
+.pr2 s { font-size: 18px; color: var(--muted); }
+.pr2 i { padding: 3px 10px; border-radius: 999px; background: #B42318; color: #fff; font-size: 14px; font-weight: 800; font-style: normal; }
+.tag.off { background: #E5E7E5; color: #3A463F; }
+.szs { display: flex; flex-wrap: wrap; gap: 8px; }
+.sz { min-width: 48px; min-height: 44px; padding: 0 14px; border: 2px solid var(--line); border-radius: 12px; background: var(--white); color: var(--ink); font: inherit; font-size: 16px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+.sz[aria-pressed="true"] { background: var(--green); border-color: var(--green); color: #fff; }
+.sz.st { cursor: default; font-weight: 700; min-height: 40px; }
+.ab { margin: 0; font-size: 16px; line-height: 1.45; overflow-wrap: anywhere; white-space: pre-line; }
+.nov { display: flex; flex-direction: column; gap: 10px; }
+.nrow { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline: 20px; margin-inline: -20px; padding-inline: 20px; padding-bottom: 4px; scrollbar-width: none; }
+.nrow::-webkit-scrollbar { display: none; }
+.ntl { flex: 0 0 132px; display: flex; flex-direction: column; gap: 3px; scroll-snap-align: start; min-width: 0; }
+.ntl .gi { aspect-ratio: 1 / 1; }
+.ntl .gn { font-size: 14px; -webkit-line-clamp: 1; }
+.ntl .pt { position: absolute; left: 6px; bottom: 6px; padding: 2px 8px; border-radius: 8px; background: rgba(255,255,255,.95); color: var(--ink); font-size: 14px; font-weight: 800; font-style: normal; }
+.actions.col { flex-direction: column; }
+.actions.col .btn { flex: none; width: 100%; }
+.ntile.all { flex: 0 0 110px; min-height: 132px; align-self: flex-start; aspect-ratio: 1 / 1; border: 2px solid var(--green); border-radius: 14px; background: var(--white); color: var(--green); font: inherit; font-size: 15px; font-weight: 800; cursor: pointer; scroll-snap-align: start; padding: 8px; }
+.vm { position: fixed; inset: 0; z-index: 60; background: rgba(0,0,0,.92); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 56px 8px 16px; }
+.vm iframe { width: 100%; max-width: 480px; height: 100%; max-height: 85vh; border: 0; border-radius: 12px; background: #000; }
+.vm button { position: absolute; top: 8px; right: 8px; min-width: 48px; height: 48px; border: 0; border-radius: 24px; background: #fff; color: #0B2417; font: inherit; font-size: 17px; font-weight: 800; padding: 0 18px; cursor: pointer; }
+.csh .ci { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-top: 1px solid var(--rule); }
+.csh .ci img { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; flex: none; background: var(--mint); }
+.csh .cb { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.csh .cb b { font-size: 16px; overflow-wrap: anywhere; }
+.csh .cb span { font-size: 13px; color: var(--muted); }
+.csh .cb em { font-size: 13px; font-style: normal; color: #8A1C12; font-weight: 700; }
+.csh .ca { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.csh .sb { min-height: 40px; padding: 0 12px; border: 2px solid var(--line); border-radius: 12px; background: var(--white); color: var(--green); font: inherit; font-size: 14px; font-weight: 800; cursor: pointer; }
+.csh .sb.red { color: #8A1C12; border-color: #E8B4AE; }
+.csh .pe { display: flex; gap: 6px; margin-top: 6px; }
+.csh .pe input { flex: 1; min-width: 0; min-height: 44px; padding: 0 12px; border: 2px solid var(--line); border-radius: 12px; font: inherit; font-size: 16px; }
+.csh select { width: 100%; min-height: 52px; padding: 0 12px; border: 2px solid var(--line); border-radius: 14px; font: inherit; font-size: 16px; background: var(--white); }
 </style>
 </head>
 <body>
@@ -614,6 +666,8 @@ function parse(r) {
   if (r === "id") return { v: "id" };
   if (r === "cab") return { v: "cab" };
   if (r === "urgent") return { v: "urgent" };
+  if (r.indexOf("item-") === 0) return { v: "item", id: Number(r.slice(5)) };
+  if (r === "novelty") return { v: "novelty" };
   if (r === "board") return { v: "board" };
   if (r === "qr") return { v: "qr" };
   if (r === "myads") return { v: "myads" };
@@ -626,6 +680,7 @@ function parse(r) {
 function valid(r) {
   var p = parse(r);
   if (p.v === "cat") return !!catById(p.id);
+  if (p.v === "item") return p.id > 0;
   if (p.v === "card" || p.v === "price") { var it = itemById(p.id); return !!it && (p.v === "card" || !!it.price); }
   return true;
 }
@@ -711,6 +766,7 @@ function viewHome() {
     '<h1>Бугуруслан всё в одном месте</h1><button type="button" class="hq" data-go="help">Помощь</button></div>' +
     searchBox("Что ищете? Шиномонтаж, торт…", "Поиск по городу") +
     '<button type="button" class="urg" data-go="urgent">' + ico('<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>', 26, "#B42318") + '<span class="ut"><b>Срочно</b><span>Скорая, газ, свет, аварийные номера</span></span><span class="ua">→</span></button>' +
+    novHtml() +
     chipsHtml() +
     '<div class="list" id="results"></div>' +
     homeTop() +
@@ -761,6 +817,133 @@ function loadUrgent() {
     if (parse(state.route).v === "urgent") render();
   }, function () {});
 }
+
+/* ---------- витрина магазинов ---------- */
+var GOODS = [], GOODS_FRESH = false, PLACES_FRESH = false, NOV = { cat: "", disc: false }, ISZ = "";
+function goodById(id) { for (var i = 0; i < GOODS.length; i++) if (GOODS[i].id === id) return GOODS[i]; return null; }
+function rub(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " ₽"; }
+function disc(g) { return g.old && g.old > g.price ? Math.round((g.old - g.price) / g.old * 100) : 0; }
+function thumb(u) { return String(u || "").replace("sz=w1000", "sz=w500"); }
+function splitList(v) { return String(v || "").split(/\s*[,;\/]\s*/).filter(function (x) { return x; }).slice(0, 20); }
+function stText(g) { return g.st === "sold" ? "Продано" : g.st === "none" ? "Нет в наличии" : ""; }
+function goodCard(g, showShop) {
+  var d = disc(g), pl = itemById(g.pid);
+  return '<a class="gc' + (g.st ? " off" : "") + '" href="#item-' + g.id + '" data-go="item-' + g.id + '"><span class="gi"><img src="' + esc(thumb((g.photos || [])[0])) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' +
+    (d && !g.st ? '<i class="gd">−' + d + "%</i>" : "") + (g.video ? '<i class="gv" aria-label="Есть видео">▶</i>' : "") + (g.st ? '<i class="gs">' + stText(g) + "</i>" : "") + "</span>" +
+    '<b class="gn">' + esc(g.name) + '</b><span class="gp"><b>' + rub(g.price) + "</b>" + (d ? "<s>" + rub(g.old) + "</s>" : "") + "</span>" +
+    (showShop && pl ? '<span class="gh">' + esc(pl.name) + "</span>" : "") + "</a>";
+}
+function shopBlock(it) {
+  if (!it.shop) return "";
+  var l = GOODS.filter(function (g) { return g.pid === it.id; });
+  if (!l.length) return "";
+  return '<div class="shop"><h2>Витрина</h2><div class="gg">' + l.map(function (g) { return goodCard(g, false); }).join("") + "</div></div>";
+}
+function videoEmbed(u) {
+  u = String(u || ""); var m;
+  if ((m = /vk\.(?:com|ru)\/(?:clip|video)(-?\d+)_(\d+)/.exec(u))) return "https://vk.com/video_ext.php?oid=" + m[1] + "&id=" + m[2] + "&hd=2";
+  if ((m = /rutube\.ru\/(?:video|shorts)\/(?:private\/)?([A-Za-z0-9]{8,})/.exec(u))) return "https://rutube.ru/play/embed/" + m[1];
+  if ((m = /youtube\.com\/shorts\/([\w-]{6,})/.exec(u)) || (m = /youtu\.be\/([\w-]{6,})/.exec(u)) || (m = /youtube\.com\/watch\?(?:[^#]*&)?v=([\w-]{6,})/.exec(u))) return "https://www.youtube.com/embed/" + m[1];
+  return "";
+}
+function askText(g, size) {
+  return "Здравствуйте! Интересует " + g.name + ", " + String(g.price).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " ₽. Размер: " + (size || "___") + ". Товар из приложения «Бугуруслан всё в одном месте»: buguruslan56.ru/#item-" + g.id;
+}
+function askHref(g, pl, size) {
+  if (pl.wa && /^https:\/\//.test(pl.wa)) return pl.wa.split("?")[0] + "?text=" + encodeURIComponent(askText(g, size));
+  return telHref(pl.phone);
+}
+function viewItem(id) {
+  var g = goodById(id), pl = g && itemById(g.pid), head = '<div class="app"><div class="row">' + backBtn("Назад");
+  if (!g || !pl) {
+    var wait = !(GOODS_FRESH && PLACES_FRESH);
+    return head + "<h1>Товар</h1></div>" + (wait ? emptyBlock("Загружаем…", "Подождите секунду.") : emptyBlock("Товар не найден", "Возможно, он продан или снят с витрины.") + '<button type="button" class="bigbtn" data-go="home">На главную</button>') + "</div>";
+  }
+  ISZ = "";
+  var d = disc(g), sizes = splitList(g.sizes), colors = splitList(g.colors), wa = pl.wa && /^https:\/\//.test(pl.wa);
+  var panel = (sizes.length ? '<div class="fld"><b>Размер</b><div class="szs">' + sizes.map(function (z) { return '<button type="button" class="sz" data-size="' + esc(z) + '" aria-pressed="false">' + esc(z) + "</button>"; }).join("") + "</div></div>" : "") +
+    (colors.length ? '<div class="fld"><b>Цвет</b><div class="szs">' + colors.map(function (c) { return '<span class="sz st">' + esc(c) + "</span>"; }).join("") + "</div></div>" : "") +
+    (g.about ? '<p class="ab">' + esc(g.about) + "</p>" : "");
+  var vid = g.video ? (videoEmbed(g.video) ? '<button type="button" class="btn line2" data-vid="1">Смотреть видео</button>' : '<a class="btn line2" href="' + esc(g.video) + '" target="_blank" rel="noopener"><span>Смотреть видео</span></a>') : "";
+  return head + '<div class="sub" style="font-size:15px;font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(pl.name) + "</div></div>" +
+    photosBlock({ photos: g.photos, name: g.name }) +
+    '<div class="title-block"><h1>' + esc(g.name) + '</h1><div class="pr2"><b>' + rub(g.price) + "</b>" + (d ? "<s>" + rub(g.old) + "</s><i>−" + d + "%</i>" : "") + "</div>" + (g.st ? '<span class="tag off">' + stText(g) + "</span>" : "") + "</div>" +
+    (panel ? '<div class="panel">' + panel + "</div>" : "") +
+    '<div class="actions col">' +
+    '<a class="btn fill" id="askwa" data-ask="1" href="' + esc(askHref(g, pl, "")) + '"' + (wa ? ' target="_blank" rel="noopener"' : "") + ">" + (wa ? "<span>Спросить в WhatsApp</span>" : ico(P.phone, 20, "#FFFFFF") + "<span>Позвонить в магазин</span>") + "</a>" +
+    vid + '<button type="button" class="btn line2" data-share="1"><span>Поделиться</span></button>' +
+    '<a class="btn line2" href="#card-' + pl.id + '" data-go="card-' + pl.id + '"><span>Магазин: ' + esc(pl.name) + "</span></a></div></div>";
+}
+function openVideo() {
+  var p = parse(state.route), g = p.v === "item" && goodById(p.id), u = g && videoEmbed(g.video);
+  if (!u) return;
+  closeVideo();
+  var d = document.createElement("div");
+  d.className = "vm"; d.id = "vm";
+  d.innerHTML = '<button type="button" data-vclose="1">Закрыть</button><iframe src="' + esc(u) + '" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="origin" title="Видео"></iframe>';
+  document.body.appendChild(d);
+}
+function closeVideo() { var d = document.getElementById("vm"); if (d) d.remove(); }
+function shareItem(btn) {
+  var p = parse(state.route), g = goodById(p.id); if (!g) return;
+  var url = "https://buguruslan56.ru/#item-" + g.id, label = btn.firstChild;
+  function copied() { if (label) label.textContent = "Ссылка скопирована ✓"; }
+  if (navigator.share) { navigator.share({ title: g.name, text: g.name + ", " + rub(g.price), url: url }).catch(function () {}); return; }
+  try { navigator.clipboard.writeText(url).then(copied, function () { if (label) label.textContent = url; }); } catch (e) { if (label) label.textContent = url; }
+}
+function novList() {
+  var cut = new Date(Date.now() - 14 * 864e5).toISOString().slice(0, 10);
+  return GOODS.filter(function (g) { return !g.st && g.date && g.date >= cut && itemById(g.pid); }).sort(function (a, b) { return a.date < b.date ? 1 : a.date > b.date ? -1 : b.id - a.id; });
+}
+function novFeed() {
+  var pend = novList(), res = [];
+  while (pend.length && res.length < 20) {
+    var n = res.length, bad = n > 1 && res[n - 1].pid === res[n - 2].pid ? res[n - 1].pid : -1, k = -1, i;
+    for (i = 0; i < pend.length; i++) if (pend[i].pid !== bad) { k = i; break; }
+    if (k < 0) break;
+    res.push(pend.splice(k, 1)[0]);
+  }
+  return res;
+}
+function novHtml() {
+  var f = novFeed();
+  if (f.length < 4) return "";
+  return '<div class="nov" id="nov"><h2>Новинки магазинов</h2><div class="nrow">' + f.map(function (g) {
+    var d = disc(g), pl = itemById(g.pid);
+    return '<a class="ntl" href="#item-' + g.id + '" data-go="item-' + g.id + '"><span class="gi"><img src="' + esc(thumb((g.photos || [])[0])) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' + (d ? '<i class="gd">−' + d + "%</i>" : "") + (g.video ? '<i class="gv">▶</i>' : "") + '<i class="pt">' + rub(g.price) + "</i></span>" +
+      '<b class="gn">' + esc(g.name) + '</b><span class="gh">' + esc(pl.name) + "</span></a>";
+  }).join("") + '<button type="button" class="ntile all" data-go="novelty">Все новинки →</button></div></div>';
+}
+function catOfGood(g) { var pl = itemById(g.pid); return pl ? [].concat(pl.cat)[0] : ""; }
+function novBox() {
+  var all = novList(), cats = [], seen = {};
+  all.forEach(function (g) { var c = catOfGood(g); if (c && !seen[c]) { seen[c] = 1; cats.push(c); } });
+  var l = all.filter(function (g) { return (!NOV.disc || disc(g)) && (!NOV.cat || catOfGood(g) === NOV.cat); });
+  return '<div class="chips"><button type="button" data-nov="all" aria-pressed="' + (!NOV.cat && !NOV.disc) + '">Все</button><button type="button" data-nov="disc" aria-pressed="' + NOV.disc + '">Со скидкой</button>' +
+    cats.map(function (c) { var o = catById(c); return o ? '<button type="button" data-nov="cat:' + esc(c) + '" aria-pressed="' + (NOV.cat === c) + '">' + esc(o.name) + "</button>" : ""; }).join("") + "</div>" +
+    (l.length ? '<div class="gg">' + l.map(function (g) { return goodCard(g, true); }).join("") + "</div>" : emptyBlock("Ничего не нашли", "Снимите фильтр или загляните позже."));
+}
+function viewNovelty() {
+  return '<div class="app"><div class="row">' + backBtn("Назад") + '<div style="display:flex;flex-direction:column;gap:2px"><h1>Новинки магазинов</h1><div class="sub">За последние 14 дней</div></div></div><div id="novbox" style="display:flex;flex-direction:column;gap:16px">' + novBox() + "</div></div>";
+}
+function loadGoods() {
+  if (DEMO) { GOODS_FRESH = true; PLACES_FRESH = true; return; }
+  try { var c = JSON.parse(sget("b56_goods") || "null"); if (c && c.length) GOODS = c; } catch (e) {}
+  apiGet("items").then(function (r) {
+    GOODS_FRESH = true;
+    if (!r || !r.ok || !r.items) return afterGoods(false);
+    var j = JSON.stringify(r.items), same = j === JSON.stringify(GOODS);
+    if (!same) { GOODS = r.items; sset("b56_goods", j); }
+    afterGoods(!same);
+  }, function () { GOODS_FRESH = true; afterGoods(false); });
+}
+function afterGoods(changed) {
+  var v = parse(state.route).v, q = document.getElementById("q");
+  if (v === "item") { render(); return; }
+  if (!changed) return;
+  if (v === "novelty" || v === "card" || (v === "home" && !(q && q.value))) render();
+}
+
 function homeDefault() {
   if (anyFlt()) {
     var l = ITEMS.filter(passF);
@@ -783,10 +966,12 @@ function homeResults(q) {
   if (sug.length) out += '<div class="sugs">' + sug.slice(0, 4).map(function (c) { return '<button type="button" class="sug" data-go="cat-' + c.id + '">' + esc(c.name) + " (" + catCount(c.id) + ") →</button>"; }).join("") + "</div>";
   var ug = URG.filter(function (u) { return hasAll(norm(u.name + " " + (u.note || "") + " " + (u.kw || "") + " " + (u.addr || "") + " " + (u.phones || []).join(" ")), ws); }).slice(0, 6);
   if (ug.length) out += "<h2>Срочно</h2>" + ug.map(urgCard).join("");
-  if (!found.length) return ug.length ? out : out + emptyBlock("Ничего не нашли", "Попробуйте другое слово или выберите раздел.") + "<h2>Разделы</h2>" + tiles(popularCats());
+  var gm = GOODS.filter(function (g) { return hasAll(norm(g.name + " " + (g.about || "")), ws); }).slice(0, 12);
+  var gh = gm.length ? "<h2>Товары: " + gm.length + '</h2><div class="gg">' + gm.map(function (g) { return goodCard(g, true); }).join("") + "</div>" : "";
+  if (!found.length) return ug.length || gh ? out + gh : out + emptyBlock("Ничего не нашли", "Попробуйте другое слово или выберите раздел.") + "<h2>Разделы</h2>" + tiles(popularCats());
   var shown = found.filter(passF);
   out += "<h2>Найдено: " + shown.length + "</h2>";
-  return out + (shown.length ? shown.map(function (it) { return orgCard(it, true); }).join("") : emptyBlock("Ничего не подошло", "Снимите фильтр, чтобы увидеть остальные."));
+  return out + (shown.length ? shown.map(function (it) { return orgCard(it, true); }).join("") : emptyBlock("Ничего не подошло", "Снимите фильтр, чтобы увидеть остальные.")) + gh;
 }
 
 function viewCat(c) {
@@ -849,7 +1034,7 @@ function viewCard(it) {
     '<div class="it">' + ico(P.pin, 22, "#14532D") + "<span>г. Бугуруслан" + (it.addr === "Бугуруслан" ? "" : ", " + esc(it.addr)) + (it.note ? '<br><small style="font-size:14px;color:#4D6657">' + esc(it.note) + "</small>" : "") + "</span></div>" +
     (it.hours ? '<div class="it">' + ico(P.clock, 22, "#14532D") + "<span>Часы работы: " + esc(it.hours) + (function () { var o = openInfo(it.hours); return o ? '<br><b style="color:' + (o.open ? "#14532D" : "#4D6657") + '">' + esc(o.text) + "</b>" : ""; })() + "</span></div>" : "") +
     '<div class="it">' + ico(P.phone, 22, "#14532D") + '<span class="phone-t">' + esc(it.phone) + "</span></div></div>" +
-    price + quotes + web +
+    price + shopBlock(it) + quotes + web +
     '<div class="actions"><a class="btn fill" href="' + telHref(it.phone) + '">' + ico(P.phone, 20, "#FFFFFF") + "<span>Позвонить</span></a>" +
     (it.addr === "Бугуруслан" ? "" : '<a class="btn line2" href="' + esc(map) + '" target="_blank" rel="noopener">' + ico(P.route, 20, "#14532D") + "<span>Маршрут</span></a>") + "</div></div>";
 }
@@ -1133,6 +1318,37 @@ function cabDemo(o) {
   if (a === "own_save") { for (var k in o.place) DEMO_OWN.place[k] = o.place[k]; return { ok: true }; }
   if (a === "own_photo_add") { var dp = DEMO_OWN.place; dp.pending = dp.pending || []; dp.photos = dp.photos || []; if (dp.pending.length + dp.photos.length >= 6) return { ok: false, err: "Можно не больше 6 фото." }; dp.pending.push({ id: "d" + Math.random().toString(36).slice(2, 7), url: "data:image/jpeg;base64," + o.data }); return { ok: true }; }
   if (a === "own_photo_del") { var dq = DEMO_OWN.place; dq.photos = (dq.photos || []).filter(function (x) { return x.id !== o.fid; }); dq.pending = (dq.pending || []).filter(function (x) { return x.id !== o.fid; }); return { ok: true }; }
+  if (a === "own_items" || a === "own_item_save" || a === "own_item_act") return demoShop(o);
+  return { ok: false, err: "?" };
+}
+var DEMO_SHOP = [];
+function demoShop(o) {
+  var a = o.a, eff = 3, i, it;
+  function mark() { var n = 0; DEMO_SHOP.forEach(function (x) { x.over = false; x.live = false; if (x.st === "скрыт") return; n++; if (n > eff) x.over = true; else x.live = true; }); return DEMO_SHOP.map(function (x) { return JSON.parse(JSON.stringify(x)); }); }
+  function num(v) { return Number(String(v || "").replace(/[^\d]/g, "")) || 0; }
+  if (a === "own_items") return { ok: true, shop: { on: true, eff: eff, lim: eff, free: 3 }, items: mark() };
+  if (a === "own_item_save") {
+    var u = o.item, price = num(u.price), old = num(u.old);
+    if (!u.name) return { ok: false, err: "Напишите название товара." };
+    if (!price) return { ok: false, err: "Напишите цену цифрами, например 2900." };
+    if (old && old <= price) return { ok: false, err: "Старая цена должна быть больше новой. Если скидки нет, оставьте поле пустым." };
+    var ids = (u.keep || []).concat((u["new"] || []).map(function (b) { return "n" + Math.random().toString(36).slice(2, 7); }));
+    if (!ids.length) return { ok: false, err: "Добавьте хотя бы одно фото." };
+    var photos = ids.map(function (x, k) { var f = DEMO_SHOP.filter(function (y) { return y.photoIds.indexOf(x) >= 0; })[0]; return f ? f.photos[f.photoIds.indexOf(x)] : "data:image/jpeg;base64," + (u["new"] || [])[k - (u.keep || []).length]; });
+    var row = { id: u.id || (DEMO_SHOP.reduce(function (m, x) { return Math.max(m, x.id); }, 0) + 1), pid: 0, name: u.name, price: price, old: old, photoIds: ids, photos: photos, sizes: u.sizes, colors: u.colors, about: u.about, video: u.video, st: u.st || "в наличии", date: new Date().toISOString().slice(0, 10), order: DEMO_SHOP.length + 1 };
+    if (u.id) { for (i = 0; i < DEMO_SHOP.length; i++) if (DEMO_SHOP[i].id === u.id) DEMO_SHOP[i] = row; } else {
+      if (row.st !== "скрыт" && DEMO_SHOP.filter(function (x) { return x.st !== "скрыт"; }).length >= eff) return { ok: false, err: "В витрине уже " + eff + " из " + eff + " товаров. Скройте или удалите один." };
+      DEMO_SHOP.push(row);
+    }
+    return { ok: true, id: row.id };
+  }
+  for (i = 0; i < DEMO_SHOP.length; i++) if (DEMO_SHOP[i].id === o.id) it = DEMO_SHOP[i];
+  if (!it) return { ok: false, err: "Не найдено." };
+  var m = { sold: "продано", stock: "в наличии", hide: "скрыт", show: "в наличии" };
+  if (m[o.act]) { it.st = m[o.act]; return { ok: true }; }
+  if (o.act === "del") { DEMO_SHOP = DEMO_SHOP.filter(function (x) { return x !== it; }); return { ok: true }; }
+  if (o.act === "price") { it.price = num(o.price); return { ok: true }; }
+  if (o.act === "move") { var k = DEMO_SHOP.indexOf(it), t = k + (o.dir < 0 ? -1 : 1); if (t >= 0 && t < DEMO_SHOP.length) { DEMO_SHOP[k] = DEMO_SHOP[t]; DEMO_SHOP[t] = it; } return { ok: true }; }
   return { ok: false, err: "?" };
 }
 function cabApi(o) {
@@ -1307,6 +1523,7 @@ function viewCab() {
 }
 function cabInit() {
   track("cab_open");
+  CSH = { loaded: false, data: null, edit: null, rm: 0, pe: 0, msg: "", err: false, busy: false };
   var s = cabSess();
   if (!s) { CAB.step = "email"; drawCab(); return; }
   CAB.step = "load"; CAB.email = s.email; drawCab();
@@ -1353,7 +1570,8 @@ function drawCab() {
       cabOut() +
       '<button type="button" class="bigbtn" data-cab="save">Сохранить</button>' +
       '<button type="button" class="btn2" data-go="card-' + p.id + '">Посмотреть свою карточку</button></div>' +
-      '<div class="panel">' + cabPhotos(p) + "</div>";
+      '<div class="panel">' + cabPhotos(p) + "</div>" +
+      '<div class="panel csh" id="csh_wrap">' + cabShopHtml(p) + "</div>";
   } else if (m.status === "ждёт") {
     h = '<div class="panel"><p><b>Заявка отправлена.</b> ' + (m.req && m.req.name ? "«" + esc(m.req.name) + "». " : "") + "Мы проверим её и подтвердим в течение рабочего дня. Письмо придёт на " + esc(m.email) + ".</p></div>";
   } else {
@@ -1378,6 +1596,7 @@ function drawCab() {
   if (CAB.step === "main") h += '<button type="button" class="help-link" data-cab="out">Выйти из кабинета</button>';
   e.innerHTML = h;
   hrsLoadAll();
+  if (CAB.step === "main" && m && m.place && m.place.shop && m.place.shop.on && !CSH.loaded) cabShopLoad();
 }
 var CABRM = "";
 function cabPhItem(x, wait) { return '<div class="it"><img alt="" src="' + esc(x.url) + '">' + (wait ? '<span class="wait">На проверке</span>' : "") + '<button type="button" data-cphrm="' + esc(x.id) + '" aria-label="Удалить фото">×</button></div>'; }
@@ -1415,6 +1634,121 @@ function cabPhUpload(files) {
 function cabPhDel() {
   var fid = CABRM; CABRM = ""; cabPhRedraw();
   cabApi({ a: "own_photo_del", fid: fid }).then(function (r) { cabPhReload(r && r.ok ? "Фото удалено." : (r && r.err) || "Не получилось удалить.", !(r && r.ok)); }, function () { cabPhMsg("Нет связи. Проверьте интернет.", true); });
+}
+
+/* ===== кабинет: витрина ===== */
+var CSH = { loaded: false, data: null, edit: null, rm: 0, pe: 0, msg: "", err: false, busy: false };
+var CSH_ST = ["в наличии", "нет в наличии", "продано", "скрыт"];
+function cshItemHtml(x) {
+  var stt = x.st === "в наличии" ? "" : " · " + x.st;
+  return '<div class="ci"><img alt="" src="' + esc(thumb((x.photos || [])[0])) + '"><div class="cb"><b>' + esc(x.name) + "</b><span>" + rub(x.price) + (x.old ? " (было " + rub(x.old) + ")" : "") + esc(stt) + "</span>" +
+    (x.over ? "<em>Не показывается в приложении: превышен лимит витрины</em>" : "") +
+    '<div class="ca">' +
+    '<button type="button" class="sb" data-csh="edit" data-id="' + x.id + '">Изменить</button>' +
+    (x.st === "продано" ? '<button type="button" class="sb" data-csh="stock" data-id="' + x.id + '">В наличии</button>' : '<button type="button" class="sb" data-csh="sold" data-id="' + x.id + '">Продано</button>') +
+    (x.st === "скрыт" ? '<button type="button" class="sb" data-csh="show" data-id="' + x.id + '">Показать</button>' : '<button type="button" class="sb" data-csh="hide" data-id="' + x.id + '">Скрыть</button>') +
+    '<button type="button" class="sb" data-csh="price" data-id="' + x.id + '">Цена</button>' +
+    '<button type="button" class="sb" data-csh="up" data-id="' + x.id + '" aria-label="Выше">↑</button><button type="button" class="sb" data-csh="down" data-id="' + x.id + '" aria-label="Ниже">↓</button>' +
+    '<button type="button" class="sb red" data-csh="del" data-id="' + x.id + '">Удалить</button></div>' +
+    (CSH.pe === x.id ? '<div class="pe"><input id="csh_np" inputmode="numeric" placeholder="Новая цена" value="' + x.price + '"><button type="button" class="sb" data-csh="pricesave" data-id="' + x.id + '">Сохранить</button></div>' : "") +
+    (CSH.rm === x.id ? '<div class="formmsg err" style="margin-top:6px">Удалить товар?</div><div class="ca"><button type="button" class="sb red" data-csh="delyes" data-id="' + x.id + '">Да, удалить</button><button type="button" class="sb" data-csh="delno">Нет</button></div>' : "") +
+    "</div></div>";
+}
+function cshForm() {
+  var e = CSH.edit, ph = (e.keep || []).concat(e.fresh || []);
+  return '<div class="fld"><b>' + (e.id ? "Изменить товар" : "Новый товар") + "</b></div>" +
+    cabF("csh_name", "Название", "например: Платье миди, синее", "input", e.name, "", 80) +
+    cabF("csh_price", "Цена, ₽", "цифрами", "input", e.price, "2900", 9) +
+    cabF("csh_old", "Старая цена, ₽", "необязательно. Если указать, в приложении покажем скидку", "input", e.old, "3500", 9) +
+    cabF("csh_sizes", "Размеры", "необязательно, через запятую", "input", e.sizes, "42, 44, 46", 80) +
+    cabF("csh_colors", "Цвета", "необязательно, через запятую", "input", e.colors, "синий, бежевый", 80) +
+    cabF("csh_about", "Описание", "необязательно, до 300 знаков. Телефон и ссылки сюда не пишите", "textarea", e.about, "", 300) +
+    cabF("csh_video", "Ссылка на видео", "Выложите видео в клипы ВК и вставьте сюда ссылку", "input", e.video, "https://vk.com/clip-...", 200) +
+    '<label class="fld" for="csh_st"><b>Статус</b><select id="csh_st">' + CSH_ST.map(function (x) { return '<option' + (e.st === x ? " selected" : "") + ">" + x + "</option>"; }).join("") + "</select></label>" +
+    '<div class="fld"><b>Фото (от 1 до 5)</b><span>первое фото будет главным</span>' + (ph.length ? '<div class="adph">' + ph.map(function (x, i) { return '<div class="it"><img alt="" src="' + esc(x.url) + '"><button type="button" data-csh="rmph" data-i="' + i + '" aria-label="Убрать фото">×</button></div>'; }).join("") + "</div>" : "") + "</div>" +
+    (ph.length < 5 ? '<button type="button" class="btn2" data-csh="pick">Добавить фото</button>' : "") +
+    '<input type="file" id="csh_file" accept="image/*" multiple style="display:none">' +
+    (CSH.msg ? '<div class="formmsg' + (CSH.err ? " err" : "") + '" role="status">' + esc(CSH.msg) + "</div>" : "") +
+    '<button type="button" class="bigbtn" data-csh="save"' + (CSH.busy ? " disabled" : "") + ">" + (CSH.busy ? "Сохраняем…" : "Сохранить товар") + '</button><button type="button" class="btn2" data-csh="cancel">Отмена</button>';
+}
+function cabShopHtml(p) {
+  if (!p.shop || !p.shop.on) return '<div class="fld"><b>Витрина</b><span>Витрина пока не подключена. Напишите администратору.</span></div><button type="button" class="btn2" data-go="help">Написать в Техподдержку</button>';
+  if (!CSH.loaded) return '<div class="fld"><b>Витрина</b><span>Загружаем…</span></div>' + (CSH.msg ? '<div class="formmsg err">' + esc(CSH.msg) + "</div>" : "");
+  if (CSH.edit) return cshForm();
+  var d = CSH.data, live = d.items.filter(function (x) { return x.live; }).length;
+  return '<div class="fld"><b>Витрина</b><span>В приложении показано ' + live + " из " + d.shop.eff + ". Товары видны в вашей карточке и в «Новинках магазинов» на главной.</span></div>" +
+    (CSH.msg ? '<div class="formmsg' + (CSH.err ? " err" : "") + '" role="status">' + esc(CSH.msg) + "</div>" : "") +
+    '<button type="button" class="bigbtn" data-csh="add">Добавить товар</button>' + d.items.map(cshItemHtml).join("");
+}
+function cshRedraw() { var w = document.getElementById("csh_wrap"); if (w && CAB.me && CAB.me.place) w.innerHTML = cabShopHtml(CAB.me.place); }
+function cabShopLoad(keep) {
+  cabApi({ a: "own_items" }).then(function (r) {
+    if (r && r.ok) { CSH.data = r; CSH.loaded = true; if (!keep) CSH.msg = ""; }
+    else CSH.msg = (r && r.err) || "Не получилось загрузить витрину.";
+    cshRedraw();
+  }, function () { CSH.msg = "Нет связи. Проверьте интернет."; cshRedraw(); });
+}
+function cshRead() {
+  var e = CSH.edit; if (!e) return;
+  var v = function (id) { var x = document.getElementById(id); return x ? x.value.trim() : ""; };
+  if (!document.getElementById("csh_name")) return;
+  e.name = v("csh_name"); e.price = v("csh_price"); e.old = v("csh_old"); e.sizes = v("csh_sizes"); e.colors = v("csh_colors"); e.about = v("csh_about"); e.video = v("csh_video");
+  var st = document.getElementById("csh_st"); if (st) e.st = st.value;
+}
+function cabShopPhotos(files) {
+  cshRead();
+  var e = CSH.edit; if (!e) return;
+  var left = 5 - e.keep.length - e.fresh.length, list = files.slice(0, Math.max(0, left)), chain = Promise.resolve();
+  if (!list.length) { CSH.msg = "Можно не больше 5 фото."; CSH.err = true; cshRedraw(); return; }
+  list.forEach(function (f) { chain = chain.then(function () { return adShrink(f).then(function (b) { e.fresh.push({ b64: b, url: "data:image/jpeg;base64," + b }); }, function () { CSH.msg = "Не получилось прочитать фото. Нужна обычная фотография."; CSH.err = true; }); }); });
+  chain.then(function () { cshRedraw(); });
+}
+function cshAct(act, id, extra) {
+  var o = { a: "own_item_act", id: id, act: act }; if (extra) for (var k in extra) o[k] = extra[k];
+  cabApi(o).then(function (r) {
+    if (r && r.ok) { CSH.msg = ""; CSH.rm = 0; CSH.pe = 0; cabShopLoad(); sset("b56_goods", ""); loadGoods(); }
+    else if (r && r.auth === false) { sset("b56_own", ""); CAB.step = "email"; drawCab(); }
+    else { CSH.msg = (r && r.err) || "Не получилось."; CSH.err = true; cshRedraw(); }
+  }, function () { CSH.msg = "Нет связи. Проверьте интернет."; CSH.err = true; cshRedraw(); });
+}
+function cabShopClick(b) {
+  var act = b.getAttribute("data-csh"), id = Number(b.getAttribute("data-id")) || 0, e = CSH.edit, x, i;
+  CSH.err = false;
+  if (act === "add") { CSH.msg = ""; CSH.edit = { id: 0, name: "", price: "", old: "", sizes: "", colors: "", about: "", video: "", st: "в наличии", keep: [], fresh: [] }; cshRedraw(); return; }
+  if (act === "edit") {
+    for (i = 0; i < CSH.data.items.length; i++) if (CSH.data.items[i].id === id) x = CSH.data.items[i];
+    if (!x) return;
+    CSH.msg = ""; CSH.edit = { id: x.id, name: x.name, price: String(x.price), old: x.old ? String(x.old) : "", sizes: x.sizes, colors: x.colors, about: x.about, video: x.video, st: x.st, keep: x.photoIds.map(function (fid, k) { return { id: fid, url: x.photos[k] }; }), fresh: [] };
+    cshRedraw(); return;
+  }
+  if (act === "cancel") { CSH.edit = null; CSH.msg = ""; cshRedraw(); return; }
+  if (act === "pick") { cshRead(); var fi = document.getElementById("csh_file"); if (fi) fi.click(); return; }
+  if (act === "rmph") {
+    cshRead(); i = Number(b.getAttribute("data-i"));
+    if (i < e.keep.length) e.keep.splice(i, 1); else e.fresh.splice(i - e.keep.length, 1);
+    cshRedraw(); return;
+  }
+  if (act === "save") {
+    cshRead();
+    if (!e.name) { CSH.msg = "Напишите название."; CSH.err = true; cshRedraw(); return; }
+    if (!/\d/.test(e.price)) { CSH.msg = "Напишите цену цифрами."; CSH.err = true; cshRedraw(); return; }
+    if (e.keep.length + e.fresh.length < 1) { CSH.msg = "Добавьте хотя бы одно фото."; CSH.err = true; cshRedraw(); return; }
+    CSH.busy = true; CSH.msg = ""; cshRedraw();
+    cabApi({ a: "own_item_save", item: { id: e.id, name: e.name, price: e.price, old: e.old, sizes: e.sizes, colors: e.colors, about: e.about, video: e.video, st: e.st, keep: e.keep.map(function (k) { return k.id; }), "new": e.fresh.map(function (f) { return f.b64; }) } }).then(function (r) {
+      CSH.busy = false;
+      if (r && r.ok) { CSH.edit = null; CSH.msg = "Товар сохранён. Он уже в вашей витрине."; CSH.err = false; cabShopLoad(true); sset("b56_goods", ""); loadGoods(); }
+      else if (r && r.auth === false) { sset("b56_own", ""); CAB.step = "email"; drawCab(); }
+      else { CSH.msg = (r && r.err) || "Не получилось сохранить."; CSH.err = true; cshRedraw(); }
+    }, function () { CSH.busy = false; CSH.msg = "Нет связи. Проверьте интернет и попробуйте ещё раз."; CSH.err = true; cshRedraw(); });
+    return;
+  }
+  if (act === "del") { CSH.rm = id; CSH.pe = 0; cshRedraw(); return; }
+  if (act === "delno") { CSH.rm = 0; cshRedraw(); return; }
+  if (act === "delyes") { cshAct("del", id); return; }
+  if (act === "price") { CSH.pe = CSH.pe === id ? 0 : id; CSH.rm = 0; cshRedraw(); return; }
+  if (act === "pricesave") { var np = document.getElementById("csh_np"); cshAct("price", id, { price: np ? np.value : "" }); return; }
+  if (act === "up" || act === "down") { cshAct("move", id, { dir: act === "up" ? -1 : 1 }); return; }
+  if (act === "sold" || act === "stock" || act === "hide" || act === "show") { cshAct(act, id); return; }
 }
 function cabClick(b) {
   var act = b.getAttribute("data-cab");
@@ -1466,7 +1800,7 @@ function cabClick(b) {
 var API = "https://script.google.com/macros/s/AKfycbyRiGD8kP3YnhLAa_FDMo_iwgBYz6Ld5zBhYERvGnK7sBLXAfRRuBSYR6HKCmobh0HeSQ/exec"; /* сюда вставляется адрес сервера (Google Apps Script). Пусто = пробный режим */
 var DEMO = !API;
 var DEMO_NEWS = [];
-var SEND = { card_open: 1, price_open: 1, call_click: 1, route_click: 1, link_click: 1, owner_info: 1, owner_contact: 1, news_open: 1, qr_open: 1, install: 1, open_from_icon: 1, role_resident: 1, role_owner: 1, install_howto: 1, owner_request: 1, support_open: 1, support_send: 1, ad_send: 1, cab_open: 1, cab_save: 1 };
+var SEND = { card_open: 1, price_open: 1, call_click: 1, route_click: 1, link_click: 1, owner_info: 1, owner_contact: 1, news_open: 1, qr_open: 1, install: 1, open_from_icon: 1, role_resident: 1, role_owner: 1, install_howto: 1, owner_request: 1, support_open: 1, support_send: 1, ad_send: 1, cab_open: 1, cab_save: 1, item_open: 1, item_ask: 1 };
 var evq = [], newsData = [], memRole = "", memId = "";
 
 function sget(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -1521,16 +1855,17 @@ function loadPlaces() {
   if (DEMO) return;
   try { var c = JSON.parse(sget("b56_places") || "null"); if (c && c.length) ITEMS = c; } catch (e) {}
   apiGet("places").then(function (r) {
+    PLACES_FRESH = true;
     if (!r || !r.ok || !r.items) return;
     var j = JSON.stringify(r.items);
-    if (j === JSON.stringify(ITEMS)) return;
+    if (j === JSON.stringify(ITEMS)) { if (parse(state.route).v === "item") render(); return; }
     ITEMS = r.items; sset("b56_places", j);
     if (parse(state.route).v === "cab") return;
     var q = document.getElementById("q");
     if (q && q.value) return;
     if (!valid(state.route)) state.route = "home";
     render();
-  }, function () {});
+  }, function () { PLACES_FRESH = true; if (parse(state.route).v === "item") render(); });
 }
 function refreshNewsUi() {
   var t = document.getElementById("top");
@@ -1640,6 +1975,7 @@ function ensureId() {
 function currentOrg() {
   var p = parse(state.route);
   if (p.v === "card" || p.v === "price") return (itemById(p.id) || {}).name || "";
+  if (p.v === "item") { var gg = goodById(p.id); return gg ? (itemById(gg.pid) || {}).name || "" : ""; }
   return "";
 }
 function isStandalone() {
@@ -1660,6 +1996,7 @@ function trackRoute(r) {
   var p = parse(r);
   if (p.v === "card") track("card_open", { org: (itemById(p.id) || {}).name });
   else if (p.v === "price") track("price_open", { org: (itemById(p.id) || {}).name });
+  else if (p.v === "item") { var tg = goodById(p.id); track("item_open", { org: tg ? (itemById(tg.pid) || {}).name : "" }); }
   else if (p.v === "owner") track("owner_info");
   else if (p.v === "news") track("news_open");
   else if (p.v === "install") track("install_howto");
@@ -1752,6 +2089,8 @@ function render() {
   else if (r.v === "owner") html = viewOwner();
   else if (r.v === "cab") html = viewCab();
   else if (r.v === "urgent") html = viewUrgent();
+  else if (r.v === "item") html = viewItem(r.id);
+  else if (r.v === "novelty") html = viewNovelty();
   else if (r.v === "install") html = viewInstall();
   else if (r.v === "news") html = viewNews();
   else if (r.v === "qr") html = viewQr();
@@ -1763,6 +2102,7 @@ function render() {
   else if (r.v === "ask") html = viewForm("ask");
   else if (r.v === "apply") html = viewForm("owner");
   else { html = viewHome(); results = homeResults; }
+  closeVideo();
   app.outerHTML = html;
   app = document.querySelector(".app");
   app.id = "app";
@@ -1770,7 +2110,7 @@ function render() {
     var box = document.getElementById("results"), q = document.getElementById("q");
     RES = results;
     box.innerHTML = results("");
-    q.addEventListener("input", function () { box.innerHTML = results(q.value); var tp = document.getElementById("top"); if (tp) tp.hidden = !!q.value.trim(); });
+    q.addEventListener("input", function () { box.innerHTML = results(q.value); var tp = document.getElementById("top"); if (tp) tp.hidden = !!q.value.trim(); var nv = document.getElementById("nov"); if (nv) nv.hidden = !!q.value.trim(); });
   }
   document.title = "Бугуруслан всё в одном месте";
   bindGallery();
@@ -1835,7 +2175,7 @@ document.addEventListener("click", function (e) {
     rerunResults(); return;
   }
   var hb = e.target.closest("[data-hist]");
-  if (hb) { var hq = document.getElementById("q"); if (hq) { hq.value = hb.getAttribute("data-hist"); rerunResults(); var tp0 = document.getElementById("top"); if (tp0) tp0.hidden = true; } return; }
+  if (hb) { var hq = document.getElementById("q"); if (hq) { hq.value = hb.getAttribute("data-hist"); rerunResults(); var tp0 = document.getElementById("top"); if (tp0) tp0.hidden = true; var nv0 = document.getElementById("nov"); if (nv0) nv0.hidden = true; } return; }
   var tb = e.target.closest("[data-tab]");
   if (tb) {
     e.preventDefault();
@@ -1843,6 +2183,27 @@ document.addEventListener("click", function (e) {
     if (tr === state.route) { try { window.scrollTo(0, 0); } catch (er) {} return; }
     trackRoute(tr); state.stack = tr === "home" ? [] : ["home"]; state.route = tr; setHash(tr); render(); return;
   }
+  var szb = e.target.closest("[data-size]");
+  if (szb) {
+    var szv = szb.getAttribute("data-size"), szs = document.querySelectorAll("[data-size]"), gp = parse(state.route), gg2 = goodById(gp.id), pl2 = gg2 && itemById(gg2.pid), aw = document.getElementById("askwa");
+    ISZ = ISZ === szv ? "" : szv;
+    for (var zi = 0; zi < szs.length; zi++) szs[zi].setAttribute("aria-pressed", String(szs[zi].getAttribute("data-size") === ISZ));
+    if (aw && gg2 && pl2) aw.setAttribute("href", askHref(gg2, pl2, ISZ));
+    return;
+  }
+  if (e.target.closest("[data-vid]")) { openVideo(); return; }
+  if (e.target.closest("[data-vclose]")) { closeVideo(); return; }
+  var shb = e.target.closest("[data-share]");
+  if (shb) { shareItem(shb); return; }
+  var nvb = e.target.closest("[data-nov]");
+  if (nvb) {
+    var nk = nvb.getAttribute("data-nov");
+    if (nk === "all") NOV = { cat: "", disc: false }; else if (nk === "disc") NOV.disc = !NOV.disc; else NOV.cat = NOV.cat === nk.slice(4) ? "" : nk.slice(4);
+    var nbx = document.getElementById("novbox"); if (nbx) nbx.innerHTML = novBox();
+    return;
+  }
+  var cshb = e.target.closest("[data-csh]");
+  if (cshb) { cabShopClick(cshb); return; }
   var ac = e.target.closest("[data-adcat]");
   if (ac) { adCat = ac.getAttribute("data-adcat"); var ace = document.getElementById("adcats"), ale = document.getElementById("adlist"); if (ace) ace.innerHTML = adCatsHtml(); if (ale) ale.innerHTML = adListHtml(); return; }
   var mya = e.target.closest("[data-myact]");
@@ -1888,7 +2249,8 @@ document.addEventListener("click", function (e) {
   var a = e.target.closest("a[href]");
   if (a) {
     var h = a.getAttribute("href") || "", org = a.getAttribute("data-org") || currentOrg();
-    if (a.hasAttribute("data-k")) track("owner_contact");
+    if (a.hasAttribute("data-ask")) track("item_ask", { org: org });
+    else if (a.hasAttribute("data-k")) track("owner_contact");
     else if (h.indexOf("tel:") === 0) track("call_click", { org: org });
     else if (h.indexOf("yandex.ru/maps") !== -1) track("route_click", { org: org });
     else if (a.closest(".web")) track("link_click", { org: org });
@@ -1897,6 +2259,7 @@ document.addEventListener("click", function (e) {
 document.addEventListener("change", function (e) {
   if (e.target.id === "q") { histAdd(e.target.value); return; }
   if (e.target.id === "ad_cat") { adRefresh(); return; }
+  if (e.target.id === "csh_file") { var sfl = Array.prototype.slice.call(e.target.files); e.target.value = ""; if (sfl.length) cabShopPhotos(sfl); return; }
   if (e.target.id === "cp_file") { var cfl = Array.prototype.slice.call(e.target.files); e.target.value = ""; if (cfl.length) cabPhUpload(cfl); return; }
   if (e.target.id !== "ad_file" || !e.target.files.length) return;
   var files = Array.prototype.slice.call(e.target.files), chain = Promise.resolve();
@@ -1923,6 +2286,7 @@ window.addEventListener("appinstalled", function () { sset("b56_inst", "1"); tra
   var r = "home";
   try { r = location.hash.slice(1) || "home"; } catch (e) {}
   loadPlaces();
+  loadGoods();
   loadAds();
   loadBanners();
   loadUrgent();
