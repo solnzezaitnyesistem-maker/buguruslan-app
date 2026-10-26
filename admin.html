@@ -40,6 +40,9 @@ input:focus, select:focus, textarea:focus, button:focus-visible { outline:3px so
 .nt.gold { background:var(--gold); } .nt.mint { background:var(--mint); color:var(--green); }
 .ni { border:1px solid var(--line); border-radius:14px; padding:12px; display:flex; flex-direction:column; gap:8px; background:#fff; }
 .ni b { overflow-wrap:anywhere; }
+.ni.off { background:#F1F2F1; border-style:dashed; }
+.ni.off b { color:var(--muted); }
+.ni.off .bd.hid { background:#FDECEA; color:#8A1C12; }
 .ni p { margin:0; font-size:15px; overflow-wrap:anywhere; white-space:pre-line; }
 .ni .m { font-size:13px; color:var(--muted); display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
 .tiles { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
@@ -171,6 +174,7 @@ var TAB = "places", PUB = "news";
 var PLACES = [], NEWS = [], BANNERS = [], TICKETS = [], OWN = [], ADS = [], STATS = null, STORG = {};
 var URGL = [], UED = null, UDEL = 0, UG = [["emerg", "Экстренные номера"], ["med", "Медицина"], ["jkh", "Аварийные службы ЖКХ"], ["night", "Круглосуточно"]];
 var PSF = "", PSQ = "";
+var SHOP = { pid: 0, data: null, msg: "", err: false, rm: 0 };
 var IBF = "new", IOPEN = "", IDEL = "", ADCLR = 0;
 var ED = null, EDS = null, BEDIT = null, BDEL = "", PENDING_DEL = "", WIN = null, PHBUSY = false;
 var root = document.getElementById("root");
@@ -419,12 +423,45 @@ function placesView() {
 }
 
 /* ---------- карточка заведения ---------- */
-function newDraft() { return { id: 0, cat: "", name: "", about: "", addr: "", note: "", phone: "", hours: "", site: "", wa: "", tg: "", vk: "", max: "", reviews: "", quotesText: "", rec: false, priceText: "", priceNote: "", status: "", memo: "", hidden: false, photoIds: [], photos: [], upd: "", chk: "", open: { main: true, link: true } }; }
+function newDraft() { return { id: 0, cat: "", name: "", about: "", addr: "", note: "", phone: "", hours: "", site: "", wa: "", tg: "", vk: "", max: "", reviews: "", quotesText: "", rec: false, shopOn: false, shopLim: 3, shopPaid: "", priceText: "", priceNote: "", status: "", memo: "", hidden: false, photoIds: [], photos: [], upd: "", chk: "", open: { main: true, link: true } }; }
+
+function shopInner() {
+  var e = ED;
+  if (!e.id) return '<div class="note">Витрину можно включить, когда заведение сохранено.</div>';
+  var d = SHOP.pid === e.id ? SHOP.data : null, h =
+    '<label class="check"><input type="checkbox" id="sho"' + (e.shopOn ? " checked" : "") + '> Витрина включена</label>' +
+    '<label>Лимит товаров<small>сколько товаров показывать при оплаченной витрине. Без оплаты показываем не больше 3</small><input id="shl" type="number" min="1" max="200" value="' + esc(e.shopLim || 3) + '"></label>' +
+    '<label>Оплачено до<small>пусто = бесплатно. Когда дата пройдёт, лишние товары скроются сами, но не удалятся</small><input id="shp" type="date" value="' + esc(e.shopPaid || "") + '"></label>' +
+    '<button type="button" class="btn alt sm" data-shopset="1">Сохранить настройки витрины</button>' +
+    (SHOP.msg ? '<div class="msg' + (SHOP.err ? " err" : "") + '">' + esc(SHOP.msg) + "</div>" : "");
+  if (!e.shopOn) return h;
+  if (!d) return h + '<div class="note">Загружаю товары…</div>';
+  h += '<h2>Товары: ' + d.items.length + " (показывается " + d.items.filter(function (x) { return x.live; }).length + " из " + d.shop.eff + ")</h2>";
+  if (!d.items.length) h += '<div class="note">Владелец ещё не добавил товары.</div>';
+  d.items.forEach(function (x) {
+    h += '<div class="ni"><div style="display:flex;gap:10px"><img src="' + esc((x.photos || [])[0] || "") + '" alt="" style="width:56px;height:56px;object-fit:cover;border-radius:8px"><div style="min-width:0;flex:1"><b>' + esc(x.name) + "</b><br>" + esc(x.price) + " ₽" + (x.old ? " (было " + esc(x.old) + ")" : "") + " · " + esc(x.st) +
+      (x.ahid ? " · <b>скрыт вами</b>" : "") + (x.over ? " · не показывается (лимит)" : "") + "</div></div>" +
+      '<div class="big">' + (x.ahid ? '<button type="button" class="btn alt sm" data-shopact="aunhide" data-sid="' + x.id + '">Вернуть в витрину</button>' : '<button type="button" class="btn alt sm" data-shopact="ahide" data-sid="' + x.id + '">Скрыть</button>') +
+      (SHOP.rm === x.id ? yn("Удалить товар?", 'data-shopdel="' + x.id + '"', 'data-shopno="1"') : '<button type="button" class="btn red sm" data-shopask="' + x.id + '">Удалить</button>') + "</div></div>";
+  });
+  return h;
+}
+function shopRedraw() { var b = document.querySelector('[data-blk="shop"]'); if (b && b.nextElementSibling && ED) b.nextElementSibling.innerHTML = shopInner(); }
+function shopLoad() {
+  if (!ED || !ED.id || !ED.shopOn) return;
+  var pid = ED.id;
+  call({ a: "items_admin", pw: PW, pid: pid }).then(function (r) { if (r.ok) { SHOP.pid = pid; SHOP.data = r; } else { SHOP.msg = r.err || "Ошибка"; SHOP.err = true; } shopRedraw(); });
+}
+function shopAct(o) {
+  o.a = "item_admin"; o.pw = PW; o.pid = ED.id;
+  call(o).then(function (r) { SHOP.rm = 0; SHOP.msg = r.ok ? "" : (r.err || "Ошибка"); SHOP.err = !r.ok; shopLoad(); shopRedraw(); });
+}
+function openEditorShop() { SHOP = { pid: 0, data: null, msg: "", err: false, rm: 0 }; setTimeout(shopLoad, 0); }
 function openEditor(p) {
   if (p) { ED = newDraft(); for (var k in p) if (k in ED) ED[k] = p[k]; ED.photoIds = [].concat(p.photoIds || []); ED.photos = [].concat(p.photos || []); ED.open = {}; }
   else ED = newDraft();
   EDS = { saving: false, dirty: false, t: null, msg: "", cls: "", nst: ED.status || "", nmemo: ED.memo || "", delAsk: false };
-  MSG = null; draw(true); window.scrollTo(0, 0);
+  MSG = null; draw(true); window.scrollTo(0, 0); openEditorShop();
 }
 function priceParse(t) { var out = []; String(t || "").split("\n").forEach(function (l) { l = l.trim(); if (!l) return; var i = l.indexOf("|"); out.push(i < 0 ? [l, ""] : [l.slice(0, i).trim(), l.slice(i + 1).trim()]); }); return out; }
 function priceRowHtml(s, p) { return '<div class="pr-row"><button type="button" class="pr-h" data-prh="1" aria-label="Перетащить строку">⋮⋮</button><input class="pr-s" maxlength="120" placeholder="Услуга" value="' + esc(s) + '" aria-label="Услуга"><input class="pr-p" maxlength="40" placeholder="Цена" value="' + esc(p) + '" aria-label="Цена"><button type="button" class="pr-x" data-prdel="1" aria-label="Удалить строку">✕</button></div>'; }
@@ -492,6 +529,7 @@ function editorView() {
     inp("prv", "Яндекс Карты", e.reviews, "ссылка на карточку заведения. Можно не писать", 'maxlength="200"'));
   var ids = e.photoIds || [], ph = photoInner();
   h += blk("photo", "Фото" + (ids.length ? " · " + ids.length + " из 6" : ""), ph);
+  h += blk("shop", "Витрина товаров" + (e.shopOn ? " · включена" : ""), shopInner(), false);
   var pr = priceParse(e.priceText); if (!pr.length) pr = [["", ""]];
   h += blk("price", "Прайс",
     '<div class="note">Услуга и цена в разных полях. Строки можно перетаскивать за значок слева.</div><div class="prl" id="prl">' + pr.map(function (r) { return priceRowHtml(r[0], r[1]); }).join("") + "</div>" +
@@ -763,7 +801,10 @@ function urgentTab() {
       '<button class="btn alt sm" type="button" data-ucancel="1">Отмена</button></form>';
   }
   var chk = URGL.reduce(function (m, x) { return x.chk > m ? x.chk : m; }, "");
-  h = '<div class="note">Это раздел «Срочно» на главной. Скрытые строки жители не видят. Стрелками меняйте порядок внутри группы.' + (chk ? " Проверено: " + esc(fmt(chk)) + "." : "") + "</div>" +
+  var nshow = URGL.filter(function (x) { return !x.hidden; }).length, hid = URGL.filter(function (x) { return x.hidden; });
+  h = '<div class="card"><h2>Сейчас в приложении: ' + nshow + ' из ' + URGL.length + '</h2>' +
+    (hid.length ? '<div class="note"><b>Жители НЕ видят ' + hid.length + ':</b> ' + hid.map(function (x) { return esc(x.name); }).join(", ") + '. Чтобы показать, откройте строку, впишите телефон и нажмите «Показать».</div>' : '<div class="note">Скрытых строк нет, жители видят всё.</div>') + '</div>' +
+    '<div class="note">Зелёная метка «✓ в приложении» значит, что номер виден жителям. Красная «✕ скрыта» значит, что не виден. Стрелками меняйте порядок внутри группы.' + (chk ? " Проверено: " + esc(fmt(chk)) + "." : "") + "</div>" +
     '<button type="button" class="btn" data-unew="1">＋ Добавить строку</button>' +
     '<button type="button" class="btn alt sm" data-ucheck="1">Отметить: всё проверено сегодня</button>';
   UG.forEach(function (g) {
@@ -771,7 +812,7 @@ function urgentTab() {
     h += "<h2>" + esc(g[1]) + "</h2>";
     if (!l.length) { h += '<div class="note">Пока пусто.</div>'; return; }
     l.forEach(function (x, i) {
-      h += '<div class="ni"><div class="m"><b>' + esc(x.name) + "</b>" + (x.hidden ? ' <span class="bd hid">скрыта</span>' : "") + (x.h24 ? ' <span class="bd ok">круглосуточно</span>' : "") + "</div>" +
+      h += '<div class="ni' + (x.hidden ? " off" : "") + '"><div class="m"><b>' + esc(x.name) + "</b>" + (x.hidden ? ' <span class="bd hid">✕ скрыта, жители не видят</span>' : ' <span class="bd ok">✓ в приложении</span>') + (x.h24 ? ' <span class="bd ok">круглосуточно</span>' : "") + "</div>" +
         "<p>" + (x.phones && x.phones.length ? esc(x.phones.join(", ")) : "телефона нет") + (x.memo ? "\n" + esc(x.memo) : "") + "</p>" +
         '<div class="big"><button type="button" class="btn alt sm" data-umove="' + x.id + '" data-udir="-1"' + (i === 0 ? " disabled" : "") + ' aria-label="Выше">↑</button>' +
         '<button type="button" class="btn alt sm" data-umove="' + x.id + '" data-udir="1"' + (i === l.length - 1 ? " disabled" : "") + ' aria-label="Ниже">↓</button>' +
@@ -810,8 +851,8 @@ function statsTab() {
     '<div class="tile"><b>' + g(s.srcs, "QR iPhone") + "</b><span>пришли по QR iPhone</span></div>" +
     '<div class="tile"><b>' + (s.invited || 0) + "</b><span>пришли по приглашению друга</span></div></div>";
   h += '<div class="card"><h2>Установки за 14 дней</h2><div class="bars">' + s.days.map(function (d) { return '<div style="height:' + Math.round(d.n / mx * 100) + '%" title="' + esc(d.d) + ": " + d.n + '"><i>' + (d.n || "") + "</i></div>"; }).join("") + '</div><div class="bl">' + s.days.map(function (d) { return "<span>" + esc(d.d.slice(8)) + "</span>"; }).join("") + "</div></div>";
-  h += '<div class="card"><h2>Заведения за 30 дней</h2>' + (s.orgs.length ? "<table><tr><th>Название</th><th class=\"n\">Откр.</th><th class=\"n\">Прайс</th><th class=\"n\">Зво&shy;нки</th><th class=\"n\">Мар&shy;шрут</th></tr>" +
-    s.orgs.map(function (o) { return "<tr><td>" + esc(o.org) + '</td><td class="n">' + o.views + '</td><td class="n">' + o.prices + '</td><td class="n">' + o.calls + '</td><td class="n">' + o.routes + "</td></tr>"; }).join("") + "</table>" : '<div class="note">Пока данных нет.</div>') + "</div>";
+  h += '<div class="card"><h2>Заведения за 30 дней</h2>' + (s.orgs.length ? "<table><tr><th>Название</th><th class=\"n\">Откр.</th><th class=\"n\">Прайс</th><th class=\"n\">Зво&shy;нки</th><th class=\"n\">Мар&shy;шрут</th><th class=\"n\">Тов&shy;ары</th><th class=\"n\">Спро&shy;сили</th></tr>" +
+    s.orgs.map(function (o) { return "<tr><td>" + esc(o.org) + '</td><td class="n">' + o.views + '</td><td class="n">' + o.prices + '</td><td class="n">' + o.calls + '</td><td class="n">' + o.routes + '</td><td class="n">' + (o.iv || 0) + '</td><td class="n">' + (o.ia || 0) + "</td></tr>"; }).join("") + "</table>" : '<div class="note">Пока данных нет.</div>') + "</div>";
   h += '<div class="card"><h2>Действия</h2><div class="note">Открыли новости: <b>' + g(s.events, "news_open") + "</b> · Позвонили из карточек: <b>" + g(s.events, "call_click") + "</b> · Открыли раздел для владельцев: <b>" + g(s.events, "owner_info") + "</b></div></div>";
   if (s.refs && s.refs.length) h += '<div class="card"><h2>Кто приглашает друзей</h2><table><tr><th>Номер</th><th class="n">Привёл</th></tr>' + s.refs.map(function (r) { return "<tr><td><b>" + esc(r.id) + '</b></td><td class="n">' + r.n + "</td></tr>"; }).join("") + "</table></div>";
   if (s.recent) h += '<div class="card"><h2>Последние участники</h2><table><tr><th>Номер</th><th>Когда</th><th>Кто</th><th>Телефон</th></tr>' +
@@ -963,6 +1004,18 @@ function doAction(t) {
   if (d.psf !== undefined) { PSF = d.psf; draw(); return; }
   if (d.padd) { openEditor(null); return; }
   if (d.pedit) { var pid = Number(d.pedit); openEditor(PLACES.filter(function (x) { return x.id === pid; })[0] || null); return; }
+  if (d.shopset) {
+    var son = document.getElementById("sho").checked, slim = Number(document.getElementById("shl").value) || 3, spd = document.getElementById("shp").value;
+    call({ a: "shop_set", pw: PW, id: ED.id, on: son, lim: slim, paid: spd }).then(function (r) {
+      if (r.ok) { ED.shopOn = son; ED.shopLim = slim; ED.shopPaid = spd; PLACES.forEach(function (x) { if (x.id === ED.id) { x.shopOn = son; x.shopLim = slim; x.shopPaid = spd; } }); SHOP.msg = "Сохранено."; SHOP.err = false; SHOP.data = null; shopLoad(); } else { SHOP.msg = r.err || "Ошибка"; SHOP.err = true; }
+      var hb = document.querySelector('[data-blk="shop"] .bt'); if (hb) hb.textContent = "Витрина товаров" + (ED.shopOn ? " · включена" : "");
+      shopRedraw();
+    }); return;
+  }
+  if (d.shopact) { shopAct({ act: d.shopact, id: Number(d.sid) }); return; }
+  if (d.shopask) { SHOP.rm = Number(d.shopask); shopRedraw(); return; }
+  if (d.shopno) { SHOP.rm = 0; shopRedraw(); return; }
+  if (d.shopdel) { shopAct({ act: "del", id: Number(d.shopdel) }); return; }
   /* карточка */
   if (d.blk) { ED.open[d.blk] = !ED.open[d.blk]; t.setAttribute("aria-expanded", String(!!ED.open[d.blk])); var bb = t.nextElementSibling; if (bb) bb.hidden = !ED.open[d.blk]; return; }
   if (d.pradd) { var l = document.getElementById("prl"), tmp = document.createElement("div"); tmp.innerHTML = priceRowHtml("", ""); l.appendChild(tmp.firstChild); l.lastChild.querySelector(".pr-s").focus(); return; }
