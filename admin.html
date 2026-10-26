@@ -169,6 +169,7 @@ var PST = ["", "ждём логотип", "ждём фото", "ждём дан�
 var PW = "", ROLE = "", TGOK = false, BUSY = false, MSG = null;
 var TAB = "places", PUB = "news";
 var PLACES = [], NEWS = [], BANNERS = [], TICKETS = [], OWN = [], ADS = [], STATS = null, STORG = {};
+var URGL = [], UED = null, UDEL = 0, UG = [["emerg", "Экстренные номера"], ["med", "Медицина"], ["jkh", "Аварийные службы ЖКХ"], ["night", "Круглосуточно"]];
 var PSF = "", PSQ = "";
 var IBF = "new", IOPEN = "", IDEL = "", ADCLR = 0;
 var ED = null, EDS = null, BEDIT = null, BDEL = "", PENDING_DEL = "", WIN = null, PHBUSY = false;
@@ -744,6 +745,44 @@ function bannersTab() {
   }).join("") : '<div class="note">Пока ни одной плашки.</div>');
   return form + list;
 }
+function urgentTab() {
+  var e = UED, h = "";
+  if (e) {
+    return '<form class="card" id="uf"><h2>' + (e.id ? "Изменить строку" : "Новая строка") + "</h2>" +
+      '<label>Группа<select id="ug">' + UG.map(function (g) { return '<option value="' + g[0] + '"' + (e.g === g[0] ? " selected" : "") + ">" + esc(g[1]) + "</option>"; }).join("") + "</select></label>" +
+      inp("unm", "Название", e.name, "", 'maxlength="120"') +
+      inp("unt", "Пояснение", e.note, "например: нет света, запах газа", 'maxlength="200"') +
+      '<label>Телефоны<small>каждый с новой строки, не больше 4</small><textarea id="uph" style="min-height:80px">' + esc((e.phones || []).join("\n")) + "</textarea></label>" +
+      inp("uad", "Адрес", e.addr, "можно не писать", 'maxlength="150"') +
+      inp("uhr", "Часы работы", e.hours, "например: будни 09:00–18:00", 'maxlength="100"') +
+      '<label class="check"><input type="checkbox" id="u24"' + (e.h24 ? " checked" : "") + "> Круглосуточно</label>" +
+      inp("ukw", "Слова для поиска", e.kw, "через пробел: свет электричество авария", 'maxlength="200"') +
+      '<label class="check"><input type="checkbox" id="uhid"' + (e.hidden ? " checked" : "") + "> Скрыть из приложения</label>" +
+      '<label>Заметка для себя<small>жители её не видят</small><textarea id="ume" maxlength="300" style="min-height:60px">' + esc(e.memo || "") + "</textarea></label>" +
+      '<button class="btn" type="submit"' + (BUSY ? " disabled" : "") + ">Сохранить</button>" +
+      '<button class="btn alt sm" type="button" data-ucancel="1">Отмена</button></form>';
+  }
+  var chk = URGL.reduce(function (m, x) { return x.chk > m ? x.chk : m; }, "");
+  h = '<div class="note">Это раздел «Срочно» на главной. Скрытые строки жители не видят. Стрелками меняйте порядок внутри группы.' + (chk ? " Проверено: " + esc(fmt(chk)) + "." : "") + "</div>" +
+    '<button type="button" class="btn" data-unew="1">＋ Добавить строку</button>' +
+    '<button type="button" class="btn alt sm" data-ucheck="1">Отметить: всё проверено сегодня</button>';
+  UG.forEach(function (g) {
+    var l = URGL.filter(function (x) { return x.g === g[0]; });
+    h += "<h2>" + esc(g[1]) + "</h2>";
+    if (!l.length) { h += '<div class="note">Пока пусто.</div>'; return; }
+    l.forEach(function (x, i) {
+      h += '<div class="ni"><div class="m"><b>' + esc(x.name) + "</b>" + (x.hidden ? ' <span class="bd hid">скрыта</span>' : "") + (x.h24 ? ' <span class="bd ok">круглосуточно</span>' : "") + "</div>" +
+        "<p>" + (x.phones && x.phones.length ? esc(x.phones.join(", ")) : "телефона нет") + (x.memo ? "\n" + esc(x.memo) : "") + "</p>" +
+        '<div class="big"><button type="button" class="btn alt sm" data-umove="' + x.id + '" data-udir="-1"' + (i === 0 ? " disabled" : "") + ' aria-label="Выше">↑</button>' +
+        '<button type="button" class="btn alt sm" data-umove="' + x.id + '" data-udir="1"' + (i === l.length - 1 ? " disabled" : "") + ' aria-label="Ниже">↓</button>' +
+        '<button type="button" class="btn alt sm" data-uedit="' + x.id + '">Изменить</button>' +
+        '<button type="button" class="btn alt sm" data-uhide="' + x.id + '">' + (x.hidden ? "Показать" : "Скрыть") + "</button>" +
+        (UDEL === x.id ? yn("Точно удалить?", 'data-udel="' + x.id + '"', 'data-uno="1"') : '<button type="button" class="btn red sm" data-uask="' + x.id + '">Удалить</button>') + "</div></div>";
+    });
+  });
+  return h;
+}
+function urgReload() { return call({ a: "urgent_admin", pw: PW }).then(function (r) { if (r.ok) URGL = r.items; else afterAuthFail(r); draw(); }); }
 function drawTab() {
   return '<form class="card" id="df"><h2>Розыгрыш призов</h2><div class="note">Победители выбираются случайно среди всех, у кого есть номер. Результат записывается в таблицу.</div>' +
     '<label>Что разыгрываем<input id="dpr" maxlength="100" placeholder="Например: сертификат на 2 000 ₽"></label>' +
@@ -753,9 +792,9 @@ function drawTab() {
     '<div class="note">Розыгрыш должен быть без обязательной покупки. Дорогие призы могут облагаться налогом у победителя, уточняйте заранее.</div>';
 }
 function pubView() {
-  var seg = [["news", "Новости"], ["banners", "Плашки"], ["draw", "Розыгрыш"]];
+  var seg = [["news", "Новости"], ["banners", "Плашки"], ["urgent", "Срочно"], ["draw", "Розыгрыш"]];
   return '<h1>Публикации</h1><div class="seg" role="group">' + seg.map(function (s) { return '<button type="button" data-pub="' + s[0] + '" aria-pressed="' + (PUB === s[0]) + '">' + s[1] + "</button>"; }).join("") + "</div>" +
-    (PUB === "news" ? newsTab() : PUB === "banners" ? bannersTab() : drawTab());
+    (PUB === "news" ? newsTab() : PUB === "banners" ? bannersTab() : PUB === "urgent" ? urgentTab() : drawTab());
 }
 function statsTab() {
   var s = STATS; if (!s) return '<h1>Статистика</h1><div class="note">Загружаю…</div>';
@@ -821,7 +860,7 @@ function loadInbox() {
 }
 function loadStats() { return call({ a: "stats", pw: PW }).then(function (r) { if (r.ok) { STATS = r; STORG = {}; (r.orgs || []).forEach(function (o) { STORG[o.org] = { views: o.views, calls: o.calls }; }); } else if (TAB === "stats") afterAuthFail(r); draw(); }); }
 function loadPub() {
-  return Promise.all([call({ a: "news_list", pw: PW }), call({ a: "banners_list", pw: PW })]).then(function (rs) { if (rs[0].ok) NEWS = rs[0].items; else afterAuthFail(rs[0]); if (rs[1].ok) BANNERS = rs[1].items; draw(); });
+  return Promise.all([call({ a: "news_list", pw: PW }), call({ a: "banners_list", pw: PW }), call({ a: "urgent_admin", pw: PW })]).then(function (rs) { if (rs[0].ok) NEWS = rs[0].items; else afterAuthFail(rs[0]); if (rs[1].ok) BANNERS = rs[1].items; if (rs[2].ok) URGL = rs[2].items; draw(); });
 }
 function loadTab() {
   if (TAB === "places") return loadPlaces();
@@ -852,6 +891,16 @@ root.addEventListener("submit", function (e) {
       if (r.ok) { say(r.tgSent ? "Опубликовано в приложении и в Telegram." : r.tgErr ? "Опубликовано в приложении. В Telegram не ушло: " + r.tgErr : "Опубликовано. Жители увидят это в приложении."); ["nti", "nte", "nor", "nun"].forEach(function (i) { var x = document.getElementById(i); if (x) x.value = ""; }); loadPub(); }
       else { afterAuthFail(r); draw(); }
     });
+  }
+  if (id === "uf") {
+    var it = { id: UED.id, g: val("ug"), name: val("unm"), note: val("unt"), phones: val("uph"), addr: val("uad"), hours: val("uhr"), h24: document.getElementById("u24").checked, kw: val("ukw"), hidden: document.getElementById("uhid").checked, memo: val("ume") };
+    BUSY = true; UED = JSON.parse(JSON.stringify(it)); UED.phones = String(it.phones).split("\n"); draw();
+    call({ a: "urgent_save", pw: PW, item: it }).then(function (r) {
+      BUSY = false;
+      if (r.ok) { say("Сохранено.", false); UED = null; urgReload(); window.scrollTo(0, 0); }
+      else { say(r.err || "Ошибка", true); draw(); window.scrollTo(0, 0); }
+    });
+    return;
   }
   if (id === "bf") {
     BUSY = true; draw();
@@ -965,6 +1014,15 @@ function doAction(t) {
   }
   /* публикации */
   if (d.pub) { PUB = d.pub; MSG = null; draw(); return; }
+  if (d.unew) { UED = { id: 0, g: "emerg", name: "", note: "", phones: [], addr: "", hours: "", h24: false, kw: "", memo: "", hidden: false }; MSG = null; draw(); window.scrollTo(0, 0); return; }
+  if (d.uedit) { var ue = Number(d.uedit); var ux = URGL.filter(function (x) { return x.id === ue; })[0]; UED = ux ? JSON.parse(JSON.stringify(ux)) : null; MSG = null; draw(); window.scrollTo(0, 0); return; }
+  if (d.ucancel) { UED = null; draw(); return; }
+  if (d.umove) { call({ a: "urgent_move", pw: PW, id: Number(d.umove), dir: Number(d.udir) }).then(function (r) { if (!r.ok) say(r.err || "Ошибка", true); urgReload(); }); return; }
+  if (d.uhide) { var uh = Number(d.uhide); var uy = URGL.filter(function (x) { return x.id === uh; })[0]; if (uy) { var un = JSON.parse(JSON.stringify(uy)); un.hidden = !un.hidden; call({ a: "urgent_save", pw: PW, item: un }).then(function (r) { if (!r.ok) say(r.err || "Ошибка", true); else say(un.hidden ? "Скрыто: жители эту строку не видят." : "Показывается в приложении.", false); urgReload(); }); } return; }
+  if (d.uask) { UDEL = Number(d.uask); draw(); return; }
+  if (d.uno) { UDEL = 0; draw(); return; }
+  if (d.udel) { var ud = Number(d.udel); UDEL = 0; call({ a: "urgent_del", pw: PW, id: ud }).then(function (r) { if (!r.ok) say(r.err || "Ошибка", true); else say("Удалено.", false); urgReload(); }); return; }
+  if (d.ucheck) { call({ a: "urgent_check", pw: PW }).then(function (r) { if (!r.ok) say(r.err || "Ошибка", true); else say("Отмечено: всё проверено сегодня.", false); urgReload(); }); return; }
   if (d.bedit) { var bc = d.bedit; BEDIT = BANNERS.filter(function (x) { return x.cat === bc; })[0] || null; MSG = null; draw(); window.scrollTo(0, 0); return; }
   if (d.bnew) { BEDIT = null; draw(); return; }
   if (d.askdelb) { BDEL = d.askdelb; draw(); return; }

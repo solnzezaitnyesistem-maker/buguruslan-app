@@ -284,6 +284,23 @@ button.soon { width: 100%; text-align: left; font: inherit; cursor: pointer; }
 .qrbox b { font-size: 18px; font-weight: 800; }
 .qrbox span { font-size: 15px; color: var(--muted); line-height: 1.4; }
 .qrlink { width: 100%; min-height: 56px; margin-top: 12px; border-radius: 16px; border: 2px solid var(--green); background: var(--white); color: var(--green); font: inherit; font-size: 16px; font-weight: 800; }
+.urg { display: flex; align-items: center; gap: 12px; width: 100%; margin-top: 8px; padding: 12px 16px; min-height: 60px; border: 2px solid #B42318; border-radius: 16px; background: #FDECEA; color: #8A1C12; font: inherit; text-align: left; cursor: pointer; }
+.urg .ut { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.urg .ut b { font-size: 18px; font-weight: 800; }
+.urg .ut span { font-size: 13px; font-weight: 600; }
+.urg .ua { font-size: 22px; font-weight: 800; }
+.ucard { display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; background: var(--white); border: 1px solid var(--line); border-radius: 18px; }
+.unm { font-size: 17px; font-weight: 800; overflow-wrap: anywhere; }
+.unt { font-size: 14px; line-height: 1.4; color: #3F5A49; }
+.utags { display: flex; flex-wrap: wrap; gap: 6px; }
+.utag { padding: 3px 10px; border-radius: 999px; background: var(--mint); color: var(--green); font-size: 12px; font-weight: 800; }
+.utag.on { background: #FDECEA; color: #8A1C12; }
+.uad { font-size: 14px; color: var(--muted); }
+.ucall { display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 14px; background: #F1F7F3; border: 1px solid var(--line); text-decoration: none; color: var(--ink); }
+.ucall .un { font-size: 21px; font-weight: 800; font-variant-numeric: tabular-nums; text-align: center; white-space: nowrap; }
+.ucall .ub { min-height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px; background: var(--green); color: var(--white); font-size: 16px; font-weight: 800; }
+.unote { font-size: 14px; line-height: 1.4; color: var(--muted); }
+.ulink { border: 0; background: none; padding: 0; font: inherit; font-weight: 800; color: var(--green); text-decoration: underline; cursor: pointer; }
 .sbar { position: sticky; top: 0; z-index: 6; margin-inline: -20px; padding: 8px 20px; background: var(--bg); }
 .hero h1 { flex: 1; min-width: 0; }
 .hq { margin-left: auto; flex: none; min-height: 44px; padding: 0 10px; font-size: 13px !important; border: 1px solid var(--line); border-radius: 12px; background: var(--white); color: var(--green); font-size: 14px; font-weight: 800; cursor: pointer; }
@@ -596,6 +613,7 @@ function parse(r) {
   if (r === "news") return { v: "news" };
   if (r === "id") return { v: "id" };
   if (r === "cab") return { v: "cab" };
+  if (r === "urgent") return { v: "urgent" };
   if (r === "board") return { v: "board" };
   if (r === "qr") return { v: "qr" };
   if (r === "myads") return { v: "myads" };
@@ -692,6 +710,7 @@ function viewHome() {
     '<text x="32" y="34" text-anchor="middle" font-family="Manrope, system-ui, sans-serif" font-size="14" font-weight="800" fill="#14532D">Б-56</text></svg>' +
     '<h1>Бугуруслан всё в одном месте</h1><button type="button" class="hq" data-go="help">Помощь</button></div>' +
     searchBox("Что ищете? Шиномонтаж, торт…", "Поиск по городу") +
+    '<button type="button" class="urg" data-go="urgent">' + ico('<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>', 26, "#B42318") + '<span class="ut"><b>Срочно</b><span>Скорая, газ, свет, аварийные номера</span></span><span class="ua">→</span></button>' +
     chipsHtml() +
     '<div class="list" id="results"></div>' +
     homeTop() +
@@ -702,6 +721,45 @@ function viewHome() {
     '<button type="button" data-go="owner">Узнать как</button></div>' +
     '<button type="button" class="help-link" data-go="ask">Не нашли нужное? Напишите нам</button>' +
     '<button type="button" class="help-link" data-go="help">Техподдержка</button></div>';
+}
+
+/* ---------- раздел «Срочно» (открывается и без интернета) ---------- */
+var URG_GR = [["emerg", "Экстренные номера", "Звонок бесплатный с любого телефона"], ["med", "Медицина", ""], ["jkh", "Аварийные службы ЖКХ", ""], ["night", "Круглосуточно", ""]];
+var URG_DEF = [{"id": 1, "g": "emerg", "name": "Единая служба спасения", "note": "Любая беда, если не знаете, куда звонить", "phones": ["112"], "addr": "", "hours": "", "h24": true, "kw": "спасение экстренный беда помощь"}, {"id": 2, "g": "emerg", "name": "Пожарная охрана, МЧС", "note": "Пожар, дым, нужно спасти людей", "phones": ["101"], "addr": "", "hours": "", "h24": true, "kw": "пожар огонь мчс горит дым авария"}, {"id": 3, "g": "emerg", "name": "Полиция", "note": "Нападение, кража, драка, опасность", "phones": ["102"], "addr": "", "hours": "", "h24": true, "kw": "полиция милиция воры украли драка"}, {"id": 4, "g": "emerg", "name": "Скорая помощь", "note": "Человеку плохо, травма, роды", "phones": ["103"], "addr": "", "hours": "", "h24": true, "kw": "скорая врач плохо сердце травма"}, {"id": 5, "g": "emerg", "name": "Аварийная газовая служба", "note": "Запах газа", "phones": ["104"], "addr": "", "hours": "", "h24": true, "kw": "газ запах утечка авария"}, {"id": 6, "g": "emerg", "name": "Пожарная часть № 25", "note": "Пожарные города", "phones": ["+7 (35352) 6-84-22", "+7 (35352) 6-84-23"], "addr": "ул. Фруктовая, 7", "hours": "", "h24": true, "kw": "пожарные пожар мчс"}, {"id": 7, "g": "emerg", "name": "Отдел ГИБДД", "note": "ДТП, права, регистрация авто", "phones": ["+7 (35352) 6-61-06"], "addr": "ул. Красногвардейская, 75", "hours": "Будни 09:00–18:00", "h24": false, "kw": "гибдд гаи дтп авария"}, {"id": 8, "g": "med", "name": "Скорая медицинская помощь (станция)", "note": "Вызов скорой, если не получается дозвониться по 103", "phones": ["+7 (35352) 2-08-37", "+7 (35352) 2-09-46"], "addr": "ул. Комсомольская, 98", "hours": "", "h24": true, "kw": "скорая врач больной"}, {"id": 9, "g": "med", "name": "Городская больница, приёмное отделение и травмпункт", "note": "Травмы, острая боль", "phones": ["+7 (35352) 2-47-12"], "addr": "ул. Спортивная, 48", "hours": "", "h24": true, "kw": "больница травмпункт приёмный врач перелом"}, {"id": 10, "g": "jkh", "name": "Электросети, аварийная служба", "note": "Нет света, искрит, оборван провод", "phones": ["+7 (35352) 2-26-82", "+7 (35352) 2-68-96"], "addr": "ул. Чапаевская, 111", "hours": "", "h24": true, "kw": "свет электричество авария провод электрик нет света"}, {"id": 11, "g": "jkh", "name": "Газпром газораспределение", "note": "Вопросы по газу, не авария. Запах газа: 104", "phones": ["+7 (35352) 6-12-04"], "addr": "ул. Белинского, 55", "hours": "Будни 08:00–17:00", "h24": false, "kw": "газ газовая служба"}, {"id": 12, "g": "jkh", "name": "Котельная № 24", "note": "Отопление, 1-й микрорайон", "phones": ["+7 (35352) 6-36-53"], "addr": "1-й микрорайон", "hours": "", "h24": true, "kw": "отопление тепло батареи холодно авария котельная"}, {"id": 13, "g": "jkh", "name": "Котельная № 19", "note": "Отопление, 2-й микрорайон", "phones": ["+7 (35352) 3-55-48"], "addr": "2-й микрорайон", "hours": "", "h24": true, "kw": "отопление тепло батареи холодно авария котельная"}, {"id": 14, "g": "jkh", "name": "Управление городского хозяйства (УГХ)", "note": "Дороги, освещение, благоустройство", "phones": ["+7 (35352) 2-29-17", "+7 (35352) 2-29-40"], "addr": "ул. Революционная, 17", "hours": "Будни 09:00–18:00", "h24": false, "kw": "угх дорога яма фонарь снег благоустройство"}, {"id": 15, "g": "night", "name": "Эвакуатор", "note": "Если сломалась машина", "phones": ["+7 (922) 883-00-03"], "addr": "ул. Комсомольская, 107", "hours": "Ежедневно 09:00–00:00", "h24": false, "kw": "эвакуатор авто машина сломалась авария"}, {"id": 16, "g": "night", "name": "Автотехпомощь (эвакуатор)", "note": "Если сломалась машина, ночью тоже", "phones": ["+7 (922) 828-98-88"], "addr": "ул. Чапаевская, 59", "hours": "", "h24": true, "kw": "эвакуатор авто машина сломалась ночью авария"}];
+var URG = URG_DEF.slice(), URG_CHK = "2026-10-24";
+function telHref(p) {
+  var d = String(p || "").replace(/\D/g, "");
+  if (d.length === 11 && d.charAt(0) === "8") d = "7" + d.slice(1);
+  if (d.length === 10) d = "7" + d;
+  return "tel:" + (d.length >= 10 ? "+" : "") + d;
+}
+function urgCard(u) {
+  var tags = (u.h24 ? '<span class="utag on">круглосуточно</span>' : "") + (!u.h24 && u.hours ? '<span class="utag">' + esc(u.hours) + "</span>" : "");
+  return '<div class="ucard"><div class="unm">' + esc(u.name) + "</div>" + (u.note ? '<div class="unt">' + esc(u.note) + "</div>" : "") +
+    (tags ? '<div class="utags">' + tags + "</div>" : "") + (u.addr ? '<div class="uad">' + esc(u.addr) + "</div>" : "") +
+    (u.phones || []).map(function (p) { return '<a class="ucall" href="' + telHref(p) + '" data-org="Срочно: ' + esc(u.name) + '"><span class="un">' + esc(p) + '</span><span class="ub">Позвонить</span></a>'; }).join("") + "</div>";
+}
+function viewUrgent() {
+  var h = '<div class="app"><div class="row">' + backBtn("Назад") + "<h1>Срочно</h1></div>" +
+    '<div class="unote">Нажмите на номер или на «Позвонить». Этот экран открывается и без интернета.</div>', any = false;
+  URG_GR.forEach(function (g) {
+    var l = URG.filter(function (u) { return u.g === g[0]; });
+    if (!l.length) return;
+    any = true;
+    h += "<h2>" + esc(g[1]) + "</h2>" + (g[2] ? '<div class="unote">' + esc(g[2]) + "</div>" : "") + l.map(urgCard).join("");
+  });
+  if (!any) h += emptyBlock("Номера скоро появятся", "Раздел пополняется.");
+  return h + '<div class="unote">' + (URG_CHK ? "Данные проверены " + fmtDate(URG_CHK) + ". " : "") + 'Номер изменился? <button type="button" class="ulink" data-go="ask">Напишите нам</button></div>' +
+    '<div class="foot">© 2026 «Бугуруслан всё в одном месте» · Б-56. Все права защищены</div></div>';
+}
+function loadUrgent() {
+  try { var c = JSON.parse(sget("b56_urgent") || "null"); if (c && c.items && c.items.length) { URG = c.items; URG_CHK = c.chk || URG_CHK; } } catch (e) {}
+  if (DEMO) return;
+  apiGet("urgent").then(function (r) {
+    if (!r || !r.ok || !r.items) return;
+    URG = r.items; URG_CHK = r.chk || ""; sset("b56_urgent", JSON.stringify({ items: r.items, chk: URG_CHK }));
+    if (parse(state.route).v === "urgent") render();
+  }, function () {});
 }
 function homeDefault() {
   if (anyFlt()) {
@@ -723,7 +781,9 @@ function homeResults(q) {
   found.sort(function (a, b) { return (hasAll(norm(a.name), ws) ? 0 : 1) - (hasAll(norm(b.name), ws) ? 0 : 1); });
   var out = "";
   if (sug.length) out += '<div class="sugs">' + sug.slice(0, 4).map(function (c) { return '<button type="button" class="sug" data-go="cat-' + c.id + '">' + esc(c.name) + " (" + catCount(c.id) + ") →</button>"; }).join("") + "</div>";
-  if (!found.length) return out + emptyBlock("Ничего не нашли", "Попробуйте другое слово или выберите раздел.") + "<h2>Разделы</h2>" + tiles(popularCats());
+  var ug = URG.filter(function (u) { return hasAll(norm(u.name + " " + (u.note || "") + " " + (u.kw || "") + " " + (u.addr || "") + " " + (u.phones || []).join(" ")), ws); }).slice(0, 6);
+  if (ug.length) out += "<h2>Срочно</h2>" + ug.map(urgCard).join("");
+  if (!found.length) return ug.length ? out : out + emptyBlock("Ничего не нашли", "Попробуйте другое слово или выберите раздел.") + "<h2>Разделы</h2>" + tiles(popularCats());
   var shown = found.filter(passF);
   out += "<h2>Найдено: " + shown.length + "</h2>";
   return out + (shown.length ? shown.map(function (it) { return orgCard(it, true); }).join("") : emptyBlock("Ничего не подошло", "Снимите фильтр, чтобы увидеть остальные."));
@@ -1669,7 +1729,7 @@ var TABS = [
   ["fav", "Избранное", HEART],
   ["board", "Объявления", '<path d="M20 12l-8 8-9-9V3h8z"/><circle cx="7.5" cy="7.5" r="1.2"/>']
 ];
-function tabOf(v) { return v === "news" ? "news" : (v === "board" || v === "adnew" || v === "myads") ? "board" : (v === "catalog" || v === "cat") ? "catalog" : v === "fav" ? "fav" : (v === "help" || v === "ask" || v === "owner" || v === "apply" || v === "cab") ? "" : "home"; }
+function tabOf(v) { return v === "news" ? "news" : (v === "board" || v === "adnew" || v === "myads") ? "board" : (v === "catalog" || v === "cat") ? "catalog" : v === "fav" ? "fav" : (v === "help" || v === "ask" || v === "owner" || v === "apply" || v === "cab" || v === "urgent") ? "" : "home"; }
 function renderTabs() {
   var el = document.getElementById("tabbar");
   if (!el) return;
@@ -1691,6 +1751,7 @@ function render() {
   else if (r.v === "price") html = viewPrice(itemById(r.id));
   else if (r.v === "owner") html = viewOwner();
   else if (r.v === "cab") html = viewCab();
+  else if (r.v === "urgent") html = viewUrgent();
   else if (r.v === "install") html = viewInstall();
   else if (r.v === "news") html = viewNews();
   else if (r.v === "qr") html = viewQr();
@@ -1864,6 +1925,7 @@ window.addEventListener("appinstalled", function () { sset("b56_inst", "1"); tra
   loadPlaces();
   loadAds();
   loadBanners();
+  loadUrgent();
   state.route = valid(r) ? r : "home";
   var src = qrSource();
   if (src) { if (!sget("b56_src")) sset("b56_src", src); track("qr_open"); }
