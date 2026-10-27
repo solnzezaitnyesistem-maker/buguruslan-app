@@ -642,6 +642,36 @@ function shrink(file) {
     img.src = url;
   });
 }
+function vidRead(file) {
+  return new Promise(function (ok, fail) {
+    if (file.size > 20 * 1024 * 1024) return fail("Видео больше 20 МБ. Обрежьте до 60 секунд или сохраните в меньшем качестве.");
+    var url = URL.createObjectURL(file), v = document.createElement("video"), done = false;
+    v.preload = "metadata"; v.muted = true; v.playsInline = true;
+    var bad = function (m) { if (done) return; done = true; try { URL.revokeObjectURL(url); } catch (e) {} fail(m); };
+    v.onloadedmetadata = function () {
+      if (!(v.duration > 0)) return bad("Не получилось прочитать видео. Нужен файл MP4.");
+      if (v.duration > 61) return bad("Видео длиннее 60 секунд. Обрежьте его.");
+      try { v.currentTime = Math.min(0.2, v.duration / 2); } catch (e) { bad("Не получилось прочитать видео."); }
+    };
+    v.onseeked = function () {
+      if (done) return; done = true;
+      var frame = "";
+      try {
+        var k = Math.min(1, 1000 / Math.max(v.videoWidth || 1, v.videoHeight || 1)), c = document.createElement("canvas");
+        c.width = Math.round((v.videoWidth || 1) * k); c.height = Math.round((v.videoHeight || 1) * k);
+        c.getContext("2d").drawImage(v, 0, 0, c.width, c.height);
+        frame = c.toDataURL("image/jpeg", 0.8).split(",")[1];
+      } catch (e) {}
+      URL.revokeObjectURL(url);
+      var r = new FileReader();
+      r.onload = function () { ok({ b64: String(r.result).split(",")[1], frame: frame, dur: Math.round(v.duration), name: file.name, mb: Math.round(file.size / 104857.6) / 10 }); };
+      r.onerror = function () { fail("Не получилось прочитать видео."); };
+      r.readAsDataURL(file);
+    };
+    v.onerror = function () { bad("Не получилось прочитать видео. Нужен файл MP4."); };
+    v.src = url;
+  });
+}
 /* предпросмотр: как карточка выглядит в приложении */
 function nowYek() {
   try {
@@ -845,7 +875,7 @@ function stAuthor(au) { if (au === "b56") return "Б-56"; var p = PLACES.filter(
 function stWhen(v) { v = String(v || ""); return v.length >= 16 ? v.slice(8, 10) + "." + v.slice(5, 7) + " " + v.slice(11, 16) : ""; }
 function stPend(x) { return x.st === "на проверке" || x.st === "ждёт оплаты"; }
 function stEffTxt(x) { var e = x.eff || x.st; return e === "опубликовано" ? "идёт сейчас" : e; }
-function stThumb(x) { return x.photo ? '<img src="' + esc(x.photo) + '" alt="" style="width:56px;height:80px;object-fit:cover;border-radius:8px;flex:none">' : '<div style="width:56px;height:80px;border-radius:8px;background:#DCEFE2;color:#14532D;display:flex;align-items:center;justify-content:center;font-size:24px;flex:none">▶</div>'; }
+function stThumb(x) { return (x.photo || x.cover) ? '<img src="' + esc(x.photo || x.cover) + '" alt="" style="width:56px;height:80px;object-fit:cover;border-radius:8px;flex:none">' : '<div style="width:56px;height:80px;border-radius:8px;background:#DCEFE2;color:#14532D;display:flex;align-items:center;justify-content:center;font-size:24px;flex:none">▶</div>'; }
 function stActs(x, inbox) {
   var id = x.id, h = "";
   if (stPend(x)) {
@@ -863,8 +893,8 @@ function stActs(x, inbox) {
   return h;
 }
 function stCard(x) {
-  return '<div class="ni"><div style="display:flex;gap:10px">' + stThumb(x) + '<div style="min-width:0;flex:1"><b>' + esc(stAuthor(x.au)) + '</b> <span class="bd ' + (x.eff === "опубликовано" ? "ok" : x.eff === "отклонено" ? "hid" : "") + '">' + esc(stEffTxt(x)) + "</span>" +
-    (x.text ? "<p>" + esc(x.text) + "</p>" : "") + '<div class="m">' + esc(stWhen(x.from)) + " — " + esc(stWhen(x.till)) + (x.btn ? " · кнопка: " + esc((STBT.filter(function (b) { return b[0] === x.btn; })[0] || [0, x.btn])[1]) : "") + (x.video ? " · видео" : "") + (x.src === "owner" ? " · от владельца" : "") + "</div>" +
+  return '<div class="ni"><div style="display:flex;gap:10px">' + stThumb(x) + '<div style="min-width:0;flex:1"><b>' + esc(stAuthor(x.au) + (x.au === "b56" && x.label ? " · " + x.label : "")) + '</b> <span class="bd ' + (x.eff === "опубликовано" ? "ok" : x.eff === "отклонено" ? "hid" : "") + '">' + esc(stEffTxt(x)) + "</span>" +
+    (x.text ? "<p>" + esc(x.text) + "</p>" : "") + '<div class="m">' + esc(stWhen(x.from)) + " — " + esc(stWhen(x.till)) + (x.btn ? " · кнопка: " + esc((STBT.filter(function (b) { return b[0] === x.btn; })[0] || [0, x.btn])[1]) : "") + (x.video ? " · видео по ссылке" : "") + (x.vfid ? " · видео файлом" : "") + (x.src === "owner" ? " · от владельца" : "") + "</div>" +
     '<div class="m">Просмотров: <b>' + (x.views || 0) + "</b> · Нажатий на кнопку: <b>" + (x.clicks || 0) + "</b></div>" + (x.reason ? '<div class="m">Причина отказа: ' + esc(x.reason) + "</div>" : "") + '</div></div><div class="big">' + stActs(x) + "</div></div>";
 }
 function stForm() {
@@ -872,9 +902,16 @@ function stForm() {
   var au = '<option value="">— выберите —</option><option value="b56"' + (e.au === "b56" ? " selected" : "") + ">Б-56 (от администратора)</option>" + PLACES.slice().sort(function (a, b) { return String(a.name).localeCompare(String(b.name), "ru"); }).map(function (p) { return '<option value="' + p.id + '"' + (String(e.au) === String(p.id) ? " selected" : "") + ">" + esc(p.name) + "</option>"; }).join("");
   return '<form class="card" id="stf"><h2>' + (cur ? "Изменить историю" : "Новая история") + "</h2>" +
     '<label>От кого<select id="sau">' + au + "</select></label>" +
-    '<label>Фото<small>вертикальное смотрится лучше. Нужно фото или ссылка на видео</small><input id="sfile" type="file" accept="image/*"></label>' +
+    '<div id="stbw"' + (e.au === "b56" ? "" : " hidden") + ' style="display:flex;flex-direction:column;gap:12px">' +
+    '<label>Подпись кружка<small>до 12 знаков, обязательно для историй от Б-56. Например: Срочно</small><input id="slb" maxlength="12" value="' + f("label") + '"></label>' +
+    '<label>Обложка кружка<small>картинка для кружка. Если не загрузить, возьмём фото или первый кадр видео</small><input id="scv" type="file" accept="image/*"></label>' +
+    (e.coverId ? '<label class="check"><input type="checkbox" id="scr"' + (e.rmc ? " checked" : "") + '> Убрать загруженную обложку <img src="' + esc(e.cover) + '" alt="" style="width:34px;height:34px;border-radius:50%;object-fit:cover;vertical-align:middle"></label>' : "") + "</div>" +
+    '<label>Фото<small>вертикальное смотрится лучше. Нужно фото, видео файлом или ссылка на видео</small><input id="sfile" type="file" accept="image/*"></label>' +
     (e.photo ? '<div class="note">Сейчас: <img src="' + esc(e.photo) + '" alt="" style="width:46px;height:64px;object-fit:cover;border-radius:6px;vertical-align:middle"> Чтобы заменить, выберите новое фото.</div>' : "") +
-    '<label>Ссылка на видео<small>клип ВК, Rutube или YouTube Shorts. Для видео фото можно не добавлять</small><input id="svd" maxlength="300" value="' + f("video") + '" placeholder="https://vk.com/clip-123_456"></label>' +
+    '<label>Видео файлом<small>MP4 до 20 МБ и до 60 секунд, лучше вертикальное. Фото добавлять не нужно: возьмём первый кадр</small><input id="svf" type="file" accept="video/mp4,video/*"></label>' +
+    (e.vid ? '<div class="note">Выбрано видео: ' + esc(e.vname) + " (" + e.vmb + " МБ, " + e.vdur + " сек). Оно загрузится, когда нажмёте кнопку ниже.</div>" : "") +
+    (e.vfid && !e.vid ? '<label class="check"><input type="checkbox" id="svr"' + (e.rmv ? " checked" : "") + '> Видео уже загружено. Поставьте галочку, чтобы убрать его</label>' : "") +
+    '<label>Ссылка на видео<small>запасной вариант: клип ВК, Rutube или YouTube Shorts. В видео из ВК может показываться реклама ВК. Лучше загрузите файл</small><input id="svd" maxlength="300" value="' + f("video") + '" placeholder="https://vk.com/clip-123_456"></label>' +
     '<label>Текст поверх картинки<small>до 120 знаков, можно не писать</small><input id="ste" maxlength="120" value="' + f("text") + '"></label>' +
     '<label>Кнопка внизу<select id="sbt">' + STBT.map(function (b) { return '<option value="' + b[0] + '"' + ((e.btn || "") === b[0] ? " selected" : "") + ">" + b[1] + "</option>"; }).join("") + "</select></label>" +
     '<label>Ссылка для кнопки «Подробнее»<small>начинается с https://</small><input id="sbl" maxlength="300" value="' + f("link") + '"></label>' +
@@ -901,6 +938,11 @@ function storiesTab() {
     '<label>Бесплатных историй в неделю на заведение<small>все следующие считаются платными</small><input id="stcl" type="number" min="0" max="100" value="' + esc(c.limit) + '"></label>' +
     '<label class="check"><input type="checkbox" id="stcw"' + (c.partners ? " checked" : "") + '> Заведения со значком «Рекомендуем» размещают без оплаты</label>' +
     '<button type="button" class="btn alt sm" data-stcfg="1">Сохранить настройки</button></div>';
+}
+function stRead() {
+  var e = STO.edit; if (!e || !document.getElementById("stf")) return;
+  var c = function (i) { var x = document.getElementById(i); return !!(x && x.checked); };
+  e.au = val("sau"); e.video = val("svd"); e.text = val("ste"); e.btn = val("sbt"); e.link = val("sbl"); e.from = val("sfr"); e.till = val("stl"); e.dy = val("sdy"); e.label = val("slb"); e.rmv = c("svr"); e.rmc = c("scr");
 }
 function stLoad() { return call({ a: "stories_admin", pw: PW }).then(function (r) { if (r.ok) { STO.items = r.items; STO.cfg = r.cfg; } draw(); }); }
 function stDo(o, okMsg) { o.a = "story_set"; o.pw = PW; STO.rm = 0; return call(o).then(function (r) { if (!r.ok) say(r.err || "Ошибка", true); else if (okMsg) say(okMsg, false); return stLoad(); }); }
@@ -1012,15 +1054,21 @@ root.addEventListener("submit", function (e) {
     });
   }
   if (id === "stf") {
-    var sf = document.getElementById("sfile"), sfl = sf && sf.files && sf.files[0], ed = STO.edit, dy = val("sdy");
-    var su = { id: ed.id || 0, au: val("sau"), video: val("svd"), text: val("ste"), btn: val("sbt"), link: val("sbl"), from: val("sfr"), status: ed.id ? ed.st : "опубликовано", keep: ed.photoId || "" };
-    if (dy === "date") su.till = val("stl"); else su.days = Number(dy);
-    STO.edit = Object.assign({}, ed, { au: su.au, video: su.video, text: su.text, btn: su.btn, link: su.link, from: su.from, till: val("stl"), dy: dy });
+    stRead();
+    var sf = document.getElementById("sfile"), sfl = sf && sf.files && sf.files[0], cvi = document.getElementById("scv"), cvl = cvi && cvi.files && cvi.files[0], ed = STO.edit, dy = ed.dy;
+    var su = { id: ed.id || 0, au: ed.au, video: ed.video, text: ed.text, btn: ed.btn, link: ed.link, from: ed.from, label: ed.au === "b56" ? ed.label : "", status: ed.id ? ed.st : "опубликовано", keep: ed.photoId || "", keepCover: ed.rmc ? "" : (ed.coverId || ""), keepVid: ed.rmv ? "" : (ed.vfid || "") };
+    if (ed.vid) { su.vid = ed.vid; su.keepVid = ""; }
+    if (dy === "date") su.till = ed.till; else su.days = Number(dy);
     if (!su.au) { say("Выберите, от кого история.", true); draw(); return; }
-    if (!sfl && !su.video.trim() && !ed.photoId) { say("Добавьте фото или ссылку на видео.", true); draw(); return; }
+    if (su.au === "b56" && !String(su.label).trim()) { say("Напишите подпись кружка, до 12 знаков. Например: Срочно.", true); draw(); return; }
+    if (!sfl && !su.video.trim() && !ed.photoId && !ed.vid && !su.keepVid) { say("Добавьте фото, видео файлом или ссылку на видео.", true); draw(); return; }
     if (dy === "date" && !su.till) { say("Выберите дату и время, до которых показывать.", true); draw(); return; }
+    if (!sfl && !ed.photoId && ed.vid && ed.frame) su.photo = ed.frame;
     BUSY = true; draw();
-    (sfl ? shrink(sfl).then(function (b64) { su.photo = b64; }, function () { return Promise.reject("img"); }) : Promise.resolve()).then(function () { return call({ a: "story_save", pw: PW, story: su }); }, function () { return { ok: false, err: "Не получилось прочитать картинку. Нужна обычная фотография." }; }).then(function (r) {
+    var chain = Promise.resolve();
+    if (sfl) chain = chain.then(function () { return shrink(sfl); }).then(function (b64) { su.photo = b64; });
+    if (cvl) chain = chain.then(function () { return shrink(cvl); }).then(function (b64) { su.cover = b64; });
+    chain.then(function () { return call({ a: "story_save", pw: PW, story: su }); }, function () { return { ok: false, err: "Не получилось прочитать картинку. Нужна обычная фотография." }; }).then(function (r) {
       BUSY = false;
       if (r.ok) { STO.edit = null; say(su.id ? "Сохранено." : (su.from && Date.parse(su.from) > Date.now() ? "Запланировано: история включится сама." : "Опубликовано. Жители увидят в кружках на главной."), false); stLoad(); }
       else { say(r.err || "Ошибка", true); draw(); }
@@ -1062,6 +1110,13 @@ root.addEventListener("input", function (e) {
 root.addEventListener("hrschange", function () { if (ED) scheduleSave(); });
 root.addEventListener("change", function (e) {
   var t = e.target;
+  if (t.id === "sau") { var w = document.getElementById("stbw"); if (w) w.hidden = t.value !== "b56"; return; }
+  if (t.id === "svf" && t.files.length && STO.edit) {
+    var vfile = t.files[0]; stRead(); t.value = "";
+    STO.edit.vid = ""; say("Читаю видео…", false); draw();
+    vidRead(vfile).then(function (r) { var e = STO.edit; if (!e) return; e.vid = r.b64; e.vname = r.name; e.vmb = r.mb; e.vdur = r.dur; e.frame = r.frame; MSG = null; draw(); }, function (m) { say(typeof m === "string" ? m : "Не получилось прочитать видео.", true); draw(); });
+    return;
+  }
   if (t.id === "lfile" && t.files.length && ED && ED.id) {
     var lid = ED.id; readDraft(); PHBUSY = true; draw(true);
     shrink(t.files[0]).then(function (b64) { return call({ a: "logo_set", pw: PW, id: lid, data: b64 }); }, function () { return { ok: false, err: "Не получилось прочитать файл. Нужна обычная картинка." }; }).then(function (r) { if (!r.ok) say(r.err || "Не получилось загрузить логотип.", true); else say("Логотип сохранён.", false); PHBUSY = false; return call({ a: "places_list", pw: PW }); }).then(function (r) {
@@ -1169,8 +1224,8 @@ function doAction(t) {
   }
   /* истории */
   if (d.stf) { STO.f = d.stf; STO.rm = 0; draw(); return; }
-  if (d.stnew) { STO.edit = { id: 0, au: "", photo: "", photoId: "", video: "", text: "", btn: "", link: "", from: "", till: "", st: "опубликовано" }; MSG = null; draw(); window.scrollTo(0, 0); return; }
-  if (d.stedit) { var sx = STO.items.filter(function (x) { return x.id === Number(d.stedit); })[0]; STO.edit = sx ? JSON.parse(JSON.stringify(sx)) : null; MSG = null; draw(); window.scrollTo(0, 0); return; }
+  if (d.stnew) { STO.edit = { id: 0, au: "", photo: "", photoId: "", video: "", text: "", btn: "", link: "", from: "", till: "", st: "опубликовано", label: "", cover: "", coverId: "", vfid: "", vid: "" }; MSG = null; draw(); window.scrollTo(0, 0); return; }
+  if (d.stedit) { var sx = STO.items.filter(function (x) { return x.id === Number(d.stedit); })[0]; STO.edit = sx ? JSON.parse(JSON.stringify(sx)) : null; if (STO.edit) { STO.edit.vid = ""; STO.edit.rmv = false; STO.edit.rmc = false; } MSG = null; draw(); window.scrollTo(0, 0); return; }
   if (d.stcancel) { STO.edit = null; draw(); return; }
   if (d.stask) { STO.rm = Number(d.stask); draw(); return; }
   if (d.stno) { STO.rm = 0; draw(); return; }
