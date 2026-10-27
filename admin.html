@@ -67,8 +67,8 @@ body.busy::before { content:"Загружаю…"; position:fixed; top:0; left:0
 .bnav svg { width:26px; height:26px; }
 .bdg { position:absolute; top:6px; left:calc(50% + 6px); min-width:20px; height:20px; padding:0 5px; border-radius:999px; background:#A4262C; color:#fff; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; }
 /* переключатель */
-.seg { display:grid; grid-auto-flow:column; grid-auto-columns:1fr; gap:6px; background:#E3EDE6; padding:4px; border-radius:14px; }
-.seg button { min-height:46px; border:0; border-radius:11px; background:transparent; font:inherit; font-size:15px; font-weight:800; color:var(--muted); cursor:pointer; padding:0 6px; }
+.seg { display:grid; grid-auto-flow:column; grid-auto-columns:1fr; gap:6px; overflow-x:auto; background:#E3EDE6; padding:4px; border-radius:14px; }
+.seg button { min-height:46px; white-space:nowrap; min-width:max-content; padding-inline:10px !important; border:0; border-radius:11px; background:transparent; font:inherit; font-size:15px; font-weight:800; color:var(--muted); cursor:pointer; padding:0 6px; }
 .seg button[aria-pressed="true"] { background:#fff; color:var(--green); box-shadow:0 1px 3px rgba(0,0,0,.12); }
 .chips { display:flex; flex-wrap:wrap; gap:8px; }
 .chips button { min-height:44px; border-radius:999px; border:1px solid var(--line); background:#fff; color:var(--ink); font:inherit; font-size:15px; font-weight:800; padding:0 14px; cursor:pointer; }
@@ -176,6 +176,8 @@ var URGL = [], UED = null, UDEL = 0, UG = [["emerg", "Экстренные но�
 var PSF = "", PSQ = "";
 var SHOP = { pid: 0, data: null, msg: "", err: false, rm: 0 };
 var IBF = "new", IOPEN = "", IDEL = "", ADCLR = 0;
+var STO = { items: [], cfg: null, f: "now", edit: null, rm: 0, msg: "", err: false };
+var STBT = [["", "Без кнопки"], ["call", "Позвонить"], ["card", "Открыть карточку"], ["route", "Маршрут"], ["wa", "Написать в WhatsApp"], ["link", "Подробнее (ссылка)"]];
 var ED = null, EDS = null, BEDIT = null, BDEL = "", PENDING_DEL = "", WIN = null, PHBUSY = false;
 var root = document.getElementById("root");
 
@@ -423,7 +425,7 @@ function placesView() {
 }
 
 /* ---------- карточка заведения ---------- */
-function newDraft() { return { id: 0, cat: "", name: "", about: "", addr: "", note: "", phone: "", hours: "", site: "", wa: "", tg: "", vk: "", max: "", reviews: "", quotesText: "", rec: false, shopOn: false, shopLim: 3, shopPaid: "", priceText: "", priceNote: "", status: "", memo: "", hidden: false, photoIds: [], photos: [], upd: "", chk: "", open: { main: true, link: true } }; }
+function newDraft() { return { id: 0, cat: "", name: "", about: "", addr: "", note: "", phone: "", hours: "", site: "", wa: "", tg: "", vk: "", max: "", reviews: "", quotesText: "", rec: false, logo: "", logoId: "", shopOn: false, shopLim: 3, shopPaid: "", priceText: "", priceNote: "", status: "", memo: "", hidden: false, photoIds: [], photos: [], upd: "", chk: "", open: { main: true, link: true } }; }
 
 function shopInner() {
   var e = ED;
@@ -500,7 +502,8 @@ function inp(id, label, v, hint, extra) { return '<label>' + label + (hint ? "<s
 function photoInner() {
   var e = ED, ids = e.photoIds || [], urls = e.photos || [];
   if (!e.id) return '<div class="note">Фото можно добавить, когда заведение сохранено. Заполните раздел, название и телефон, это произойдёт само.</div>';
-  return (e.pendIds && e.pendIds.length ? '<div class="note"><b>Фото от владельца ждут проверки: ' + e.pendIds.length + '.</b> Откройте «Входящие», там кнопки «Принять» и «Отклонить».</div>' : "") + '<div class="note">До 6 фото, первое показывается первым. Быстро: скопируйте картинку и нажмите здесь Ctrl+V.</div>' +
+  var lg = '<div class="note"><b>Логотип для историй.</b> Показывается в кружке на главной. Если не загрузить, возьмём первое фото карточки.</div>' + (e.logo ? '<div style="display:flex;align-items:center;gap:10px"><img src="' + esc(e.logo) + '" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:1px solid var(--line)"><button type="button" class="btn red sm" data-lgdel="1">Убрать логотип</button></div>' : "") + '<label>' + (e.logo ? "Заменить логотип" : "Загрузить логотип") + '<input id="lfile" type="file" accept="image/*"' + (PHBUSY ? " disabled" : "") + "></label>";
+  return lg + (e.pendIds && e.pendIds.length ? '<div class="note"><b>Фото от владельца ждут проверки: ' + e.pendIds.length + '.</b> Откройте «Входящие», там кнопки «Принять» и «Отклонить».</div>' : "") + '<div class="note">До 6 фото, первое показывается первым. Быстро: скопируйте картинку и нажмите здесь Ctrl+V.</div>' +
     (ids.length ? '<div class="ph-grid">' + ids.map(function (f, i) { return '<div style="display:flex;flex-direction:column;gap:6px"><img src="' + esc(urls[i]) + '" alt=""><button type="button" class="btn red sm" data-delph="' + esc(f) + '">Убрать</button></div>'; }).join("") + "</div>" : "") +
     (ids.length < 6 ? '<label>Добавить фото<input id="pfile" type="file" accept="image/*" multiple' + (PHBUSY ? " disabled" : "") + "></label>" : "") + (PHBUSY ? '<div class="note">Загружаю…</div>' : "");
 }
@@ -682,13 +685,14 @@ function inboxItems() {
   TICKETS.forEach(function (x) { out.push({ k: "t:" + x.id, type: "t", title: x.kind + (x.biz ? ": " + x.biz : ""), sub: x.msg || x.contact || "", time: x.date, isNew: !x.done, x: x }); });
   ADS.forEach(function (x) { out.push({ k: "a:" + x.id, type: "a", title: x.title, sub: (ADCN[x.cat] || x.cat) + " · " + x.status, time: x.date, isNew: !!WAIT_AD[x.status], x: x }); });
   PLACES.forEach(function (p) { if (p.pendIds && p.pendIds.length) out.push({ k: "p:" + p.id, type: "p", title: "Фото на проверке: " + p.name, sub: p.pendIds.length + " " + plural(p.pendIds.length, "фото", "фото", "фото"), time: new Date().toISOString().slice(0, 19), isNew: true, x: p }); });
+  STO.items.forEach(function (x) { if (x.src === "owner") out.push({ k: "s:" + x.id, type: "s", title: "История: " + stAuthor(x.au), sub: x.st + (x.text ? " · " + x.text : ""), time: x.created, isNew: stPend(x), x: x }); });
   OWN.forEach(function (x) {
     var t = x.req && x.req.type === "claim" ? "Хочет управлять карточкой: " + (x.req.placeName || "№" + x.req.pid) : x.req && x.req.place ? "Новое заведение: " + x.req.place.name : x.status === "подтверждён" ? "Кабинет: " + (x.placeName || "№" + x.pid) : "Вход без заявки";
     out.push({ k: "o:" + x.email, type: "o", title: t, sub: x.email, time: x.date, isNew: x.status === "ждёт", x: x });
   });
   return out.sort(function (a, b) { return toTs(b.time) - toTs(a.time); });
 }
-function inboxNew() { return TICKETS.filter(function (x) { return !x.done; }).length + ADS.filter(function (x) { return WAIT_AD[x.status]; }).length + OWN.filter(function (x) { return x.status === "ждёт"; }).length + PLACES.filter(function (x) { return x.pendIds && x.pendIds.length; }).length; }
+function inboxNew() { return TICKETS.filter(function (x) { return !x.done; }).length + ADS.filter(function (x) { return WAIT_AD[x.status]; }).length + OWN.filter(function (x) { return x.status === "ждёт"; }).length + PLACES.filter(function (x) { return x.pendIds && x.pendIds.length; }).length + STO.items.filter(function (x) { return x.src === "owner" && stPend(x); }).length; }
 function contactLinks(c) {
   c = String(c || "").trim();
   var digits = c.replace(/\D/g, ""), out = "";
@@ -714,6 +718,9 @@ function detailHtml(it) {
     if (x.status === "опубликовано") b = contactLinks(x.contact) + '<button type="button" class="btn sm" data-adact="extend" data-adid="' + id + '">Продлить на 5 дней</button><button type="button" class="btn alt sm" data-adact="remove" data-adid="' + id + '">Снять</button>';
     else if (x.status === "отклонено" || x.status === "снято" || x.status === "срок вышел") b = contactLinks(x.contact) + (IDEL === "a:" + x.id ? yn("Точно удалить?", 'data-adact="delete" data-adid="' + id + '"', 'data-adact="nodel"') : '<button type="button" class="btn alt sm" data-adact="askdel" data-adid="' + id + '">Удалить</button>');
     else b = contactLinks(x.contact) + (x.status === "ждёт оплаты" ? '<div class="note"><b>Деньги ещё не пришли.</b> Когда человек оплатит, объявление опубликуется само и придёт письмо «ПОЛУЧЕНА ОПЛАТА». Кнопку ниже нажимайте только если сами видите платёж в ЮKassa.</div><button type="button" class="btn alt sm" data-adact="paid" data-adid="' + id + '">Я вижу платёж в ЮKassa, отметить оплату</button>' : "") + '<button type="button" class="btn sm" data-adact="publish" data-adid="' + id + '">Одобрить на 5 дней</button><button type="button" class="btn alt sm" data-adact="reject" data-adid="' + id + '">Отклонить</button>';
+  } else if (it.type === "s") {
+    h = '<div class="note">' + esc(stWhen(x.from)) + " — " + esc(stWhen(x.till)) + " · Статус: " + esc(x.st) + (x.sum ? " · К оплате: " + esc(x.sum) + " ₽" : "") + "</div>" + (x.photo ? '<a href="' + esc(x.photo) + '" target="_blank" rel="noopener"><img src="' + esc(x.photo) + '" alt="" style="width:110px;height:160px;object-fit:cover;border-radius:10px"></a>' : "") + (x.video ? '<div class="note">Видео: <a href="' + esc(x.video) + '" target="_blank" rel="noopener">' + esc(x.video) + "</a></div>" : "") + (x.text ? "<p>" + esc(x.text) + "</p>" : "") + '<div class="note">Кнопка: ' + esc((STBT.filter(function (b) { return b[0] === x.btn; })[0] || [0, "нет"])[1]) + (x.link ? " · " + esc(x.link) : "") + "</div>" + (x.reason ? '<div class="note"><b>Причина отказа: ' + esc(x.reason) + "</b></div>" : "");
+    b = stActs(x, true);
   } else if (it.type === "p") {
     h = '<div class="note">Владелец загрузил фото. В карточке они появятся только после вашего «Принять».</div><div class="ph-grid">' + x.pending.map(function (u, i) {
       var f = esc(x.pendIds[i]), pid = esc(x.id);
@@ -741,7 +748,7 @@ function inboxView() {
   if (clear) h += '<button type="button" class="btn alt sm" data-adact="clear">' + (ADCLR ? "Точно очистить? Нажмите ещё раз" : "Очистить отклонённые и снятые объявления") + "</button>";
   if (!list.length) return h + '<div class="note">' + (IBF === "new" ? "Новых обращений нет." : "В архиве пока пусто.") + "</div>";
   return h + list.map(function (it) {
-    var open = IOPEN === it.k, icon = it.type === "t" ? IC.chat : it.type === "a" ? IC.tag : it.type === "p" ? IC.store : IC.user;
+    var open = IOPEN === it.k, icon = it.type === "t" ? IC.chat : it.type === "a" ? IC.tag : it.type === "s" ? IC.news : it.type === "p" ? IC.store : IC.user;
     return '<div><button type="button" class="ib' + (open ? " open" : "") + '" data-iopen="' + esc(it.k) + '" aria-expanded="' + open + '"><span class="ic">' + icon + '</span><span class="tx"><span class="tt">' + esc(it.title) + '</span><span class="sb">' + esc(it.sub) + '</span></span><span class="tm">' + esc(it.type === "p" ? "" : agoTxt(it.time)) + "</span></button>" + (open ? detailHtml(it) : "") + "</div>";
   }).join("");
 }
@@ -832,10 +839,79 @@ function drawTab() {
     (WIN ? '<div class="card"><h2>Победители</h2>' + WIN.winners.map(function (w) { return '<div class="win">' + esc(w) + "</div>"; }).join("") + '<div class="note">Участников в розыгрыше: ' + WIN.total + ". Сделайте снимок экрана и объявите итоги в новостях.</div></div>" : "") +
     '<div class="note">Розыгрыш должен быть без обязательной покупки. Дорогие призы могут облагаться налогом у победителя, уточняйте заранее.</div>';
 }
+
+/* ---------- истории ---------- */
+function stAuthor(au) { if (au === "b56") return "Б-56"; var p = PLACES.filter(function (x) { return String(x.id) === String(au); })[0]; return p ? p.name : "Заведение №" + au; }
+function stWhen(v) { v = String(v || ""); return v.length >= 16 ? v.slice(8, 10) + "." + v.slice(5, 7) + " " + v.slice(11, 16) : ""; }
+function stPend(x) { return x.st === "на проверке" || x.st === "ждёт оплаты"; }
+function stEffTxt(x) { var e = x.eff || x.st; return e === "опубликовано" ? "идёт сейчас" : e; }
+function stThumb(x) { return x.photo ? '<img src="' + esc(x.photo) + '" alt="" style="width:56px;height:80px;object-fit:cover;border-radius:8px;flex:none">' : '<div style="width:56px;height:80px;border-radius:8px;background:#DCEFE2;color:#14532D;display:flex;align-items:center;justify-content:center;font-size:24px;flex:none">▶</div>'; }
+function stActs(x, inbox) {
+  var id = x.id, h = "";
+  if (stPend(x)) {
+    h += '<button type="button" class="btn sm" data-stact="approve" data-stid="' + id + '">Одобрить</button>';
+    if (x.st === "ждёт оплаты") h += '<div class="note" style="flex:1 1 100%"><b>Ждёт оплаты' + (x.sum ? ": " + esc(x.sum) + " ₽" : "") + '.</b> Кнопку «Оплата пришла» нажимайте, только если сами видите платёж.</div><button type="button" class="btn alt sm" data-stact="paid" data-stid="' + id + '">Оплата пришла</button>';
+    h += '<input id="strs' + id + '" maxlength="200" placeholder="Причина отказа, её увидит владелец" style="flex:1 1 100%"><button type="button" class="btn alt sm" data-stact="reject" data-stid="' + id + '">Отклонить</button>';
+    return h;
+  }
+  if (x.eff === "опубликовано" || x.eff === "запланировано") h += '<button type="button" class="btn alt sm" data-stact="move" data-stdir="-1" data-stid="' + id + '" aria-label="Выше">↑</button><button type="button" class="btn alt sm" data-stact="move" data-stdir="1" data-stid="' + id + '" aria-label="Ниже">↓</button>';
+  if (x.st !== "отклонено") h += '<button type="button" class="btn alt sm" data-stcopy="' + id + '">Скопировать ссылку</button>';
+  h += '<button type="button" class="btn alt sm" data-stedit="' + id + '">Изменить</button>';
+  if (x.st !== "отклонено") h += '<button type="button" class="btn alt sm" data-stact="extend" data-stid="' + id + '">' + (x.eff === "архив" ? "Вернуть на сутки" : "Продлить на сутки") + "</button>";
+  if (x.eff === "опубликовано" || x.eff === "запланировано") h += '<button type="button" class="btn alt sm" data-stact="remove" data-stid="' + id + '">Снять</button>';
+  h += STO.rm === id ? yn("Удалить насовсем?", 'data-stact="del" data-stid="' + id + '"', 'data-stno="1"') : '<button type="button" class="btn red sm" data-stask="' + id + '">Удалить</button>';
+  return h;
+}
+function stCard(x) {
+  return '<div class="ni"><div style="display:flex;gap:10px">' + stThumb(x) + '<div style="min-width:0;flex:1"><b>' + esc(stAuthor(x.au)) + '</b> <span class="bd ' + (x.eff === "опубликовано" ? "ok" : x.eff === "отклонено" ? "hid" : "") + '">' + esc(stEffTxt(x)) + "</span>" +
+    (x.text ? "<p>" + esc(x.text) + "</p>" : "") + '<div class="m">' + esc(stWhen(x.from)) + " — " + esc(stWhen(x.till)) + (x.btn ? " · кнопка: " + esc((STBT.filter(function (b) { return b[0] === x.btn; })[0] || [0, x.btn])[1]) : "") + (x.video ? " · видео" : "") + (x.src === "owner" ? " · от владельца" : "") + "</div>" +
+    '<div class="m">Просмотров: <b>' + (x.views || 0) + "</b> · Нажатий на кнопку: <b>" + (x.clicks || 0) + "</b></div>" + (x.reason ? '<div class="m">Причина отказа: ' + esc(x.reason) + "</div>" : "") + '</div></div><div class="big">' + stActs(x) + "</div></div>";
+}
+function stForm() {
+  var e = STO.edit, f = function (k) { return esc(e[k] || ""); }, cur = e.id ? true : false;
+  var au = '<option value="">— выберите —</option><option value="b56"' + (e.au === "b56" ? " selected" : "") + ">Б-56 (от администратора)</option>" + PLACES.slice().sort(function (a, b) { return String(a.name).localeCompare(String(b.name), "ru"); }).map(function (p) { return '<option value="' + p.id + '"' + (String(e.au) === String(p.id) ? " selected" : "") + ">" + esc(p.name) + "</option>"; }).join("");
+  return '<form class="card" id="stf"><h2>' + (cur ? "Изменить историю" : "Новая история") + "</h2>" +
+    '<label>От кого<select id="sau">' + au + "</select></label>" +
+    '<label>Фото<small>вертикальное смотрится лучше. Нужно фото или ссылка на видео</small><input id="sfile" type="file" accept="image/*"></label>' +
+    (e.photo ? '<div class="note">Сейчас: <img src="' + esc(e.photo) + '" alt="" style="width:46px;height:64px;object-fit:cover;border-radius:6px;vertical-align:middle"> Чтобы заменить, выберите новое фото.</div>' : "") +
+    '<label>Ссылка на видео<small>клип ВК, Rutube или YouTube Shorts. Для видео фото можно не добавлять</small><input id="svd" maxlength="300" value="' + f("video") + '" placeholder="https://vk.com/clip-123_456"></label>' +
+    '<label>Текст поверх картинки<small>до 120 знаков, можно не писать</small><input id="ste" maxlength="120" value="' + f("text") + '"></label>' +
+    '<label>Кнопка внизу<select id="sbt">' + STBT.map(function (b) { return '<option value="' + b[0] + '"' + ((e.btn || "") === b[0] ? " selected" : "") + ">" + b[1] + "</option>"; }).join("") + "</select></label>" +
+    '<label>Ссылка для кнопки «Подробнее»<small>начинается с https://</small><input id="sbl" maxlength="300" value="' + f("link") + '"></label>' +
+    '<label>Показывать с<small>пусто = прямо сейчас. Можно выбрать завтра, история включится сама</small><input id="sfr" type="datetime-local" value="' + esc(String(e.from || "").slice(0, 16)) + '"></label>' +
+    '<label>Сколько показывать<select id="sdy">' + [["1", "1 сутки"], ["2", "2 суток"], ["3", "3 суток"], ["5", "5 суток"], ["7", "7 суток (максимум)"], ["date", "до даты, которую я выберу ниже"]].map(function (o) { return '<option value="' + o[0] + '"' + ((e.dy || (cur ? "date" : "1")) === o[0] ? " selected" : "") + ">" + o[1] + "</option>"; }).join("") + "</select></label>" +
+    '<label>До даты и времени<small>только если выбрали «до даты». Не больше 7 суток от начала</small><input id="stl" type="datetime-local" value="' + esc(String(e.till || "").slice(0, 16)) + '"></label>' +
+    '<button class="btn" type="submit"' + (BUSY ? " disabled" : "") + ">" + (cur ? "Сохранить" : "Опубликовать") + '</button><button class="btn alt sm" type="button" data-stcancel="1">Отмена</button></form>';
+}
+function storiesTab() {
+  if (STO.edit) return stForm();
+  var c = STO.cfg || { price: 100, partners: true, limit: 3 };
+  var items = STO.items, F = STO.f;
+  var flt = { now: function (x) { return x.eff === "опубликовано"; }, sched: function (x) { return x.eff === "запланировано"; }, wait: stPend, arch: function (x) { return x.eff === "архив" || x.eff === "отклонено"; } };
+  var cnt = {}; Object.keys(flt).forEach(function (k) { cnt[k] = items.filter(flt[k]).length; });
+  var seg = [["now", "Идут сейчас"], ["sched", "Запланированы"], ["wait", "Ждут решения"], ["arch", "Архив"]];
+  var list = items.filter(flt[F]).sort(function (a, b) { return F === "arch" ? b.id - a.id : (a.au === b.au ? a.order - b.order : String(a.au).localeCompare(String(b.au))); });
+  var live = cnt.now;
+  return '<div class="note">Кружки на главной видны жителям, когда идёт не меньше 3 историй. Сейчас идёт: <b>' + live + "</b>." + (live < 3 ? " Пока меньше трёх, ряд скрыт." : "") + "</div>" +
+    '<button type="button" class="btn" data-stnew="1">＋ Добавить историю</button>' +
+    '<div class="seg" role="group">' + seg.map(function (g) { return '<button type="button" data-stf="' + g[0] + '" aria-pressed="' + (F === g[0]) + '">' + g[1] + " " + cnt[g[0]] + "</button>"; }).join("") + "</div>" +
+    (list.length ? list.map(stCard).join("") : '<div class="note">Здесь пока пусто.</div>') +
+    '<div class="card"><h2>Настройки историй</h2>' +
+    '<label>Цена одной истории за сутки, ₽<input id="stcp" type="number" min="0" max="100000" value="' + esc(c.price) + '"></label>' +
+    '<label>Бесплатных историй в неделю на заведение<small>все следующие считаются платными</small><input id="stcl" type="number" min="0" max="100" value="' + esc(c.limit) + '"></label>' +
+    '<label class="check"><input type="checkbox" id="stcw"' + (c.partners ? " checked" : "") + '> Заведения со значком «Рекомендуем» размещают без оплаты</label>' +
+    '<button type="button" class="btn alt sm" data-stcfg="1">Сохранить настройки</button></div>';
+}
+function stLoad() { return call({ a: "stories_admin", pw: PW }).then(function (r) { if (r.ok) { STO.items = r.items; STO.cfg = r.cfg; } draw(); }); }
+function stDo(o, okMsg) { o.a = "story_set"; o.pw = PW; STO.rm = 0; return call(o).then(function (r) { if (!r.ok) say(r.err || "Ошибка", true); else if (okMsg) say(okMsg, false); return stLoad(); }); }
+function stCopy(id) {
+  var u = "https://buguruslan56.ru/#story-" + id, done = function () { say("Ссылка скопирована: " + u, false); draw(); };
+  try { navigator.clipboard.writeText(u).then(done, function () { say("Скопируйте вручную: " + u, false); draw(); }); } catch (e) { say("Скопируйте вручную: " + u, false); draw(); }
+}
 function pubView() {
-  var seg = [["news", "Новости"], ["banners", "Плашки"], ["urgent", "Срочно"], ["draw", "Розыгрыш"]];
+  var seg = [["news", "Новости"], ["banners", "Плашки"], ["urgent", "Срочно"], ["stories", "Истории"], ["draw", "Розыгрыш"]];
   return '<h1>Публикации</h1><div class="seg" role="group">' + seg.map(function (s) { return '<button type="button" data-pub="' + s[0] + '" aria-pressed="' + (PUB === s[0]) + '">' + s[1] + "</button>"; }).join("") + "</div>" +
-    (PUB === "news" ? newsTab() : PUB === "banners" ? bannersTab() : PUB === "urgent" ? urgentTab() : drawTab());
+    (PUB === "news" ? newsTab() : PUB === "banners" ? bannersTab() : PUB === "urgent" ? urgentTab() : PUB === "stories" ? storiesTab() : drawTab());
 }
 function statsTab() {
   var s = STATS; if (!s) return '<h1>Статистика</h1><div class="note">Загружаю…</div>';
@@ -854,6 +930,8 @@ function statsTab() {
   h += '<div class="card"><h2>Заведения за 30 дней</h2>' + (s.orgs.length ? "<table><tr><th>Название</th><th class=\"n\">Откр.</th><th class=\"n\">Прайс</th><th class=\"n\">Зво&shy;нки</th><th class=\"n\">Мар&shy;шрут</th><th class=\"n\">Тов&shy;ары</th><th class=\"n\">Спро&shy;сили</th></tr>" +
     s.orgs.map(function (o) { return "<tr><td>" + esc(o.org) + '</td><td class="n">' + o.views + '</td><td class="n">' + o.prices + '</td><td class="n">' + o.calls + '</td><td class="n">' + o.routes + '</td><td class="n">' + (o.iv || 0) + '</td><td class="n">' + (o.ia || 0) + "</td></tr>"; }).join("") + "</table>" : '<div class="note">Пока данных нет.</div>') + "</div>";
   h += '<div class="card"><h2>Действия</h2><div class="note">Открыли новости: <b>' + g(s.events, "news_open") + "</b> · Позвонили из карточек: <b>" + g(s.events, "call_click") + "</b> · Открыли раздел для владельцев: <b>" + g(s.events, "owner_info") + "</b></div></div>";
+  var sv = STO.items.filter(function (x) { return x.views || x.clicks; }).sort(function (a, b) { return (b.views || 0) - (a.views || 0); }).slice(0, 15);
+  if (STO.items.length) h += '<div class="card"><h2>Истории</h2>' + (sv.length ? '<table><tr><th>Автор и текст</th><th class="n">Просм.</th><th class="n">Нажатий</th></tr>' + sv.map(function (x) { return "<tr><td>" + esc(stAuthor(x.au)) + (x.text ? ": " + esc(x.text.slice(0, 40)) : "") + '</td><td class="n">' + (x.views || 0) + '</td><td class="n">' + (x.clicks || 0) + "</td></tr>"; }).join("") + "</table>" : '<div class="note">Просмотров пока нет.</div>') + "</div>";
   if (s.refs && s.refs.length) h += '<div class="card"><h2>Кто приглашает друзей</h2><table><tr><th>Номер</th><th class="n">Привёл</th></tr>' + s.refs.map(function (r) { return "<tr><td><b>" + esc(r.id) + '</b></td><td class="n">' + r.n + "</td></tr>"; }).join("") + "</table></div>";
   if (s.recent) h += '<div class="card"><h2>Последние участники</h2><table><tr><th>Номер</th><th>Когда</th><th>Кто</th><th>Телефон</th></tr>' +
     s.recent.map(function (r) { return "<tr><td><b>" + esc(r.id) + "</b></td><td>" + esc(r.date) + "</td><td>" + esc(r.role) + "</td><td>" + esc(r.plat) + "</td></tr>"; }).join("") + "</table></div>";
@@ -893,15 +971,15 @@ function draw(force) {
 function say(t, err) { MSG = { t: t, err: !!err }; }
 function afterAuthFail(r) { if (r && /парол|попыт/i.test(r.err || "")) { PW = ""; ROLE = ""; sdel("b56_adm"); MSG = r.err; } else say((r && r.err) || "Ошибка", true); }
 function loadInbox() {
-  return Promise.all([call({ a: "tickets_list", pw: PW }), call({ a: "owners_admin", pw: PW }), call({ a: "ads_admin", pw: PW }), call({ a: "places_list", pw: PW })]).then(function (rs) {
-    if (rs[0].ok) TICKETS = rs[0].items; if (rs[1].ok) OWN = rs[1].items; if (rs[2].ok) ADS = rs[2].items; if (rs[3].ok) PLACES = rs[3].items;
-    for (var i = 0; i < 4; i++) if (!rs[i].ok) { afterAuthFail(rs[i]); break; }
+  return Promise.all([call({ a: "tickets_list", pw: PW }), call({ a: "owners_admin", pw: PW }), call({ a: "ads_admin", pw: PW }), call({ a: "places_list", pw: PW }), call({ a: "stories_admin", pw: PW })]).then(function (rs) {
+    if (rs[0].ok) TICKETS = rs[0].items; if (rs[1].ok) OWN = rs[1].items; if (rs[2].ok) ADS = rs[2].items; if (rs[3].ok) PLACES = rs[3].items; if (rs[4].ok) { STO.items = rs[4].items; STO.cfg = rs[4].cfg; }
+    for (var i = 0; i < 5; i++) if (!rs[i].ok) { afterAuthFail(rs[i]); break; }
     draw();
   });
 }
-function loadStats() { return call({ a: "stats", pw: PW }).then(function (r) { if (r.ok) { STATS = r; STORG = {}; (r.orgs || []).forEach(function (o) { STORG[o.org] = { views: o.views, calls: o.calls }; }); } else if (TAB === "stats") afterAuthFail(r); draw(); }); }
+function loadStats() { call({ a: "stories_admin", pw: PW }).then(function (r) { if (r.ok) { STO.items = r.items; STO.cfg = r.cfg; if (TAB === "stats") draw(); } }); return call({ a: "stats", pw: PW }).then(function (r) { if (r.ok) { STATS = r; STORG = {}; (r.orgs || []).forEach(function (o) { STORG[o.org] = { views: o.views, calls: o.calls }; }); } else if (TAB === "stats") afterAuthFail(r); draw(); }); }
 function loadPub() {
-  return Promise.all([call({ a: "news_list", pw: PW }), call({ a: "banners_list", pw: PW }), call({ a: "urgent_admin", pw: PW })]).then(function (rs) { if (rs[0].ok) NEWS = rs[0].items; else afterAuthFail(rs[0]); if (rs[1].ok) BANNERS = rs[1].items; if (rs[2].ok) URGL = rs[2].items; draw(); });
+  return Promise.all([call({ a: "news_list", pw: PW }), call({ a: "banners_list", pw: PW }), call({ a: "urgent_admin", pw: PW }), call({ a: "stories_admin", pw: PW }), call({ a: "places_list", pw: PW })]).then(function (rs) { if (rs[0].ok) NEWS = rs[0].items; else afterAuthFail(rs[0]); if (rs[1].ok) BANNERS = rs[1].items; if (rs[2].ok) URGL = rs[2].items; if (rs[3].ok) { STO.items = rs[3].items; STO.cfg = rs[3].cfg; } if (rs[4].ok) PLACES = rs[4].items; draw(); });
 }
 function loadTab() {
   if (TAB === "places") return loadPlaces();
@@ -932,6 +1010,22 @@ root.addEventListener("submit", function (e) {
       if (r.ok) { say(r.tgSent ? "Опубликовано в приложении и в Telegram." : r.tgErr ? "Опубликовано в приложении. В Telegram не ушло: " + r.tgErr : "Опубликовано. Жители увидят это в приложении."); ["nti", "nte", "nor", "nun"].forEach(function (i) { var x = document.getElementById(i); if (x) x.value = ""; }); loadPub(); }
       else { afterAuthFail(r); draw(); }
     });
+  }
+  if (id === "stf") {
+    var sf = document.getElementById("sfile"), sfl = sf && sf.files && sf.files[0], ed = STO.edit, dy = val("sdy");
+    var su = { id: ed.id || 0, au: val("sau"), video: val("svd"), text: val("ste"), btn: val("sbt"), link: val("sbl"), from: val("sfr"), status: ed.id ? ed.st : "опубликовано", keep: ed.photoId || "" };
+    if (dy === "date") su.till = val("stl"); else su.days = Number(dy);
+    STO.edit = Object.assign({}, ed, { au: su.au, video: su.video, text: su.text, btn: su.btn, link: su.link, from: su.from, till: val("stl"), dy: dy });
+    if (!su.au) { say("Выберите, от кого история.", true); draw(); return; }
+    if (!sfl && !su.video.trim() && !ed.photoId) { say("Добавьте фото или ссылку на видео.", true); draw(); return; }
+    if (dy === "date" && !su.till) { say("Выберите дату и время, до которых показывать.", true); draw(); return; }
+    BUSY = true; draw();
+    (sfl ? shrink(sfl).then(function (b64) { su.photo = b64; }, function () { return Promise.reject("img"); }) : Promise.resolve()).then(function () { return call({ a: "story_save", pw: PW, story: su }); }, function () { return { ok: false, err: "Не получилось прочитать картинку. Нужна обычная фотография." }; }).then(function (r) {
+      BUSY = false;
+      if (r.ok) { STO.edit = null; say(su.id ? "Сохранено." : (su.from && Date.parse(su.from) > Date.now() ? "Запланировано: история включится сама." : "Опубликовано. Жители увидят в кружках на главной."), false); stLoad(); }
+      else { say(r.err || "Ошибка", true); draw(); }
+    });
+    return;
   }
   if (id === "uf") {
     var it = { id: UED.id, g: val("ug"), name: val("unm"), note: val("unt"), phones: val("uph"), addr: val("uad"), hours: val("uhr"), h24: document.getElementById("u24").checked, kw: val("ukw"), hidden: document.getElementById("uhid").checked, memo: val("ume") };
@@ -968,8 +1062,16 @@ root.addEventListener("input", function (e) {
 root.addEventListener("hrschange", function () { if (ED) scheduleSave(); });
 root.addEventListener("change", function (e) {
   var t = e.target;
+  if (t.id === "lfile" && t.files.length && ED && ED.id) {
+    var lid = ED.id; readDraft(); PHBUSY = true; draw(true);
+    shrink(t.files[0]).then(function (b64) { return call({ a: "logo_set", pw: PW, id: lid, data: b64 }); }, function () { return { ok: false, err: "Не получилось прочитать файл. Нужна обычная картинка." }; }).then(function (r) { if (!r.ok) say(r.err || "Не получилось загрузить логотип.", true); else say("Логотип сохранён.", false); PHBUSY = false; return call({ a: "places_list", pw: PW }); }).then(function (r) {
+      if (r.ok) { PLACES = r.items; var n = PLACES.filter(function (x) { return x.id === lid; })[0]; if (n && ED && ED.id === lid) { ED.logo = n.logo || ""; ED.logoId = n.logoId || ""; } }
+      if (ED) { ED.open.photo = true; draw(true); }
+    });
+    return;
+  }
   if (t.id === "pfile" && t.files.length && ED) { uploadPhotos(Array.prototype.slice.call(t.files)); return; }
-  if (ED && t.closest && t.closest(".bb") && !t.closest(".hrs") && t.id !== "pfile") scheduleSave();
+  if (ED && t.closest && t.closest(".bb") && !t.closest(".hrs") && t.id !== "pfile" && t.id !== "lfile") scheduleSave();
 });
 root.addEventListener("focusout", function (e) {
   var t = e.target;
@@ -1065,6 +1167,23 @@ function doAction(t) {
     call(ao).then(function (r) { if (!r.ok) say(r.err || "Ошибка", true); else say(aa === "publish" ? "Объявление опубликовано." : aa === "extend" ? "Продлено." : aa === "reject" ? "Отклонено." : aa === "remove" ? "Снято с доски." : aa === "delete" ? "Удалено." : aa === "clear" ? "Очищено." : "Отмечено: оплата пришла.", false); loadInbox(); });
     return;
   }
+  /* истории */
+  if (d.stf) { STO.f = d.stf; STO.rm = 0; draw(); return; }
+  if (d.stnew) { STO.edit = { id: 0, au: "", photo: "", photoId: "", video: "", text: "", btn: "", link: "", from: "", till: "", st: "опубликовано" }; MSG = null; draw(); window.scrollTo(0, 0); return; }
+  if (d.stedit) { var sx = STO.items.filter(function (x) { return x.id === Number(d.stedit); })[0]; STO.edit = sx ? JSON.parse(JSON.stringify(sx)) : null; MSG = null; draw(); window.scrollTo(0, 0); return; }
+  if (d.stcancel) { STO.edit = null; draw(); return; }
+  if (d.stask) { STO.rm = Number(d.stask); draw(); return; }
+  if (d.stno) { STO.rm = 0; draw(); return; }
+  if (d.stcopy) { stCopy(d.stcopy); return; }
+  if (d.stact) {
+    var sa = d.stact, sid = Number(d.stid), so = { id: sid, act: sa };
+    if (sa === "move") so.dir = Number(d.stdir);
+    if (sa === "reject") { var rs0 = document.getElementById("strs" + sid); so.reason = rs0 && rs0.value.trim() ? rs0.value.trim() : "Не прошла проверку"; }
+    if (sa !== "move" && sa !== "extend") IOPEN = "";
+    stDo(so, sa === "approve" ? "Опубликовано." : sa === "paid" ? "Оплата отмечена, история опубликована." : sa === "reject" ? "Отклонено." : sa === "remove" ? "Снято, история в архиве." : sa === "extend" ? "Продлено на сутки." : sa === "del" ? "Удалено." : ""); return;
+  }
+  if (d.stcfg) { call({ a: "story_cfg", pw: PW, set: true, price: val("stcp"), limit: val("stcl"), partners: document.getElementById("stcw").checked }).then(function (r) { if (!r.ok) say(r.err || "Ошибка", true); else say("Настройки историй сохранены.", false); stLoad(); }); return; }
+  if (d.lgdel && ED && ED.id) { var lg0 = ED.id; readDraft(); call({ a: "logo_set", pw: PW, id: lg0, clear: true }).then(function (r) { if (!r.ok) say(r.err || "Ошибка", true); else say("Логотип убран.", false); return call({ a: "places_list", pw: PW }); }).then(function (r) { if (r.ok) { PLACES = r.items; var n = PLACES.filter(function (x) { return x.id === lg0; })[0]; if (n && ED && ED.id === lg0) { ED.logo = ""; ED.logoId = ""; } } if (ED) { ED.open.photo = true; draw(true); } }); return; }
   /* публикации */
   if (d.pub) { PUB = d.pub; MSG = null; draw(); return; }
   if (d.unew) { UED = { id: 0, g: "emerg", name: "", note: "", phones: [], addr: "", hours: "", h24: false, kw: "", memo: "", hidden: false }; MSG = null; draw(); window.scrollTo(0, 0); return; }

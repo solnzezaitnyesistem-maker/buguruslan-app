@@ -421,6 +421,53 @@ button.soon { width: 100%; text-align: left; font: inherit; cursor: pointer; }
 .csh .pe { display: flex; gap: 6px; margin-top: 6px; }
 .csh .pe input { flex: 1; min-width: 0; min-height: 44px; padding: 0 12px; border: 2px solid var(--line); border-radius: 12px; font: inherit; font-size: 16px; }
 .csh select { width: 100%; min-height: 52px; padding: 0 12px; border: 2px solid var(--line); border-radius: 14px; font: inherit; font-size: 16px; background: var(--white); }
+
+/* ===== истории ===== */
+#srw[hidden], #nov[hidden] { display: none; }
+.sr { display: flex; gap: 12px; overflow-x: auto; margin-inline: -20px; padding: 4px 20px 6px; scrollbar-width: none; }
+.sr::-webkit-scrollbar { display: none; }
+.sc { flex: 0 0 auto; width: 72px; display: flex; flex-direction: column; align-items: center; gap: 4px; border: 0; background: none; padding: 0; font: inherit; color: var(--ink); cursor: pointer; }
+.sc .ring { width: 68px; height: 68px; border-radius: 50%; padding: 3px; background: linear-gradient(135deg, #14532D, #FFD166); display: block; }
+.sc.seen .ring { background: #B9C4BD; }
+.sc .ring > * { width: 100%; height: 100%; border-radius: 50%; border: 2px solid var(--bg); object-fit: cover; background: var(--mint); display: flex; align-items: center; justify-content: center; }
+.sc .sl { font-size: 12px; font-weight: 700; max-width: 72px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sc.seen .sl { color: var(--muted); }
+.svw { position: fixed; inset: 0; z-index: 70; background: #000; display: flex; justify-content: center; touch-action: none; }
+.svf { position: relative; width: 100%; max-width: 480px; height: 100%; background: #0B2417; overflow: hidden; user-select: none; -webkit-user-select: none; }
+.svf .bg { position: absolute; inset: -20px; width: calc(100% + 40px); height: calc(100% + 40px); object-fit: cover; filter: blur(24px) brightness(.6); }
+.svf .svm { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.svf iframe.svm { border: 0; background: #000; }
+.svf .shade { position: absolute; left: 0; right: 0; top: 0; height: 120px; background: linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,0)); pointer-events: none; }
+.svp { position: absolute; left: 10px; right: 10px; top: calc(10px + env(safe-area-inset-top)); display: flex; gap: 4px; z-index: 3; }
+.svp i { flex: 1; height: 3px; border-radius: 2px; background: rgba(255,255,255,.35); overflow: hidden; }
+.svp i b { display: block; height: 100%; width: 0; background: #fff; }
+.svh { position: absolute; left: 10px; right: 10px; top: calc(22px + env(safe-area-inset-top)); display: flex; align-items: center; gap: 10px; z-index: 3; color: #fff; }
+.svh img, .svh .ph { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: var(--mint); flex: none; }
+.svh .tt { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.svh .tt b { font-size: 15px; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
+.svh .tt small { font-size: 12px; opacity: .85; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
+.svh button { flex: none; width: 44px; height: 44px; border: 0; border-radius: 50%; background: rgba(0,0,0,.4); color: #fff; font-size: 22px; cursor: pointer; }
+.svz { position: absolute; top: 80px; bottom: 90px; z-index: 2; }
+.svz.l { left: 0; width: 30%; }
+.svz.r { right: 0; width: 70%; }
+.svf.vid .svz.l { width: 18%; }
+.svf.vid .svz.r { width: 18%; }
+.svt { position: absolute; left: 14px; right: 14px; bottom: 100px; z-index: 3; padding: 12px 14px; border-radius: 14px; background: rgba(0,0,0,.55); color: #fff; font-size: 22px; font-weight: 800; line-height: 1.25; text-align: center; overflow-wrap: anywhere; pointer-events: none; }
+.svb { position: absolute; left: 14px; right: 14px; bottom: calc(24px + env(safe-area-inset-bottom)); z-index: 4; height: 56px; border: 0; border-radius: 16px; background: #FFD166; color: #0B2417; font: inherit; font-size: 18px; font-weight: 800; cursor: pointer; }
+.sva { display: none; position: absolute; top: 50%; transform: translateY(-50%); z-index: 4; width: 44px; height: 44px; border: 0; border-radius: 50%; background: rgba(255,255,255,.85); font-size: 28px; line-height: 1; cursor: pointer; }
+.sva.l { left: 8px; } .sva.r { right: 8px; }
+@media (hover: hover) and (pointer: fine) { .sva { display: block; } }
+.cst .ci { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-top: 1px solid var(--rule); }
+.cst .ci img, .cst .ci .th { width: 56px; height: 72px; object-fit: cover; border-radius: 10px; flex: none; background: var(--mint); }
+.cst .cb { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; font-size: 14px; }
+.cst .cb b { font-size: 15px; overflow-wrap: anywhere; }
+.cst .cb span { color: var(--muted); }
+.cst .cb em { font-style: normal; color: #8A1C12; font-weight: 700; }
+.cst .cb code { font-size: 12px; overflow-wrap: anywhere; }
+.cst .sb { min-height: 40px; padding: 0 12px; border: 2px solid var(--line); border-radius: 12px; background: var(--white); color: var(--green); font: inherit; font-size: 14px; font-weight: 800; cursor: pointer; }
+.cst .ca { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.cst select { width: 100%; min-height: 52px; padding: 0 12px; border: 2px solid var(--line); border-radius: 14px; font: inherit; font-size: 16px; background: var(--white); }
+.cst .lg { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; background: var(--mint); border: 2px solid var(--line); }
 </style>
 </head>
 <body>
@@ -668,6 +715,7 @@ function parse(r) {
   if (r === "urgent") return { v: "urgent" };
   if (r.indexOf("item-") === 0) return { v: "item", id: Number(r.slice(5)) };
   if (r === "novelty") return { v: "novelty" };
+  if (r.indexOf("story-") === 0) return { v: "story", id: Number(r.slice(6)) };
   if (r === "board") return { v: "board" };
   if (r === "qr") return { v: "qr" };
   if (r === "myads") return { v: "myads" };
@@ -680,7 +728,7 @@ function parse(r) {
 function valid(r) {
   var p = parse(r);
   if (p.v === "cat") return !!catById(p.id);
-  if (p.v === "item") return p.id > 0;
+  if (p.v === "item" || p.v === "story") return p.id > 0;
   if (p.v === "card" || p.v === "price") { var it = itemById(p.id); return !!it && (p.v === "card" || !!it.price); }
   return true;
 }
@@ -765,6 +813,7 @@ function viewHome() {
     '<text x="32" y="34" text-anchor="middle" font-family="Manrope, system-ui, sans-serif" font-size="14" font-weight="800" fill="#14532D">Б-56</text></svg>' +
     '<h1>Бугуруслан всё в одном месте</h1><button type="button" class="hq" data-go="help">Помощь</button></div>' +
     searchBox("Что ищете? Шиномонтаж, торт…", "Поиск по городу") +
+    '<div id="srw">' + storiesRowHtml() + "</div>" +
     '<button type="button" class="urg" data-go="urgent">' + ico('<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>', 26, "#B42318") + '<span class="ut"><b>Срочно</b><span>Скорая, газ, свет, аварийные номера</span></span><span class="ua">→</span></button>' +
     novHtml() +
     chipsHtml() +
@@ -942,6 +991,192 @@ function afterGoods(changed) {
   if (v === "item") { render(); return; }
   if (!changed) return;
   if (v === "novelty" || v === "card" || (v === "home" && !(q && q.value))) render();
+}
+
+/* ---------- истории ---------- */
+var STORIES = [], STORIES_FRESH = false, SV = null, SV_PENDING = 0, SVD = 6000;
+function svSeen() { try { var m = JSON.parse(sget("b56_sv") || "{}"); return m && typeof m === "object" ? m : {}; } catch (e) { return {}; } }
+function svMark(id) { if (!id) return; var m = svSeen(), ks = Object.keys(m); m[id] = 1; if (ks.length > 400) delete m[ks[0]]; sset("b56_sv", JSON.stringify(m)); }
+var SV_ICON = '<svg viewBox="0 0 64 76" aria-hidden="true" style="padding:8px;background:#fff"><path d="M32 2C16 2 4 14 4 29c0 20 28 45 28 45s28-25 28-45C60 14 48 2 32 2z" fill="#14532D"></path><circle cx="32" cy="29" r="19" fill="#FFFFFF" stroke="#FFD166" stroke-width="3"></circle><text x="32" y="34" text-anchor="middle" font-family="Manrope, system-ui, sans-serif" font-size="14" font-weight="800" fill="#14532D">Б-56</text></svg>';
+function svAuthors() {
+  var by = {}, order = [], seen = svSeen();
+  STORIES.forEach(function (s) {
+    var pl = s.au === "b56" ? null : itemById(Number(s.au));
+    if (s.au !== "b56" && !pl) return;
+    if (!by[s.au]) { by[s.au] = { au: s.au, pl: pl || { name: "Б-56", phone: OWNER.phone, wa: OWNER.wa }, name: pl ? pl.name : "Б-56", list: [] }; order.push(s.au); }
+    by[s.au].list.push(s);
+  });
+  var res = order.map(function (k) {
+    var a = by[k]; a.unseen = a.list.some(function (s) { return !seen[s.id]; });
+    a.newest = Math.min.apply(null, a.list.map(function (s) { return s.ago; }));
+    a.img = a.au === "b56" ? "" : ((a.pl.logo) || (a.pl.photos && a.pl.photos[0]) || (a.list[0] && a.list[0].photo) || "");
+    return a;
+  });
+  res.sort(function (x, y) { if (x.au === "b56") return -1; if (y.au === "b56") return 1; if (x.unseen !== y.unseen) return x.unseen ? -1 : 1; return x.newest - y.newest; });
+  return res;
+}
+function svLabel(n) { n = String(n); return n.length > 12 ? n.slice(0, 11) + "…" : n; }
+function storiesRowHtml() {
+  if (STORIES.length < 3) return "";
+  var as = svAuthors();
+  if (!as.length) return "";
+  return '<div class="sr" id="sr" role="list" aria-label="Истории">' + as.map(function (a) {
+    return '<button type="button" role="listitem" class="sc' + (a.unseen ? "" : " seen") + '" data-story="' + esc(a.au) + '" aria-label="Истории: ' + esc(a.name) + '"><span class="ring">' +
+      (a.au === "b56" ? SV_ICON : '<img src="' + esc(thumb(a.img)) + '" alt="" referrerpolicy="no-referrer" loading="lazy">') + '</span><span class="sl">' + esc(svLabel(a.name)) + "</span></button>";
+  }).join("") + "</div>";
+}
+function svRefreshRow() { var w = document.getElementById("srw"); if (w) w.innerHTML = storiesRowHtml(); }
+function svAgo(m) {
+  if (m < 2) return "только что";
+  if (m < 60) return m + " мин назад";
+  if (m < 1440) return Math.floor(m / 60) + " ч назад";
+  return Math.floor(m / 1440) + " дн назад";
+}
+function svOpen(au, idx, preview, custom) {
+  svClose(true);
+  var as = custom || svAuthors(), a = 0, i;
+  for (i = 0; i < as.length; i++) if (as[i].au === au) a = i;
+  var d = document.createElement("div");
+  d.className = "svw"; d.id = "sv";
+  d.setAttribute("role", "dialog"); d.setAttribute("aria-label", "Истории");
+  document.body.appendChild(d);
+  SV = { as: as, a: a, i: idx || 0, el: 0, start: 0, raf: 0, paused: false, hold: 0, preview: !!preview, node: d, off: false };
+  var prevOv = ""; try { prevOv = document.body.style.overflow; document.body.style.overflow = "hidden"; } catch (e) {}
+  SV.ov = prevOv;
+  svShow();
+}
+function svStop() { if (SV && SV.raf) { cancelAnimationFrame(SV.raf); SV.raf = 0; } }
+function svShow() {
+  svStop();
+  var A = SV.as[SV.a], s = A.list[SV.i], emb = s.video ? videoEmbed(s.video) : "", isVid = !!emb;
+  if (!SV.preview) { svMark(s.id); track("story_view", { org: "s:" + s.id }); }
+  var media = isVid ? '<iframe class="svm" src="' + esc(emb) + '" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="origin" title="Видео"></iframe>' :
+    (s.photo ? '<img class="bg" alt="" src="' + esc(s.photo) + '" referrerpolicy="no-referrer"><img class="svm" alt="" src="' + esc(s.photo) + '" referrerpolicy="no-referrer">' : "");
+  var bt = svBtnInfo(s, A), vlink = s.video && !isVid ? s.video : "";
+  var btn = bt ? '<button type="button" class="svb" data-svbtn="1">' + esc(bt.label) + "</button>" : (vlink ? '<button type="button" class="svb" data-svbtn="v">Смотреть видео</button>' : "");
+  var av = A.au === "b56" ? '<span class="ph">' + SV_ICON + "</span>" : '<img alt="" src="' + esc(thumb(A.img)) + '" referrerpolicy="no-referrer">';
+  SV.node.innerHTML = '<div class="svf' + (isVid ? " vid" : "") + '" id="svf">' + media + '<div class="shade"></div>' +
+    '<div class="svp">' + A.list.map(function () { return "<i><b></b></i>"; }).join("") + "</div>" +
+    '<div class="svh">' + av + '<span class="tt"><b>' + esc(A.name) + "</b><small>" + esc(SV.preview ? "так увидят жители" : svAgo(s.ago)) + '</small></span><button type="button" data-svclose="1" aria-label="Закрыть">×</button></div>' +
+    '<div class="svz l" data-svz="prev"></div><div class="svz r" data-svz="next"></div>' +
+    (s.text ? '<div class="svt">' + esc(s.text) + "</div>" : "") + btn +
+    '<button type="button" class="sva l" data-svz="prev" aria-label="Назад">‹</button><button type="button" class="sva r" data-svz="next" aria-label="Вперёд">›</button></div>';
+  var bars = SV.node.querySelectorAll(".svp i b"), k;
+  for (k = 0; k < bars.length; k++) bars[k].style.width = k < SV.i ? "100%" : (k === SV.i && isVid ? "100%" : "0");
+  SV.cur = bars[SV.i]; SV.isVid = isVid; SV.el = 0; SV.paused = false;
+  svBind();
+  if (!isVid) { SV.start = performance.now(); SV.raf = requestAnimationFrame(svTick); }
+}
+function svTick(t) {
+  if (!SV || SV.isVid) return;
+  if (SV.paused) { SV.start = t - SV.el; SV.raf = requestAnimationFrame(svTick); return; }
+  SV.el = t - SV.start;
+  if (SV.cur) SV.cur.style.width = Math.min(100, SV.el / SVD * 100) + "%";
+  if (SV.el >= SVD) { svNext(); return; }
+  SV.raf = requestAnimationFrame(svTick);
+}
+function svNext() {
+  var A = SV.as[SV.a];
+  if (SV.i + 1 < A.list.length) { SV.i++; svShow(); return; }
+  if (SV.a + 1 < SV.as.length) { SV.a++; SV.i = 0; svShow(); return; }
+  svClose();
+}
+function svPrev() {
+  if (SV.i > 0) { SV.i--; svShow(); return; }
+  if (SV.a > 0) { SV.a--; SV.i = 0; svShow(); return; }
+  svShow();
+}
+function svClose(silent) {
+  svStop();
+  var d = document.getElementById("sv"); if (d) d.remove();
+  if (SV) { try { document.body.style.overflow = SV.ov || ""; } catch (e) {} }
+  var was = SV; SV = null;
+  if (silent) return;
+  if (parse(state.route).v === "story") { state.route = "home"; setHash("home"); }
+  if (was && !was.preview) svRefreshRow();
+}
+function svBtnInfo(s, A) {
+  var pl = A.pl || {}, b = s.btn;
+  if (!b) return null;
+  if (b === "call" && pl.phone) return { label: "Позвонить", url: telHref(pl.phone), same: true };
+  if (b === "card" && A.au !== "b56" && itemById(Number(A.au))) return { label: "Открыть карточку", card: Number(A.au) };
+  if (b === "route" && pl.addr && pl.addr !== "Бугуруслан") return { label: "Маршрут", url: "https://yandex.ru/maps/?text=" + encodeURIComponent("Бугуруслан, " + pl.addr) };
+  if (b === "wa" && pl.wa) return { label: "Написать в WhatsApp", url: pl.wa };
+  if (b === "link" && s.link) return { label: "Подробнее", url: s.link };
+  return null;
+}
+function svBind() {
+  var f = document.getElementById("svf"); if (!f) return;
+  var sx = 0, sy = 0, down = 0, moved = false, swiped = false, zone = "";
+  f.addEventListener("pointerdown", function (e) {
+    var z = e.target.closest("[data-svz]");
+    if (!z || e.target.closest("button[data-svclose]")) return;
+    zone = z.getAttribute("data-svz"); sx = e.clientX; sy = e.clientY; down = Date.now(); moved = false; swiped = false;
+    if (z.classList.contains("svz")) SV.hold = setTimeout(function () { SV.hold = 0; SV.paused = true; }, 220);
+  });
+  f.addEventListener("pointermove", function (e) {
+    if (!down) return;
+    if (Math.abs(e.clientY - sy) > 10 || Math.abs(e.clientX - sx) > 10) moved = true;
+    if (e.clientY - sy > 90 && e.clientY - sy > Math.abs(e.clientX - sx)) { swiped = true; down = 0; if (SV.hold) { clearTimeout(SV.hold); SV.hold = 0; } svClose(); }
+  });
+  function up(e) {
+    if (!down) return;
+    var wasPaused = SV && SV.paused; down = 0;
+    if (SV.hold) { clearTimeout(SV.hold); SV.hold = 0; }
+    if (wasPaused) { SV.paused = false; return; }
+    if (swiped || moved) return;
+    if (e.target.closest(".sva")) return;
+    if (zone === "prev") svPrev(); else svNext();
+  }
+  f.addEventListener("pointerup", up);
+  f.addEventListener("pointercancel", function () { down = 0; if (SV && SV.hold) { clearTimeout(SV.hold); SV.hold = 0; } if (SV) SV.paused = false; });
+}
+document.addEventListener("click", function (e) {
+  if (!SV) return;
+  var c = e.target.closest("[data-svclose]");
+  if (c) { svClose(); return; }
+  var a = e.target.closest(".sva");
+  if (a) { if (a.getAttribute("data-svz") === "prev") svPrev(); else svNext(); return; }
+  var b = e.target.closest("[data-svbtn]");
+  if (b) {
+    var A = SV.as[SV.a], s = A.list[SV.i];
+    if (b.getAttribute("data-svbtn") === "v") { if (!SV.preview) track("story_click", { org: "s:" + s.id }); window.open(s.video, "_blank", "noopener"); return; }
+    var bt = svBtnInfo(s, A); if (!bt) return;
+    if (!SV.preview) track("story_click", { org: "s:" + s.id });
+    if (bt.card) { svClose(true); document.body.style.overflow = ""; if (parse(state.route).v === "story") { state.route = "home"; } go("card-" + bt.card); return; }
+    if (SV.preview) return;
+    if (bt.same) { window.location.href = bt.url; return; }
+    window.open(bt.url, "_blank", "noopener");
+  }
+}, true);
+document.addEventListener("keydown", function (e) {
+  if (!SV) return;
+  if (e.key === "Escape") svClose(); else if (e.key === "ArrowRight") svNext(); else if (e.key === "ArrowLeft") svPrev();
+});
+document.addEventListener("visibilitychange", function () { if (SV) SV.paused = document.hidden; });
+function storyLink(id) {
+  var found = null;
+  STORIES.forEach(function (s) { if (s.id === id) found = s; });
+  if (found) {
+    var as = svAuthors(), ai = -1, ii = 0;
+    as.forEach(function (a, k) { a.list.forEach(function (s, j) { if (s.id === id) { ai = k; ii = j; } }); });
+    if (ai >= 0) { svOpen(as[ai].au, ii); return; }
+  }
+  if (!STORIES_FRESH) { SV_PENDING = id; return; }
+  var fin = function (au) { state.stack = []; state.route = au ? "card-" + au : "home"; if (au && !valid(state.route)) state.route = "home"; setHash(state.route); render(); };
+  if (!API) { fin(0); return; }
+  withTimeout(API + "?a=story&id=" + encodeURIComponent(id), { method: "GET" }).then(function (r) { fin(r && r.ok && /^\d+$/.test(r.au || "") ? r.au : 0); }, function () { fin(0); });
+}
+function loadStories() {
+  if (DEMO) { STORIES_FRESH = true; return; }
+  try { var c = JSON.parse(sget("b56_stories") || "null"); if (c && c.length) STORIES = c; } catch (e) {}
+  apiGet("stories").then(function (r) {
+    STORIES_FRESH = true;
+    if (r && r.ok && r.items) { STORIES = r.items; sset("b56_stories", JSON.stringify(r.items)); }
+    var q = document.getElementById("q");
+    if (!SV && !(q && q.value)) svRefreshRow();
+    if (SV_PENDING) { var id = SV_PENDING; SV_PENDING = 0; storyLink(id); }
+  }, function () { STORIES_FRESH = true; if (SV_PENDING) { var id = SV_PENDING; SV_PENDING = 0; storyLink(id); } });
 }
 
 function homeDefault() {
@@ -1319,6 +1554,7 @@ function cabDemo(o) {
   if (a === "own_photo_add") { var dp = DEMO_OWN.place; dp.pending = dp.pending || []; dp.photos = dp.photos || []; if (dp.pending.length + dp.photos.length >= 6) return { ok: false, err: "Можно не больше 6 фото." }; dp.pending.push({ id: "d" + Math.random().toString(36).slice(2, 7), url: "data:image/jpeg;base64," + o.data }); return { ok: true }; }
   if (a === "own_photo_del") { var dq = DEMO_OWN.place; dq.photos = (dq.photos || []).filter(function (x) { return x.id !== o.fid; }); dq.pending = (dq.pending || []).filter(function (x) { return x.id !== o.fid; }); return { ok: true }; }
   if (a === "own_items" || a === "own_item_save" || a === "own_item_act") return demoShop(o);
+  if (a === "own_stories" || a === "own_story_add" || a === "own_story_act" || a === "own_logo_set") return demoStory(o);
   return { ok: false, err: "?" };
 }
 var DEMO_SHOP = [];
@@ -1524,6 +1760,7 @@ function viewCab() {
 function cabInit() {
   track("cab_open");
   CSH = { loaded: false, data: null, edit: null, rm: 0, pe: 0, msg: "", err: false, busy: false };
+  CST = { loaded: false, data: null, edit: null, msg: "", err: false, busy: false, lmsg: "" };
   var s = cabSess();
   if (!s) { CAB.step = "email"; drawCab(); return; }
   CAB.step = "load"; CAB.email = s.email; drawCab();
@@ -1571,7 +1808,8 @@ function drawCab() {
       '<button type="button" class="bigbtn" data-cab="save">Сохранить</button>' +
       '<button type="button" class="btn2" data-go="card-' + p.id + '">Посмотреть свою карточку</button></div>' +
       '<div class="panel">' + cabPhotos(p) + "</div>" +
-      '<div class="panel csh" id="csh_wrap">' + cabShopHtml(p) + "</div>";
+      '<div class="panel csh" id="csh_wrap">' + cabShopHtml(p) + "</div>" +
+      '<div class="panel cst" id="cst_wrap">' + cstHtml(p) + "</div>";
   } else if (m.status === "ждёт") {
     h = '<div class="panel"><p><b>Заявка отправлена.</b> ' + (m.req && m.req.name ? "«" + esc(m.req.name) + "». " : "") + "Мы проверим её и подтвердим в течение рабочего дня. Письмо придёт на " + esc(m.email) + ".</p></div>";
   } else {
@@ -1597,6 +1835,7 @@ function drawCab() {
   e.innerHTML = h;
   hrsLoadAll();
   if (CAB.step === "main" && m && m.place && m.place.shop && m.place.shop.on && !CSH.loaded) cabShopLoad();
+  if (CAB.step === "main" && m && m.place && !CST.loaded) cstLoad();
 }
 var CABRM = "";
 function cabPhItem(x, wait) { return '<div class="it"><img alt="" src="' + esc(x.url) + '">' + (wait ? '<span class="wait">На проверке</span>' : "") + '<button type="button" data-cphrm="' + esc(x.id) + '" aria-label="Удалить фото">×</button></div>'; }
@@ -1750,6 +1989,133 @@ function cabShopClick(b) {
   if (act === "up" || act === "down") { cshAct("move", id, { dir: act === "up" ? -1 : 1 }); return; }
   if (act === "sold" || act === "stock" || act === "hide" || act === "show") { cshAct(act, id); return; }
 }
+
+/* ===== кабинет: логотип и истории ===== */
+var CST = { loaded: false, data: null, edit: null, msg: "", err: false, busy: false, lmsg: "" };
+var ST_BTNS = [["", "Без кнопки"], ["call", "Позвонить"], ["card", "Открыть карточку"], ["route", "Маршрут"], ["wa", "Написать в WhatsApp"], ["link", "Подробнее (ссылка)"]];
+function cstStatus(x) {
+  var e = x.eff;
+  if (e === "на проверке") return "На проверке. Мы посмотрим её в течение рабочего дня";
+  if (e === "ждёт оплаты") return "Ждёт оплаты: " + x.sum + " ₽";
+  if (e === "отклонено") return "Отклонена" + (x.reason ? ": " + x.reason : "");
+  if (e === "запланировано") return "Запланирована на " + fmtDT(x.from);
+  if (e === "опубликовано") return "Опубликована до " + fmtDT(x.till);
+  return "В архиве";
+}
+function fmtDT(s) { var m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(s || ""); return m ? m[3] + "." + m[2] + " " + m[4] + ":" + m[5] : ""; }
+function cstLogoHtml(p) {
+  return '<div class="fld"><b>Логотип для историй</b><span>Он показывается в кружке вверху главной. Если логотипа нет, возьмём первое фото карточки</span>' +
+    (p.logoUrl ? '<img class="lg" alt="" src="' + esc(p.logoUrl) + '" referrerpolicy="no-referrer">' : "") + "</div>" +
+    (CST.lmsg ? '<div class="formmsg" role="status">' + esc(CST.lmsg) + "</div>" : "") +
+    '<div class="ca"><button type="button" class="sb" data-cst="logopick">' + (p.logoUrl ? "Заменить логотип" : "Загрузить логотип") + "</button>" + (p.logoUrl ? '<button type="button" class="sb" data-cst="logoclear">Убрать</button>' : "") + "</div>" +
+    '<input type="file" id="cs_logo" accept="image/*" style="display:none">';
+}
+function cstForm(p) {
+  var e = CST.edit, cfg = CST.data.cfg, paid = !cfg.free && cfg.used >= cfg.limit;
+  return '<div class="fld"><b>Новая история</b><span>' + (cfg.free ? "Для вас истории без ограничений. " : "Историй на этой неделе: " + cfg.used + " из " + cfg.limit + ". ") + (paid ? "Дальше каждая история платная: " + cfg.price + " ₽ за сутки." : "Эта история будет без оплаты.") + "</span></div>" +
+    '<div class="fld"><b>Фото или видео</b><span>Фото вертикальное смотрится лучше. Видео: выложите в клипы ВК и вставьте ссылку ниже</span>' + (e.photo ? '<div class="adph"><div class="it"><img alt="" src="data:image/jpeg;base64,' + e.photo + '"><button type="button" data-cst="rmph" aria-label="Убрать фото">×</button></div></div>' : "") + "</div>" +
+    (e.photo ? "" : '<button type="button" class="btn2" data-cst="pick">Добавить фото</button>') +
+    '<input type="file" id="cs_file" accept="image/*" style="display:none">' +
+    cabF("cs_video", "Ссылка на видео", "необязательно. Клип ВК, Rutube или YouTube Shorts", "input", e.video, "https://vk.com/clip-...", 200) +
+    cabF("cs_text", "Текст на картинке", "до 120 знаков", "input", e.text, "Свежая выпечка до 18:00", 120) +
+    '<label class="fld" for="cs_btn"><b>Кнопка внизу</b><select id="cs_btn">' + ST_BTNS.map(function (x) { return '<option value="' + x[0] + '"' + (e.btn === x[0] ? " selected" : "") + ">" + x[1] + "</option>"; }).join("") + "</select></label>" +
+    cabF("cs_link", "Ссылка кнопки", "нужна только для «Подробнее»", "input", e.link, "https://...", 200) +
+    '<label class="fld" for="cs_days"><b>На сколько дней</b><select id="cs_days">' + [1, 2, 3, 4, 5, 6, 7].map(function (n) { return '<option value="' + n + '"' + (Number(e.days) === n ? " selected" : "") + ">" + n + (n === 1 ? " сутки" : n < 5 ? " суток" : " суток") + "</option>"; }).join("") + "</select></label>" +
+    (CST.msg ? '<div class="formmsg' + (CST.err ? " err" : "") + '" role="status">' + esc(CST.msg) + "</div>" : "") +
+    '<button type="button" class="btn2" data-cst="preview">Посмотреть, как будет выглядеть</button>' +
+    '<button type="button" class="bigbtn" data-cst="send"' + (CST.busy ? " disabled" : "") + ">" + (CST.busy ? "Отправляем…" : "Отправить на проверку") + '</button><button type="button" class="btn2" data-cst="cancel">Отмена</button>';
+}
+function cstHtml(p) {
+  var h = cstLogoHtml(p) + '<div class="fld" style="margin-top:6px"><b>Истории</b><span>Короткие кружки вверху главной приложения. Каждую историю мы сначала проверяем</span></div>';
+  if (!CST.loaded) return h + '<div class="fld"><span>Загружаем…</span></div>' + (CST.msg ? '<div class="formmsg err">' + esc(CST.msg) + "</div>" : "");
+  if (CST.edit) return cstForm(p);
+  var d = CST.data;
+  h += (CST.msg ? '<div class="formmsg' + (CST.err ? " err" : "") + '" role="status">' + esc(CST.msg) + "</div>" : "") + '<button type="button" class="bigbtn" data-cst="add">Добавить историю</button>';
+  d.items.forEach(function (x) {
+    var live = x.eff === "опубликовано";
+    h += '<div class="ci">' + (x.photo ? '<img alt="" src="' + esc(x.photo) + '" referrerpolicy="no-referrer">' : '<span class="th"></span>') + '<div class="cb"><b>' + esc(x.text || (x.video ? "Видео" : "История")) + "</b><span>" + esc(cstStatus(x)) + "</span>" +
+      ((live || x.eff === "архив") ? "<span>Просмотры: " + x.views + " · Нажатия на кнопку: " + x.clicks + "</span>" : "") +
+      (live ? "<code>buguruslan56.ru/#story-" + x.id + '</code><div class="ca"><button type="button" class="sb" data-cst="copy" data-id="' + x.id + '">Скопировать ссылку</button><button type="button" class="sb" data-cst="remove" data-id="' + x.id + '">Убрать</button></div>' : "") + "</div></div>";
+  });
+  return h;
+}
+function cstRedraw() { var w = document.getElementById("cst_wrap"); if (w && CAB.me && CAB.me.place) w.innerHTML = cstHtml(CAB.me.place); }
+function cstLoad(keep) {
+  cabApi({ a: "own_stories" }).then(function (r) {
+    if (r && r.ok) { CST.data = r; CST.loaded = true; if (!keep) CST.msg = ""; } else CST.msg = (r && r.err) || "Не получилось загрузить истории.";
+    cstRedraw();
+  }, function () { CST.msg = "Нет связи. Проверьте интернет."; cstRedraw(); });
+}
+function cstRead() {
+  var e = CST.edit; if (!e || !document.getElementById("cs_text")) return;
+  var v = function (id) { var x = document.getElementById(id); return x ? x.value.trim() : ""; };
+  e.video = v("cs_video"); e.text = v("cs_text"); e.btn = v("cs_btn"); e.link = v("cs_link"); e.days = Number(v("cs_days")) || 1;
+}
+function cstDraft() {
+  var e = CST.edit, p = CAB.me.place;
+  var pl = itemById(p.id) || { name: p.name, phone: p.phone, wa: p.wa, addr: p.addr };
+  return { au: String(p.id), pl: pl, name: p.name, img: p.logoUrl || (p.photos && p.photos[0] && p.photos[0].url) || "", list: [{ id: 0, au: String(p.id), photo: e.photo ? "data:image/jpeg;base64," + e.photo : "", video: e.video, text: e.text, btn: e.btn, link: e.link, ago: 0 }] };
+}
+function cstClick(b) {
+  var act = b.getAttribute("data-cst"), e = CST.edit, id = Number(b.getAttribute("data-id")) || 0;
+  CST.err = false;
+  if (act === "logopick") { var lf = document.getElementById("cs_logo"); if (lf) lf.click(); return; }
+  if (act === "logoclear") { cabApi({ a: "own_logo_set", clear: true }).then(function (r) { CST.lmsg = r && r.ok ? "Логотип убран." : (r && r.err) || "Не получилось."; cabPhReloadMe(); }); return; }
+  if (act === "add") { CST.msg = ""; CST.edit = { photo: "", video: "", text: "", btn: "", link: "", days: 1 }; cstRedraw(); return; }
+  if (act === "cancel") { CST.edit = null; CST.msg = ""; cstRedraw(); return; }
+  if (act === "pick") { cstRead(); var f = document.getElementById("cs_file"); if (f) f.click(); return; }
+  if (act === "rmph") { cstRead(); e.photo = ""; cstRedraw(); return; }
+  if (act === "preview") {
+    cstRead();
+    if (!e.photo && !e.video) { CST.msg = "Добавьте фото или ссылку на видео."; CST.err = true; cstRedraw(); return; }
+    var dr = cstDraft(); svOpen(dr.au, 0, true, [dr]); return;
+  }
+  if (act === "copy") { var u = "https://buguruslan56.ru/#story-" + id; try { navigator.clipboard.writeText(u).then(function () { b.textContent = "Ссылка скопирована ✓"; }, function () { b.textContent = u; }); } catch (er) { b.textContent = u; } return; }
+  if (act === "remove") { cabApi({ a: "own_story_act", id: id, act: "remove" }).then(function (r) { CST.msg = r && r.ok ? "История убрана." : (r && r.err) || "Не получилось."; CST.err = !(r && r.ok); cstLoad(true); }); return; }
+  if (act === "send") {
+    cstRead();
+    if (!e.photo && !e.video) { CST.msg = "Добавьте фото или ссылку на видео."; CST.err = true; cstRedraw(); return; }
+    if (e.btn === "link" && !e.link) { CST.msg = "Для кнопки «Подробнее» вставьте ссылку."; CST.err = true; cstRedraw(); return; }
+    CST.busy = true; CST.msg = ""; cstRedraw();
+    cabApi({ a: "own_story_add", story: { photo: e.photo, video: e.video, text: e.text, btn: e.btn, link: e.link, days: e.days } }).then(function (r) {
+      CST.busy = false;
+      if (r && r.ok) {
+        CST.edit = null; CST.err = false;
+        CST.msg = r.status === "ждёт оплаты" ? "История сохранена и ждёт оплаты: " + r.sum + " ₽." + (r.pay ? " Оплатить: " + r.pay : " Напишите нам через «Техподдержку», подскажем, как оплатить.") : "Отправлено на проверку. Когда проверим, история появится в приложении.";
+        cstLoad(true);
+      } else if (r && r.auth === false) { sset("b56_own", ""); CAB.step = "email"; drawCab(); }
+      else { CST.msg = (r && r.err) || "Не получилось отправить."; CST.err = true; cstRedraw(); }
+    }, function () { CST.busy = false; CST.msg = "Нет связи. Проверьте интернет и попробуйте ещё раз."; CST.err = true; cstRedraw(); });
+  }
+}
+function cabPhReloadMe() {
+  cabApi({ a: "own_me" }).then(function (r) { if (r && r.ok && r.place) { CAB.me = r; } cstRedraw(); });
+}
+function cstFile(f) {
+  cstRead();
+  adShrink(f).then(function (b) { CST.edit.photo = b; cstRedraw(); }, function () { CST.msg = "Не получилось прочитать фото. Нужна обычная фотография."; CST.err = true; cstRedraw(); });
+}
+function cstLogo(f) {
+  CST.lmsg = "Загружаем…"; cstRedraw();
+  adShrink(f).then(function (b) {
+    cabApi({ a: "own_logo_set", data: b }).then(function (r) { CST.lmsg = r && r.ok ? "Логотип загружен. В приложении он появится в ближайшие минуты." : (r && r.err) || "Не получилось."; sset("b56_places", ""); cabPhReloadMe(); });
+  }, function () { CST.lmsg = "Не получилось прочитать файл."; cstRedraw(); });
+}
+var DEMO_STORY = [], DEMO_LOGO = "";
+function demoStory(o) {
+  var a = o.a, now = new Date();
+  function fmt(d) { return d.toISOString().slice(0, 19); }
+  if (a === "own_logo_set") { DEMO_LOGO = o.clear ? "" : "data:image/jpeg;base64," + o.data; if (DEMO_OWN.place) DEMO_OWN.place.logoUrl = DEMO_LOGO; return { ok: true }; }
+  if (a === "own_stories") return { ok: true, items: DEMO_STORY.map(function (x) { return JSON.parse(JSON.stringify(x)); }), cfg: { price: 100, limit: 3, used: DEMO_STORY.length, free: false } };
+  if (a === "own_story_add") {
+    var u = o.story; if (!u.photo && !u.video) return { ok: false, err: "Добавьте фото или ссылку на видео." };
+    var paid = DEMO_STORY.length >= 3, days = u.days || 1;
+    DEMO_STORY.unshift({ id: DEMO_STORY.length + 1, text: u.text, photo: u.photo ? "data:image/jpeg;base64," + u.photo : "", video: u.video, eff: paid ? "ждёт оплаты" : "на проверке", sum: paid ? 100 * days : 0, from: fmt(now), till: fmt(new Date(now.getTime() + days * 86400000)), views: 0, clicks: 0, reason: "" });
+    return { ok: true, status: paid ? "ждёт оплаты" : "на проверке", sum: paid ? 100 * days : 0, pay: "" };
+  }
+  if (a === "own_story_act") { DEMO_STORY.forEach(function (x) { if (x.id === o.id) x.eff = "архив"; }); return { ok: true }; }
+  return { ok: false, err: "?" };
+}
 function cabClick(b) {
   var act = b.getAttribute("data-cab");
   if (act === "again") { CAB.step = "email"; drawCab(); return; }
@@ -1800,7 +2166,7 @@ function cabClick(b) {
 var API = "https://script.google.com/macros/s/AKfycbyRiGD8kP3YnhLAa_FDMo_iwgBYz6Ld5zBhYERvGnK7sBLXAfRRuBSYR6HKCmobh0HeSQ/exec"; /* сюда вставляется адрес сервера (Google Apps Script). Пусто = пробный режим */
 var DEMO = !API;
 var DEMO_NEWS = [];
-var SEND = { card_open: 1, price_open: 1, call_click: 1, route_click: 1, link_click: 1, owner_info: 1, owner_contact: 1, news_open: 1, qr_open: 1, install: 1, open_from_icon: 1, role_resident: 1, role_owner: 1, install_howto: 1, owner_request: 1, support_open: 1, support_send: 1, ad_send: 1, cab_open: 1, cab_save: 1, item_open: 1, item_ask: 1 };
+var SEND = { card_open: 1, price_open: 1, call_click: 1, route_click: 1, link_click: 1, owner_info: 1, owner_contact: 1, news_open: 1, qr_open: 1, install: 1, open_from_icon: 1, role_resident: 1, role_owner: 1, install_howto: 1, owner_request: 1, support_open: 1, support_send: 1, ad_send: 1, cab_open: 1, cab_save: 1, item_open: 1, item_ask: 1, story_view: 1, story_click: 1 };
 var evq = [], newsData = [], memRole = "", memId = "";
 
 function sget(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -2091,6 +2457,7 @@ function render() {
   else if (r.v === "urgent") html = viewUrgent();
   else if (r.v === "item") html = viewItem(r.id);
   else if (r.v === "novelty") html = viewNovelty();
+  else if (r.v === "story") { html = viewHome(); results = homeResults; }
   else if (r.v === "install") html = viewInstall();
   else if (r.v === "news") html = viewNews();
   else if (r.v === "qr") html = viewQr();
@@ -2110,7 +2477,7 @@ function render() {
     var box = document.getElementById("results"), q = document.getElementById("q");
     RES = results;
     box.innerHTML = results("");
-    q.addEventListener("input", function () { box.innerHTML = results(q.value); var tp = document.getElementById("top"); if (tp) tp.hidden = !!q.value.trim(); var nv = document.getElementById("nov"); if (nv) nv.hidden = !!q.value.trim(); });
+    q.addEventListener("input", function () { box.innerHTML = results(q.value); var tp = document.getElementById("top"); if (tp) tp.hidden = !!q.value.trim(); var nv = document.getElementById("nov"); if (nv) nv.hidden = !!q.value.trim(); var sw = document.getElementById("srw"); if (sw) sw.hidden = !!q.value.trim(); });
   }
   document.title = "Бугуруслан всё в одном месте";
   bindGallery();
@@ -2122,6 +2489,7 @@ function render() {
     var rl = document.getElementById("role"); if (rl) rl.remove();
   }
   if (r.v === "home") askRole();
+  if (r.v === "story") { roleAsked = true; var rl2 = document.getElementById("role"); if (rl2) rl2.remove(); storyLink(r.id); }
   if (r.v === "cab") cabInit();
   try { window.scrollTo(0, 0); } catch (e) {}
 }
@@ -2175,7 +2543,7 @@ document.addEventListener("click", function (e) {
     rerunResults(); return;
   }
   var hb = e.target.closest("[data-hist]");
-  if (hb) { var hq = document.getElementById("q"); if (hq) { hq.value = hb.getAttribute("data-hist"); rerunResults(); var tp0 = document.getElementById("top"); if (tp0) tp0.hidden = true; var nv0 = document.getElementById("nov"); if (nv0) nv0.hidden = true; } return; }
+  if (hb) { var hq = document.getElementById("q"); if (hq) { hq.value = hb.getAttribute("data-hist"); rerunResults(); var tp0 = document.getElementById("top"); if (tp0) tp0.hidden = true; var nv0 = document.getElementById("nov"); if (nv0) nv0.hidden = true; var sw0 = document.getElementById("srw"); if (sw0) sw0.hidden = true; } return; }
   var tb = e.target.closest("[data-tab]");
   if (tb) {
     e.preventDefault();
@@ -2183,6 +2551,8 @@ document.addEventListener("click", function (e) {
     if (tr === state.route) { try { window.scrollTo(0, 0); } catch (er) {} return; }
     trackRoute(tr); state.stack = tr === "home" ? [] : ["home"]; state.route = tr; setHash(tr); render(); return;
   }
+  var stb = e.target.closest("[data-story]");
+  if (stb) { svOpen(stb.getAttribute("data-story"), 0); return; }
   var szb = e.target.closest("[data-size]");
   if (szb) {
     var szv = szb.getAttribute("data-size"), szs = document.querySelectorAll("[data-size]"), gp = parse(state.route), gg2 = goodById(gp.id), pl2 = gg2 && itemById(gg2.pid), aw = document.getElementById("askwa");
@@ -2202,6 +2572,8 @@ document.addEventListener("click", function (e) {
     var nbx = document.getElementById("novbox"); if (nbx) nbx.innerHTML = novBox();
     return;
   }
+  var cstb = e.target.closest("[data-cst]");
+  if (cstb) { cstClick(cstb); return; }
   var cshb = e.target.closest("[data-csh]");
   if (cshb) { cabShopClick(cshb); return; }
   var ac = e.target.closest("[data-adcat]");
@@ -2259,6 +2631,8 @@ document.addEventListener("click", function (e) {
 document.addEventListener("change", function (e) {
   if (e.target.id === "q") { histAdd(e.target.value); return; }
   if (e.target.id === "ad_cat") { adRefresh(); return; }
+  if (e.target.id === "cs_file") { var cf = e.target.files[0]; e.target.value = ""; if (cf) cstFile(cf); return; }
+  if (e.target.id === "cs_logo") { var lf = e.target.files[0]; e.target.value = ""; if (lf) cstLogo(lf); return; }
   if (e.target.id === "csh_file") { var sfl = Array.prototype.slice.call(e.target.files); e.target.value = ""; if (sfl.length) cabShopPhotos(sfl); return; }
   if (e.target.id === "cp_file") { var cfl = Array.prototype.slice.call(e.target.files); e.target.value = ""; if (cfl.length) cabPhUpload(cfl); return; }
   if (e.target.id !== "ad_file" || !e.target.files.length) return;
@@ -2287,6 +2661,7 @@ window.addEventListener("appinstalled", function () { sset("b56_inst", "1"); tra
   try { r = location.hash.slice(1) || "home"; } catch (e) {}
   loadPlaces();
   loadGoods();
+  loadStories();
   loadAds();
   loadBanners();
   loadUrgent();
