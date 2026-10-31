@@ -1067,6 +1067,22 @@ function loadInbox() {
     draw();
   });
 }
+/* входящие обновляются сами: при возвращении в приложение и раз в минуту, чтобы заявка не ждала, пока вы выйдете и зайдёте снова */
+var QBUSY = false, QLAST = 0;
+function quietInbox() {
+  if (!PW || !ROLE || QBUSY || document.hidden) return;
+  QBUSY = true; QLAST = Date.now();
+  Promise.all([call({ a: "tickets_list", pw: PW }), call({ a: "owners_admin", pw: PW }), call({ a: "ads_admin", pw: PW })]).then(function (rs) {
+    QBUSY = false;
+    if (!PW) return;
+    if (rs[0].ok) TICKETS = rs[0].items; if (rs[1].ok) OWN = rs[1].items; if (rs[2].ok) ADS = rs[2].items;
+    var ae = document.activeElement, typing = ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName);
+    if (!ED && !typing && !BUSY && (TAB === "inbox" || TAB === "places" || TAB === "stats" || TAB === "pub")) draw();
+  }, function () { QBUSY = false; });
+}
+document.addEventListener("visibilitychange", function () { if (!document.hidden) quietInbox(); });
+window.addEventListener("focus", function () { if (Date.now() - QLAST > 15000) quietInbox(); });
+setInterval(quietInbox, 60000);
 function loadStats() { call({ a: "stories_admin", pw: PW }).then(function (r) { if (r.ok) { STO.items = r.items; STO.cfg = r.cfg; if (TAB === "stats") draw(); } }); return call({ a: "stats", pw: PW }).then(function (r) { if (r.ok) { STATS = r; STORG = {}; (r.orgs || []).forEach(function (o) { STORG[o.org] = { views: o.views, calls: o.calls }; }); } else if (TAB === "stats") afterAuthFail(r); draw(); }); }
 function loadPub() {
   return Promise.all([call({ a: "news_list", pw: PW }), call({ a: "banners_list", pw: PW }), call({ a: "urgent_admin", pw: PW }), call({ a: "stories_admin", pw: PW }), call({ a: "places_list", pw: PW })]).then(function (rs) { if (rs[0].ok) NEWS = rs[0].items; else afterAuthFail(rs[0]); if (rs[1].ok) BANNERS = rs[1].items; if (rs[2].ok) URGL = rs[2].items; if (rs[3].ok) { STO.items = rs[3].items; STO.cfg = rs[3].cfg; } if (rs[4].ok) PLACES = rs[4].items; draw(); });
