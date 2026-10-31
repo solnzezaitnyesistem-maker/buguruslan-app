@@ -5,6 +5,28 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#14532D">
+<script>
+/* значок и «установка» админки на телефон: рисуем значок «Б-56 админ» и подключаем манифест без отдельных файлов */
+(function () {
+  try {
+    function ic(n) {
+      var c = document.createElement("canvas"); c.width = c.height = n; var x = c.getContext("2d");
+      x.fillStyle = "#14532D"; x.fillRect(0, 0, n, n);
+      x.fillStyle = "#FFD166"; x.fillRect(0, n * 0.72, n, n * 0.06);
+      x.fillStyle = "#FFFFFF"; x.textAlign = "center"; x.textBaseline = "middle";
+      x.font = "800 " + Math.round(n * 0.34) + "px Arial, sans-serif"; x.fillText("Б-56", n / 2, n * 0.42);
+      x.fillStyle = "#FFD166"; x.font = "800 " + Math.round(n * 0.13) + "px Arial, sans-serif"; x.fillText("АДМИН", n / 2, n * 0.62 + n * 0.0);
+      return c.toDataURL("image/png");
+    }
+    var i192 = ic(192), i512 = ic(512), base = location.origin + location.pathname.replace(/[^\/]*$/, "");
+    var m = { name: "Б-56 админка", short_name: "Б-56 админ", lang: "ru", start_url: base + "admin.html", scope: base, display: "standalone", background_color: "#F2F7F3", theme_color: "#14532D",
+      icons: [{ src: i192, sizes: "192x192", type: "image/png", purpose: "any maskable" }, { src: i512, sizes: "512x512", type: "image/png", purpose: "any maskable" }] };
+    function add(rel, href) { var l = document.createElement("link"); l.rel = rel; l.href = href; document.head.appendChild(l); }
+    add("icon", i192); add("apple-touch-icon", i192);
+    add("manifest", URL.createObjectURL(new Blob([JSON.stringify(m)], { type: "application/manifest+json" })));
+  } catch (e) {}
+})();
+</script>
 <title>Администратор Б-56</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -388,7 +410,8 @@ var IC = {
 var CAT_TONE = { krasota: "pink", kafe: "orange", konditery: "orange", avto: "blue", moyki: "blue", zapchasti: "blue", remont: "sand", okna: "sand", mebel: "sand", uslugi: "lilac", tehnika: "sky", cvety: "rasp" };
 var PL_SKIP = "салон магазин студия парикмахерская центр компания ателье мастерская сервис автосервис клиника школа служба бюро агентство группа ип ооо и для на по от shop salon studio".split(" ");
 function plashText(name) {
-  var base = String(name || "").split(/[:,(—–]/)[0], toks = base.split(/[^A-Za-zА-Яа-яЁё0-9]+/).filter(function (t) { return t; });
+  var full = String(name || ""), qm = full.match(/«([^»]+)»|"([^"]+)"|“([^”]+)”|„([^“”]+)[“”]/), q = qm ? (qm[1] || qm[2] || qm[3] || qm[4]) : "";
+  var base = (q && /[A-Za-zА-Яа-яЁё0-9]/.test(q) ? q : full).split(/[:,(—–]/)[0], toks = base.split(/[^A-Za-zА-Яа-яЁё0-9]+/).filter(function (t) { return t; });
   var keep = toks.filter(function (t) { return PL_SKIP.indexOf(t.toLowerCase()) < 0; });
   if (!keep.length) keep = toks;
   if (!keep.length) return "Б";

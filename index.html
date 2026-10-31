@@ -824,7 +824,8 @@ var CAT_TONE = { krasota: "pink", kafe: "orange", konditery: "orange", avto: "bl
 function toneOf(catId) { return CAT_TONE[catId] || "green"; }
 var PL_SKIP = "салон магазин студия парикмахерская центр компания ателье мастерская сервис автосервис клиника школа служба бюро агентство группа ип ооо и для на по от the shop salon studio".split(" ");
 function plashText(name) {
-  var base = String(name || "").split(/[:,(—–]/)[0], toks = base.split(/[^A-Za-zА-Яа-яЁё0-9]+/).filter(function (t) { return t; });
+  var full = String(name || ""), qm = full.match(/«([^»]+)»|"([^"]+)"|“([^”]+)”|„([^“”]+)[“”]/), q = qm ? (qm[1] || qm[2] || qm[3] || qm[4]) : "";
+  var base = (q && /[A-Za-zА-Яа-яЁё0-9]/.test(q) ? q : full).split(/[:,(—–]/)[0], toks = base.split(/[^A-Za-zА-Яа-яЁё0-9]+/).filter(function (t) { return t; });
   var keep = toks.filter(function (t) { return PL_SKIP.indexOf(t.toLowerCase()) < 0; });
   if (!keep.length) keep = toks;
   if (!keep.length) return "Б";
@@ -1324,8 +1325,8 @@ function homeDefault() {
   var h = histGet(), out = "";
   if (h.length) out += '<div class="hist"><span class="hl">Вы искали:</span>' + h.map(function (x) { return '<button type="button" data-hist="' + esc(x) + '">' + esc(x) + "</button>"; }).join("") + "</div>";
   out += "<h2>Популярное</h2>" + (liveCats().length ? popularTiles() : emptyBlock("Разделы скоро появятся", "Заведения добавляются каждый день."));
-  var fresh = ITEMS.slice().sort(function (a, b) { return Number(b.id) - Number(a.id); }).slice(0, 3);
-  if (fresh.length) out += "<h2>Новые в городе</h2>" + '<div class="list">' + fresh.map(function (it) { return orgMini(it); }).join("") + "</div>";
+  var fresh = ITEMS.filter(function (it) { return it.logo || (it.photos && it.photos[0]); }).sort(function (a, b) { return Number(b.id) - Number(a.id); }).slice(0, 3);
+  if (fresh.length >= 2) out += "<h2>Новые в приложении</h2>" + '<div class="list">' + fresh.map(function (it) { return orgMini(it); }).join("") + "</div>";
   return out;
 }
 function homeResults(q) {
