@@ -9,7 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root { --bg:#F2F7F3; --ink:#0B2417; --green:#14532D; --line:#CFE0D5; --muted:#4D6657; --gold:#FFD166; --mint:#DCEFE2; --white:#fff; --red:#B3261E;
+:root { --t-pink-bg:#FCE4EC; --t-pink-fg:#8C2A52; --t-orange-bg:#FFE8CC; --t-orange-fg:#8A4B08; --t-blue-bg:#DCEBFB; --t-blue-fg:#1D4F8C; --t-sand-bg:#F1E7D2; --t-sand-fg:#6E5522; --t-lilac-bg:#E9E1F7; --t-lilac-fg:#53388F; --t-sky-bg:#D6F0F7; --t-sky-fg:#1B6377; --t-rasp-bg:#F8D9E8; --t-rasp-fg:#9B1F5E; --t-green-bg:#DCEFE2; --t-green-fg:#14532D;
+  --bg:#F2F7F3; --ink:#0B2417; --green:#14532D; --line:#CFE0D5; --muted:#4D6657; --gold:#FFD166; --mint:#DCEFE2; --white:#fff; --red:#B3261E;
   --font:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -83,6 +84,13 @@ body.busy::before { content:"Загружаю…"; position:fixed; top:0; left:0
 .pr .bar { display:flex; align-items:center; gap:10px; }
 .pr .bar i { flex:1; height:8px; border-radius:99px; background:#EDF2EE; overflow:hidden; display:block; }
 .pr .bar i b { display:block; height:100%; background:var(--green); border-radius:99px; }
+.thm { position:relative; flex:0 0 auto; width:64px; height:64px; border-radius:14px; overflow:hidden; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:22px; background:var(--tbg); color:var(--tfg); }
+.thm img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+.thm.sm { width:48px; height:48px; font-size:17px; border-radius:11px; }
+.prv { display:flex; align-items:center; gap:12px; background:#fff; border:1px solid var(--line); border-radius:14px; padding:10px 12px; margin-bottom:10px; }
+.prv small { color:var(--muted); font-size:13px; line-height:1.35; }
+.pr .top { display:flex; gap:12px; align-items:flex-start; } .pr .top .tx { flex:1; min-width:0; display:flex; flex-direction:column; gap:6px; }
+.pr .ms.dup { color:#A4262C; font-weight:700; }
 .pr .ms { font-size:13px; color:var(--muted); }
 .pr .st { font-size:13px; color:#124A8A; font-weight:700; }
 .bd { display:inline-block; flex:none; padding:4px 10px; border-radius:999px; font-size:13px; font-weight:800; }
@@ -376,6 +384,20 @@ var IC = {
   plus: ic('<path d="M12 5v14M5 12h14"/>')
 };
 
+/* ---------- миниатюра карточки (как в списке на главной) ---------- */
+var CAT_TONE = { krasota: "pink", kafe: "orange", konditery: "orange", avto: "blue", moyki: "blue", zapchasti: "blue", remont: "sand", okna: "sand", mebel: "sand", uslugi: "lilac", tehnika: "sky", cvety: "rasp" };
+var PL_SKIP = "салон магазин студия парикмахерская центр компания ателье мастерская сервис автосервис клиника школа служба бюро агентство группа ип ооо и для на по от shop salon studio".split(" ");
+function plashText(name) {
+  var base = String(name || "").split(/[:,(—–]/)[0], toks = base.split(/[^A-Za-zА-Яа-яЁё0-9]+/).filter(function (t) { return t; });
+  var keep = toks.filter(function (t) { return PL_SKIP.indexOf(t.toLowerCase()) < 0; });
+  if (!keep.length) keep = toks;
+  if (!keep.length) return "Б";
+  return (keep.length === 1 ? keep[0].charAt(0) : keep[0].charAt(0) + keep[1].charAt(0)).toUpperCase();
+}
+function thmHtml(p, sm) {
+  var t = CAT_TONE[p.cat] || "green", u = p.logo || (p.photos && p.photos[0]) || "";
+  return '<span class="thm' + (sm ? " sm" : "") + '" style="--tbg:var(--t-' + t + '-bg);--tfg:var(--t-' + t + '-fg)"><b>' + esc(plashText(p.name)) + "</b>" + (u ? '<img src="' + esc(u) + '" alt="" loading="lazy" onerror="this.remove()">' : "") + "</span>";
+}
 /* ---------- заполненность ---------- */
 function fillInfo(p) {
   var miss = [], ok = 0;
@@ -384,6 +406,7 @@ function fillInfo(p) {
   if (p.hours) ok++; else miss.push("нет часов");
   if (p.vk || p.site || p.tg || p.wa || p.max) ok++; else miss.push("нет ссылок");
   if (p.photoIds && p.photoIds.length) ok++; else miss.push("нет фото");
+  if (!p.logo && !p.logoId) miss.push("нет логотипа");
   if (p.priceText) ok++; else miss.push("нет прайса");
   return { pct: Math.round(ok / 6 * 100), miss: miss };
 }
@@ -398,10 +421,12 @@ function placeRow(p) {
   if (st) extra = '<span class="ms">' + st.views + " " + plural(st.views, "просмотр", "просмотра", "просмотров") + " · " + st.calls + " " + plural(st.calls, "звонок", "звонка", "звонков") + " за 30 дней</span>";
   var sd = staleInfo(p);
   var miss = f.miss.slice(); if (sd >= 90) miss.push(sd >= 9999 ? "не проверяли" : "не проверяли " + Math.floor(sd / 30) + " мес.");
-  return '<button type="button" class="pr" data-pedit="' + p.id + '"><span class="l1"><span class="nm">' + esc(p.name) + "</span>" + badgeOf(p, f) + "</span>" +
+  var dupTx = "";
+  if (p.dupOf) { var dp = PLACES.filter(function (x) { return String(x.id) === String(p.dupOf); })[0]; dupTx = '<span class="ms dup">Дубль: такая же карточка уже есть' + (dp ? ' («' + esc(dp.name) + '», ' + esc(dp.addr || "") + ")" : "") + ". На сайте показывается одна. Скройте лишнюю.</span>"; }
+  return '<button type="button" class="pr" data-pedit="' + p.id + '"><span class="top">' + thmHtml(p) + '<span class="tx"><span class="l1"><span class="nm">' + esc(p.name) + "</span>" + badgeOf(p, f) + "</span>" +
     '<span class="ct">' + esc(catName(p.cat)) + "</span>" +
-    '<span class="bar"><i><b style="width:' + f.pct + '%"></b></i></span>' +
-    '<span class="ms">' + (miss.length ? esc(miss.join(", ")) : "всё заполнено") + "</span>" + extra +
+    '<span class="bar"><i><b style="width:' + f.pct + '%"></b></i></span></span></span>' +
+    '<span class="ms">' + (miss.length ? esc(miss.join(", ")) : "всё заполнено") + "</span>" + dupTx + extra +
     (p.memo ? '<span class="st">' + esc(String(p.memo).slice(0, 80)) + "</span>" : "") + "</button>";
 }
 function plural(n, a, b, c) { n = Math.abs(n) % 100; var m = n % 10; if (n > 10 && n < 20) return c; if (m > 1 && m < 5) return b; if (m === 1) return a; return c; }
@@ -502,7 +527,7 @@ function inp(id, label, v, hint, extra) { return '<label>' + label + (hint ? "<s
 function photoInner() {
   var e = ED, ids = e.photoIds || [], urls = e.photos || [];
   if (!e.id) return '<div class="note">Фото можно добавить, когда заведение сохранено. Заполните раздел, название и телефон, это произойдёт само.</div>';
-  var lg = '<div class="note"><b>Логотип для историй.</b> Показывается в кружке на главной. Если не загрузить, возьмём первое фото карточки.</div>' + (e.logo ? '<div style="display:flex;align-items:center;gap:10px"><img src="' + esc(e.logo) + '" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:1px solid var(--line)"><button type="button" class="btn red sm" data-lgdel="1">Убрать логотип</button></div>' : "") + '<label>' + (e.logo ? "Заменить логотип" : "Загрузить логотип") + '<input id="lfile" type="file" accept="image/*"' + (PHBUSY ? " disabled" : "") + "></label>";
+  var lg = '<div class="prv">' + thmHtml(e) + '<small><b>Так карточка выглядит в списке.</b><br>' + (e.logo ? "Показан логотип." : urls[0] ? "Логотипа нет, показано первое фото." : "Нет ни логотипа, ни фото: цветная плашка с буквами.") + '</small></div><div class="note"><b>Логотип.</b> Показывается в списке и в историях, с ним карточку замечают чаще. Если не загрузить, возьмём первое фото карточки.</div>' + (e.logo ? '<div style="display:flex;align-items:center;gap:10px"><img src="' + esc(e.logo) + '" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:1px solid var(--line)"><button type="button" class="btn red sm" data-lgdel="1">Убрать логотип</button></div>' : "") + '<label>' + (e.logo ? "Заменить логотип" : "Загрузить логотип") + '<input id="lfile" type="file" accept="image/*"' + (PHBUSY ? " disabled" : "") + "></label>";
   return lg + (e.pendIds && e.pendIds.length ? '<div class="note"><b>Фото от владельца ждут проверки: ' + e.pendIds.length + '.</b> Откройте «Входящие», там кнопки «Принять» и «Отклонить».</div>' : "") + '<div class="note">До 6 фото, первое показывается первым. Быстро: скопируйте картинку и нажмите здесь Ctrl+V.</div>' +
     (ids.length ? '<div class="ph-grid">' + ids.map(function (f, i) { return '<div style="display:flex;flex-direction:column;gap:6px"><img src="' + esc(urls[i]) + '" alt=""><button type="button" class="btn red sm" data-delph="' + esc(f) + '">Убрать</button></div>'; }).join("") + "</div>" : "") +
     (ids.length < 6 ? '<label>Добавить фото<input id="pfile" type="file" accept="image/*" multiple' + (PHBUSY ? " disabled" : "") + "></label>" : "") + (PHBUSY ? '<div class="note">Загружаю…</div>' : "");
