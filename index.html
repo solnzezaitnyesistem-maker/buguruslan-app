@@ -1307,6 +1307,19 @@ document.addEventListener("click", function (e) {
     window.open(bt.url, "_blank", "noopener");
   }
 }, true);
+/* клавиатура телефона: «Найти» на клавиатуре снимает фокус с поля, и клавиатура прячется */
+document.addEventListener("keydown", function (e) {
+  var t = e.target;
+  if (t && t.id === "q" && (e.key === "Enter" || e.keyCode === 13)) { e.preventDefault(); try { histAdd(t.value); } catch (x) {} t.blur(); }
+});
+/* и когда человек начинает листать результаты, клавиатура тоже прячется */
+var kbY = null;
+document.addEventListener("touchstart", function (e) { kbY = e.touches && e.touches[0] ? e.touches[0].clientY : null; }, { passive: true, capture: true });
+document.addEventListener("touchmove", function (e) {
+  var a = document.activeElement;
+  if (kbY === null || !a || a.id !== "q" || !e.touches || !e.touches[0]) return;
+  if (Math.abs(e.touches[0].clientY - kbY) > 14) { a.blur(); kbY = null; }
+}, { passive: true, capture: true });
 document.addEventListener("keydown", function (e) {
   if (!SV) return;
   if (e.key === "Escape") svClose(); else if (e.key === "ArrowRight") svNext(); else if (e.key === "ArrowLeft") svPrev();
