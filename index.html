@@ -88,6 +88,13 @@ h2 { margin: 0; font-size: 18px; font-weight: 800; }
 .ptile .ic { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--tbg, var(--mint)); color: var(--tfg, #14532D); }
 .pfeed { display: flex; gap: 12px; overflow-x: auto; margin: 6px -20px 0; padding: 4px 20px 8px; scroll-snap-type: x mandatory; scroll-padding-inline: 20px; scrollbar-width: none; }
 .pfeed::-webkit-scrollbar { display: none; }
+.nrow { display: flex; gap: 10px; overflow-x: auto; margin: 6px -20px 0; padding: 4px 20px 8px; scroll-snap-type: x proximity; scroll-padding-inline: 20px; scrollbar-width: none; }
+.nrow::-webkit-scrollbar { display: none; }
+.nc { flex: 0 0 148px; scroll-snap-align: start; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; background: var(--white); border: 1px solid var(--line); border-radius: 16px; padding: 10px; color: var(--ink); text-decoration: none; }
+.nc .thm { margin: 0 0 4px; }
+.nc b { font-size: 14.5px; font-weight: 800; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+.nc .cn { font-size: 12.5px; color: var(--muted); }
+.nc .lw { margin-top: 2px; }
 .pf { flex: 0 0 78%; max-width: 320px; scroll-snap-align: start; display: flex; flex-direction: column; background: var(--white); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; padding: 0; text-align: left; font: inherit; color: var(--ink); cursor: pointer; }
 .pf .pfp { position: relative; width: 100%; aspect-ratio: 16 / 9; background: var(--mint); overflow: hidden; display: block; }
 .pf .pfp img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -816,6 +823,19 @@ function orgCard(it, showCat) {
     (oi ? '<div class="st' + (oi.open ? " on" : "") + '">' + esc(oi.text) + "</div>" : "") +
     (call ? "" : '<div class="line">' + ico(P.phone, 18, "#14532D") + '<span class="phone-t">' + esc(it.phone) + "</span></div>") + "</a>" + acts + heartBtn(it, "ohrt") + "</div>";
 }
+var FRESH_SEED = Math.random() * 1000;
+function frRand(id) { var x = Math.sin(Number(id) * 12.9898 + FRESH_SEED * 78.233) * 43758.5453; return x - Math.floor(x); }
+function freshCard(it, sm) {
+  var c = catById([].concat(it.cat)[0]), l = lblHtml(it, sm, true);
+  return '<a class="nc" href="#card-' + it.id + '" data-go="card-' + it.id + '">' + thmHtml(it, sm) + '<b>' + esc(it.name) + '</b><span class="cn">' + esc(c ? c.name : "") + "</span>" + (l ? '<span class="lw">' + l + "</span>" : "") + "</a>";
+}
+function freshStrip() {
+  var l = ITEMS.filter(function (it) { return it.logo || (it.photos && it.photos[0]); });
+  if (l.length < 2) return "";
+  l.sort(function (a, b) { return frRand(a.id) - frRand(b.id); });
+  var sm = stMap();
+  return "<h2>Новые в приложении</h2>" + '<div class="nrow">' + l.slice(0, 6).map(function (it) { return freshCard(it, sm); }).join("") + "</div>";
+}
 function orgMini(it, sm) {
   var c = catById([].concat(it.cat)[0]), oi = openInfo(it.hours);
   return '<a class="mini" href="#card-' + it.id + '" data-go="card-' + it.id + '">' + thmHtml(it, sm) + '<span class="tx"><b>' + esc(it.name) + "</b><span>" + lblHtml(it, sm) + " " + esc((c ? c.name + " · " : "") + it.addr) + "</span>" + (oi ? '<span class="st' + (oi.open ? " on" : "") + '">' + esc(oi.text) + "</span>" : "") + "</span></a>";
@@ -846,14 +866,14 @@ function thmHtml(it, sm) {
 }
 function hasAction(it) { var k = nrm(it.name); return newsData.some(function (n) { return n.type === "Акция" && !n.expired && nrm(n.org) === k; }); }
 function isNewPlace(it) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(it.added || ""); if (!m) return false; return (Date.now() - new Date(+m[1], +m[2] - 1, +m[3]).getTime()) / 86400000 < 14; }
-function cardLabel(it, sm) {
+function cardLabel(it, sm, noRec) {
   if ((sm || stMap())[String(it.id)]) return ["История", "lb-hist"];
   if (hasAction(it)) return ["Акция", "lb-act"];
   if (isNewPlace(it)) return ["Новое", "lb-new"];
-  if (it.rec) return ["Рекомендуем", "lb-rec"];
+  if (it.rec && !noRec) return ["Рекомендуем", "lb-rec"];
   return null;
 }
-function lblHtml(it, sm) { var l = cardLabel(it, sm); return l ? '<span class="lbl ' + l[1] + '">' + l[0] + "</span>" : ""; }
+function lblHtml(it, sm, noRec) { var l = cardLabel(it, sm, noRec); return l ? '<span class="lbl ' + l[1] + '">' + l[0] + "</span>" : ""; }
 function dedupePlaces(list) {
   var seen = {}, out = [];
   (list || []).slice().sort(function (a, b) { return Number(a.id) - Number(b.id); }).forEach(function (it) {
@@ -1325,8 +1345,7 @@ function homeDefault() {
   var h = histGet(), out = "";
   if (h.length) out += '<div class="hist"><span class="hl">Вы искали:</span>' + h.map(function (x) { return '<button type="button" data-hist="' + esc(x) + '">' + esc(x) + "</button>"; }).join("") + "</div>";
   out += "<h2>Популярное</h2>" + (liveCats().length ? popularTiles() : emptyBlock("Разделы скоро появятся", "Заведения добавляются каждый день."));
-  var fresh = ITEMS.filter(function (it) { return it.logo || (it.photos && it.photos[0]); }).sort(function (a, b) { return Number(b.id) - Number(a.id); }).slice(0, 3);
-  if (fresh.length >= 2) out += "<h2>Новые в приложении</h2>" + '<div class="list">' + fresh.map(function (it) { return orgMini(it); }).join("") + "</div>";
+  out += freshStrip();
   return out;
 }
 function homeResults(q) {
