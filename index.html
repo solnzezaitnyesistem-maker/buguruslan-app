@@ -488,6 +488,16 @@ button.soon { width: 100%; text-align: left; font: inherit; cursor: pointer; }
 .svf .bg { position: absolute; inset: -20px; width: calc(100% + 40px); height: calc(100% + 40px); object-fit: cover; filter: blur(24px) brightness(.6); }
 .svf .svm { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
 .svf iframe.svm { border: 0; background: #000; }
+.svld { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: #fff; font-size: 15px; font-weight: 700; pointer-events: none; background: rgba(0,0,0,.28); }
+.svld i { width: 34px; height: 34px; border-radius: 50%; border: 3px solid rgba(255,255,255,.35); border-top-color: #fff; animation: svspin .9s linear infinite; }
+@keyframes svspin { to { transform: rotate(360deg); } }
+.svf.rdy .svld { display: none; }
+.svh .svrp { font-size: 17px; }
+.svrep { position: absolute; inset: 0; z-index: 6; display: flex; align-items: center; justify-content: center; background: rgba(8,24,14,.82); padding: 24px; }
+.svrep > div { background: #fff; color: var(--ink); border-radius: 18px; padding: 18px; width: 100%; max-width: 320px; text-align: center; }
+.svrep p { margin: 0 0 14px; font-size: 16px; line-height: 1.4; font-weight: 700; }
+.svrep button { display: block; width: 100%; border: 0; border-radius: 14px; padding: 13px; font: inherit; font-weight: 800; font-size: 16px; margin-top: 8px; cursor: pointer; }
+.svrep .go { background: #B3261E; color: #fff; } .svrep .no { background: var(--mint); color: var(--green); }
 .svf .shade { position: absolute; left: 0; right: 0; top: 0; height: 120px; background: linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,0)); pointer-events: none; }
 .svp { position: absolute; left: 10px; right: 10px; top: calc(10px + env(safe-area-inset-top)); display: flex; gap: 4px; z-index: 3; }
 .svp i { flex: 1; height: 3px; border-radius: 2px; background: rgba(255,255,255,.35); overflow: hidden; }
@@ -1165,7 +1175,7 @@ function svOpen(au, idx, preview, custom) {
   d.className = "svw"; d.id = "sv";
   d.setAttribute("role", "dialog"); d.setAttribute("aria-label", "Истории");
   document.body.appendChild(d);
-  SV = { as: as, a: a, i: idx || 0, el: 0, start: 0, raf: 0, paused: false, hold: 0, preview: !!preview, node: d, off: false };
+  SV = { as: as, a: a, i: idx || 0, el: 0, start: 0, raf: 0, paused: false, hold: 0, preview: !!preview, node: d, off: false, muted: true };
   var prevOv = ""; try { prevOv = document.body.style.overflow; document.body.style.overflow = "hidden"; } catch (e) {}
   SV.ov = prevOv;
   svShow();
@@ -1182,12 +1192,13 @@ function svShow() {
   if (vf) media = (s.photo ? '<img class="bg" alt="" src="' + esc(s.photo) + '" referrerpolicy="no-referrer">' : "") + '<video class="svm" playsinline webkit-playsinline preload="auto"' + (s.photo ? ' poster="' + esc(s.photo) + '"' : "") + ' src="' + esc(vf) + '"></video>';
   else if (isVid) media = '<iframe class="svm" src="' + esc(emb) + '" allow="autoplay; encrypted-media; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="origin" title="Видео"></iframe>';
   else media = s.photo ? '<img class="bg" alt="" src="' + esc(s.photo) + '" referrerpolicy="no-referrer"><img class="svm" alt="" src="' + esc(s.photo) + '" referrerpolicy="no-referrer">' : "";
+  if (vf) media += '<div class="svld" id="svld"><i></i><span>Загружаем видео…</span></div>';
   var bt = svBtnInfo(s, A), vlink = s.video && !isVid && !vf ? s.video : "";
   var btn = bt ? '<button type="button" class="svb" data-svbtn="1">' + esc(bt.label) + "</button>" : (vlink ? '<button type="button" class="svb" data-svbtn="v">Смотреть видео</button>' : "");
   var av = A.b56 && !A.img ? '<span class="ph">' + SV_ICON + "</span>" : '<img alt="" src="' + esc(thumb(A.img)) + '" referrerpolicy="no-referrer">';
   SV.node.innerHTML = '<div class="svf' + (isVid ? " vid" : "") + '" id="svf">' + media + '<div class="shade"></div>' +
     '<div class="svp">' + A.list.map(function () { return "<i><b></b></i>"; }).join("") + "</div>" +
-    '<div class="svh">' + av + '<span class="tt"><b>' + esc(A.hname || A.name) + "</b><small>" + esc(SV.preview ? "так увидят жители" : svAgo(s.ago)) + "</small></span>" + (vf ? '<button type="button" data-svsnd="1" aria-label="Звук включить или выключить" style="font-size:18px">' + svSndTxt() + "</button>" : "") + '<button type="button" data-svclose="1" aria-label="Закрыть">×</button></div>' +
+    '<div class="svh">' + av + '<span class="tt"><b>' + esc(A.hname || A.name) + "</b><small>" + esc(SV.preview ? "так увидят жители" : svAgo(s.ago)) + "</small></span>" + (vf ? '<button type="button" data-svsnd="1" aria-label="Звук включить или выключить" style="font-size:18px">' + svSndTxt() + "</button>" : "") + (!SV.preview && !A.b56 ? '<button type="button" class="svrp" data-svrep="1" aria-label="Пожаловаться на историю">⚑</button>' : "") + '<button type="button" data-svclose="1" aria-label="Закрыть">×</button></div>' +
     '<div class="svz l" data-svz="prev"></div><div class="svz r" data-svz="next"></div>' +
     (s.text ? '<div class="svt">' + esc(s.text) + "</div>" : "") + btn +
     '<button type="button" class="sva l" data-svz="prev" aria-label="Назад">‹</button><button type="button" class="sva r" data-svz="next" aria-label="Вперёд">›</button></div>';
@@ -1198,18 +1209,22 @@ function svShow() {
   if (vf) {
     var vel = SV.node.querySelector("video.svm"); SV.vel = vel;
     vel.muted = !!SV.muted;
-    vel.addEventListener("playing", function () { SV.vstarted = true; });
+    function started() { SV.vstarted = true; var f0 = document.getElementById("svf"); if (f0) f0.classList.add("rdy"); }
+    function toDrive() {
+      if (!SV || SV.vel !== vel || !s.vf) return false;
+      var f = document.createElement("iframe"); f.className = "svm"; f.allow = "autoplay; fullscreen"; f.setAttribute("allowfullscreen", ""); f.title = "Видео";
+      f.src = "https://drive.google.com/file/d/" + encodeURIComponent(s.vf) + "/preview";
+      f.addEventListener("load", function () { var f1 = document.getElementById("svf"); if (f1) f1.classList.add("rdy"); });
+      vel.parentNode.replaceChild(f, vel); SV.vel = null; SV.isVid = true; svStop();
+      var f2 = document.getElementById("svf"); if (f2) f2.classList.add("vid");
+      if (SV.cur) SV.cur.style.width = "100%";
+      var sb = SV.node.querySelector("[data-svsnd]"); if (sb) sb.remove();
+      return true;
+    }
+    vel.addEventListener("playing", started);
     vel.addEventListener("ended", function () { if (SV && SV.vel === vel) svNext(); });
-    vel.addEventListener("error", function () {
-      if (!SV || SV.vel !== vel) return;
-      if (s.vf) {
-        var f = document.createElement("iframe"); f.className = "svm"; f.allow = "autoplay; fullscreen"; f.setAttribute("allowfullscreen", ""); f.title = "Видео";
-        f.src = "https://drive.google.com/file/d/" + encodeURIComponent(s.vf) + "/preview";
-        vel.parentNode.replaceChild(f, vel); SV.vel = null; SV.isVid = true; svStop();
-        if (SV.cur) SV.cur.style.width = "100%";
-        var sb = SV.node.querySelector("[data-svsnd]"); if (sb) sb.remove();
-      } else { svNext(); }
-    });
+    vel.addEventListener("error", function () { if (!SV || SV.vel !== vel) return; if (!toDrive()) svNext(); });
+    setTimeout(function () { if (SV && SV.vel === vel && !SV.vstarted) { if (s.vf) toDrive(); } }, 6000);
     var pr = vel.play();
     if (pr && pr.catch) pr.catch(function () { vel.muted = true; SV.muted = true; var sb = SV.node && SV.node.querySelector("[data-svsnd]"); if (sb) sb.textContent = svSndTxt(); var p2 = vel.play(); if (p2 && p2.catch) p2.catch(function () {}); });
     SV.raf = requestAnimationFrame(svTick);
@@ -1261,12 +1276,27 @@ function svBtnInfo(s, A) {
   if (b === "link" && s.link) return { label: "Подробнее", url: s.link };
   return null;
 }
+function svRid() { var r = ""; try { r = localStorage.getItem("b56_rid") || ""; if (!r) { r = "r" + Date.now().toString(36) + Math.random().toString(36).slice(2, 12); localStorage.setItem("b56_rid", r); } } catch (e) { r = "r" + Math.random().toString(36).slice(2, 14); } return r; }
+function svRepOpen() {
+  var f = document.getElementById("svf"); if (!f || f.querySelector(".svrep")) return;
+  var d = document.createElement("div"); d.className = "svrep";
+  d.innerHTML = '<div><p>Пожаловаться на эту историю?</p><button type="button" class="go" data-svrepgo="1">Отправить жалобу</button><button type="button" class="no" data-svrepno="1">Отмена</button></div>';
+  f.appendChild(d);
+}
+function svRepClose() { var d = document.querySelector("#svf .svrep"); if (d) d.remove(); if (SV) SV.paused = false; }
+function svRepSend() {
+  if (!SV) return;
+  var A = SV.as[SV.a], s = A.list[SV.i], d = document.querySelector("#svf .svrep > div");
+  if (d) d.innerHTML = '<p>Спасибо. Мы проверим эту историю.</p><button type="button" class="no" data-svrepno="1">Закрыть</button>';
+  if (!API) return;
+  try { fetch(API, { method: "POST", mode: "no-cors", keepalive: true, headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ a: "story_report", id: s.id, rid: svRid() }) }).catch(function () {}); } catch (e) {}
+}
 function svBind() {
   var f = document.getElementById("svf"); if (!f) return;
   var sx = 0, sy = 0, down = 0, moved = false, swiped = false, zone = "";
   f.addEventListener("pointerdown", function (e) {
     var z = e.target.closest("[data-svz]");
-    if (!z || e.target.closest("button[data-svclose]")) return;
+    if (!z || e.target.closest("button[data-svclose]") || e.target.closest(".svrep") || e.target.closest("[data-svrep]")) return;
     zone = z.getAttribute("data-svz"); sx = e.clientX; sy = e.clientY; down = Date.now(); moved = false; swiped = false;
     if (z.classList.contains("svz")) SV.hold = setTimeout(function () { SV.hold = 0; SV.paused = true; }, 220);
   });
@@ -1291,6 +1321,11 @@ document.addEventListener("click", function (e) {
   if (!SV) return;
   var c = e.target.closest("[data-svclose]");
   if (c) { svClose(); return; }
+  var rp0 = e.target.closest("[data-svrep]");
+  if (rp0) { SV.paused = true; svRepOpen(); return; }
+  var rp1 = e.target.closest("[data-svrepgo]");
+  if (rp1) { svRepSend(); return; }
+  if (e.target.closest("[data-svrepno]")) { svRepClose(); return; }
   var sn = e.target.closest("[data-svsnd]");
   if (sn) { SV.muted = !SV.muted; if (SV.vel) SV.vel.muted = SV.muted; sn.textContent = svSndTxt(); return; }
   var a = e.target.closest(".sva");
@@ -2228,7 +2263,7 @@ function cstForm(p) {
     '<button type="button" class="bigbtn" data-cst="send"' + (CST.busy ? " disabled" : "") + ">" + (CST.busy ? "Отправляем…" : "Отправить на проверку") + '</button><button type="button" class="btn2" data-cst="cancel">Отмена</button>';
 }
 function cstHtml(p) {
-  var h = cstLogoHtml(p) + '<div class="fld" style="margin-top:6px"><b>Истории</b><span>Короткие кружки вверху главной приложения. Каждую историю мы сначала проверяем</span></div>';
+  var h = cstLogoHtml(p) + '<div class="fld" style="margin-top:6px"><b>Истории</b><span>Короткие кружки вверху главной приложения. История публикуется сразу. Не больше 3 историй в сутки, видео до 60 секунд</span></div>';
   if (!CST.loaded) return h + '<div class="fld"><span>Загружаем…</span></div>' + (CST.msg ? '<div class="formmsg err">' + esc(CST.msg) + "</div>" : "");
   if (CST.edit) return cstForm(p);
   var d = CST.data;
@@ -2285,7 +2320,7 @@ function cstClick(b) {
       CST.busy = false;
       if (r && r.ok) {
         CST.edit = null; CST.err = false;
-        CST.msg = r.status === "ждёт оплаты" ? "История сохранена и ждёт оплаты: " + r.sum + " ₽." + (r.pay ? " Оплатить: " + r.pay : " Напишите нам через «Техподдержку», подскажем, как оплатить.") : "Отправлено на проверку. Когда проверим, история появится в приложении.";
+        CST.msg = r.status === "ждёт оплаты" ? "История сохранена и ждёт оплаты: " + r.sum + " ₽." + (r.pay ? " Оплатить: " + r.pay : " Напишите нам через «Техподдержку», подскажем, как оплатить.") : r.status === "на проверке" ? "Отправлено на проверку: в тексте есть слово, которое мы смотрим вручную. После проверки история появится в приложении." : "Опубликовано. История уже в кружках на главной.";
         cstLoad(true);
       } else if (r && r.auth === false) { sset("b56_own", ""); CAB.step = "email"; drawCab(); }
       else { CST.msg = (r && r.err) || "Не получилось отправить."; CST.err = true; cstRedraw(); }
@@ -2318,8 +2353,8 @@ function demoStory(o) {
   if (a === "own_story_add") {
     var u = o.story; if (!u.photo && !u.video && !u.vid) return { ok: false, err: "Добавьте фото, видео файлом или ссылку на видео." };
     var paid = DEMO_STORY.length >= 3, days = u.days || 1;
-    DEMO_STORY.unshift({ id: DEMO_STORY.length + 1, text: u.text, photo: u.photo ? "data:image/jpeg;base64," + u.photo : "", video: u.video, eff: paid ? "ждёт оплаты" : "на проверке", sum: paid ? 100 * days : 0, from: fmt(now), till: fmt(new Date(now.getTime() + days * 86400000)), views: 0, clicks: 0, reason: "" });
-    return { ok: true, status: paid ? "ждёт оплаты" : "на проверке", sum: paid ? 100 * days : 0, pay: "" };
+    DEMO_STORY.unshift({ id: DEMO_STORY.length + 1, text: u.text, photo: u.photo ? "data:image/jpeg;base64," + u.photo : "", video: u.video, eff: paid ? "ждёт оплаты" : "опубликовано", sum: paid ? 100 * days : 0, from: fmt(now), till: fmt(new Date(now.getTime() + days * 86400000)), views: 0, clicks: 0, reason: "" });
+    return { ok: true, status: paid ? "ждёт оплаты" : "опубликовано", sum: paid ? 100 * days : 0, pay: "" };
   }
   if (a === "own_story_act") { DEMO_STORY.forEach(function (x) { if (x.id === o.id) x.eff = "архив"; }); return { ok: true }; }
   return { ok: false, err: "?" };

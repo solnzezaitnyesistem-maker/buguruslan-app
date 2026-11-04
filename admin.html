@@ -5,28 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#14532D">
-<script>
-/* значок и «установка» админки на телефон: рисуем значок «Б-56 админ» и подключаем манифест без отдельных файлов */
-(function () {
-  try {
-    function ic(n) {
-      var c = document.createElement("canvas"); c.width = c.height = n; var x = c.getContext("2d");
-      x.fillStyle = "#14532D"; x.fillRect(0, 0, n, n);
-      x.fillStyle = "#FFD166"; x.fillRect(0, n * 0.72, n, n * 0.06);
-      x.fillStyle = "#FFFFFF"; x.textAlign = "center"; x.textBaseline = "middle";
-      x.font = "800 " + Math.round(n * 0.34) + "px Arial, sans-serif"; x.fillText("Б-56", n / 2, n * 0.42);
-      x.fillStyle = "#FFD166"; x.font = "800 " + Math.round(n * 0.13) + "px Arial, sans-serif"; x.fillText("АДМИН", n / 2, n * 0.62 + n * 0.0);
-      return c.toDataURL("image/png");
-    }
-    var i192 = ic(192), i512 = ic(512), base = location.origin + location.pathname.replace(/[^\/]*$/, "");
-    var m = { name: "Б-56 админка", short_name: "Б-56 админ", lang: "ru", start_url: base + "admin.html", scope: base, display: "standalone", background_color: "#F2F7F3", theme_color: "#14532D",
-      icons: [{ src: i192, sizes: "192x192", type: "image/png", purpose: "any maskable" }, { src: i512, sizes: "512x512", type: "image/png", purpose: "any maskable" }] };
-    function add(rel, href) { var l = document.createElement("link"); l.rel = rel; l.href = href; document.head.appendChild(l); }
-    add("icon", i192); add("apple-touch-icon", i192);
-    add("manifest", URL.createObjectURL(new Blob([JSON.stringify(m)], { type: "application/manifest+json" })));
-  } catch (e) {}
-})();
-</script>
+<link rel="manifest" href="/admin-manifest.webmanifest">
+<link rel="icon" type="image/png" href="/admin-icon-192.png">
+<link rel="apple-touch-icon" href="/admin-icon-192.png">
 <title>Администратор Б-56</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -763,14 +744,14 @@ function inboxItems() {
   TICKETS.forEach(function (x) { out.push({ k: "t:" + x.id, type: "t", title: x.kind + (x.biz ? ": " + x.biz : ""), sub: x.msg || x.contact || "", time: x.date, isNew: !x.done, x: x }); });
   ADS.forEach(function (x) { out.push({ k: "a:" + x.id, type: "a", title: x.title, sub: (ADCN[x.cat] || x.cat) + " · " + x.status, time: x.date, isNew: !!WAIT_AD[x.status], x: x }); });
   PLACES.forEach(function (p) { if (p.pendIds && p.pendIds.length) out.push({ k: "p:" + p.id, type: "p", title: "Фото на проверке: " + p.name, sub: p.pendIds.length + " " + plural(p.pendIds.length, "фото", "фото", "фото"), time: new Date().toISOString().slice(0, 19), isNew: true, x: p }); });
-  STO.items.forEach(function (x) { if (x.src === "owner") out.push({ k: "s:" + x.id, type: "s", title: "История: " + stAuthor(x.au), sub: x.st + (x.text ? " · " + x.text : ""), time: x.created, isNew: stPend(x), x: x }); });
+  STO.items.forEach(function (x) { if (x.src === "owner") out.push({ k: "s:" + x.id, type: "s", title: "История: " + stAuthor(x.au), sub: x.st + (x.text ? " · " + x.text : ""), time: x.created, isNew: stPend(x) || stSeen(x), x: x }); });
   OWN.forEach(function (x) {
     var t = x.req && x.req.type === "claim" ? "Хочет управлять карточкой: " + (x.req.placeName || "№" + x.req.pid) : x.req && x.req.place ? "Новое заведение: " + x.req.place.name : x.status === "подтверждён" ? "Кабинет: " + (x.placeName || "№" + x.pid) : "Вход без заявки";
     out.push({ k: "o:" + x.email, type: "o", title: t, sub: x.email, time: x.date, isNew: x.status === "ждёт", x: x });
   });
   return out.sort(function (a, b) { return toTs(b.time) - toTs(a.time); });
 }
-function inboxNew() { return TICKETS.filter(function (x) { return !x.done; }).length + ADS.filter(function (x) { return WAIT_AD[x.status]; }).length + OWN.filter(function (x) { return x.status === "ждёт"; }).length + PLACES.filter(function (x) { return x.pendIds && x.pendIds.length; }).length + STO.items.filter(function (x) { return x.src === "owner" && stPend(x); }).length; }
+function inboxNew() { return TICKETS.filter(function (x) { return !x.done; }).length + ADS.filter(function (x) { return WAIT_AD[x.status]; }).length + OWN.filter(function (x) { return x.status === "ждёт"; }).length + PLACES.filter(function (x) { return x.pendIds && x.pendIds.length; }).length + STO.items.filter(function (x) { return x.src === "owner" && (stPend(x) || stSeen(x)); }).length; }
 function contactLinks(c) {
   c = String(c || "").trim();
   var digits = c.replace(/\D/g, ""), out = "";
@@ -922,6 +903,7 @@ function drawTab() {
 function stAuthor(au) { if (au === "b56") return "Б-56"; var p = PLACES.filter(function (x) { return String(x.id) === String(au); })[0]; return p ? p.name : "Заведение №" + au; }
 function stWhen(v) { v = String(v || ""); return v.length >= 16 ? v.slice(8, 10) + "." + v.slice(5, 7) + " " + v.slice(11, 16) : ""; }
 function stPend(x) { return x.st === "на проверке" || x.st === "ждёт оплаты"; }
+function stSeen(x) { return x.src === "owner" && x.st === "опубликовано" && !x.seen; }
 function stEffTxt(x) { var e = x.eff || x.st; return e === "опубликовано" ? "идёт сейчас" : e; }
 function stThumb(x) { return (x.photo || x.cover) ? '<img src="' + esc(x.photo || x.cover) + '" alt="" style="width:56px;height:80px;object-fit:cover;border-radius:8px;flex:none">' : '<div style="width:56px;height:80px;border-radius:8px;background:#DCEFE2;color:#14532D;display:flex;align-items:center;justify-content:center;font-size:24px;flex:none">▶</div>'; }
 function stActs(x, inbox) {
@@ -932,6 +914,7 @@ function stActs(x, inbox) {
     h += '<input id="strs' + id + '" maxlength="200" placeholder="Причина отказа, её увидит владелец" style="flex:1 1 100%"><button type="button" class="btn alt sm" data-stact="reject" data-stid="' + id + '">Отклонить</button>';
     return h;
   }
+  if (stSeen(x)) h += '<div class="note" style="flex:1 1 100%"><b>Опубликована владельцем сразу.</b> Если что-то не так, нажмите «Снять». Если всё в порядке, нажмите «Просмотрено».</div><button type="button" class="btn sm" data-stact="seen" data-stid="' + id + '">Просмотрено</button>';
   if (x.eff === "опубликовано" || x.eff === "запланировано") h += '<button type="button" class="btn alt sm" data-stact="move" data-stdir="-1" data-stid="' + id + '" aria-label="Выше">↑</button><button type="button" class="btn alt sm" data-stact="move" data-stdir="1" data-stid="' + id + '" aria-label="Ниже">↓</button>';
   if (x.st !== "отклонено") h += '<button type="button" class="btn alt sm" data-stcopy="' + id + '">Скопировать ссылку</button>';
   h += '<button type="button" class="btn alt sm" data-stedit="' + id + '">Изменить</button>';
