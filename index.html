@@ -322,6 +322,21 @@ button.soon { width: 100%; text-align: left; font: inherit; cursor: pointer; }
 .adsum { padding: 12px 14px; border-radius: 14px; background: #F1F7F3; font-size: 15px; line-height: 1.4; }
 .adsum b { font-size: 18px; }
 .btn2 { min-height: 48px; padding: 10px 16px; border-radius: 14px; border: 2px solid var(--green); background: var(--white); color: var(--green); font: inherit; font-size: 15px; font-weight: 800; }
+.tabbar .nb { position: absolute; top: 4px; left: calc(50% + 4px); min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: #D93025; color: #fff; font: 800 11px/18px Manrope, system-ui, sans-serif; text-align: center; border: 2px solid var(--white); box-sizing: content-box; font-style: normal; }
+.fads h2 { display: flex; align-items: baseline; justify-content: space-between; }
+.fads h2 button { border: 0; background: none; color: var(--green); font: inherit; font-size: 14px; font-weight: 800; cursor: pointer; }
+.fads .arow { display: flex; gap: 10px; overflow-x: auto; margin: 6px -20px 0; padding: 4px 20px 8px; scroll-snap-type: x proximity; scroll-padding-inline: 20px; scrollbar-width: none; }
+.fads .arow::-webkit-scrollbar { display: none; }
+.asc { flex: 0 0 76%; max-width: 320px; scroll-snap-align: start; display: flex; flex-direction: column; text-align: left; padding: 0; border: 1px solid var(--line); border-radius: 16px; background: var(--white); overflow: hidden; cursor: pointer; font: inherit; color: var(--ink); }
+.fads .arow.one .asc { flex: 1 1 100%; max-width: none; }
+.asc .ai { position: relative; height: 150px; background: linear-gradient(135deg, #14532D, #2F7D4F); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800; font-size: 16px; padding: 12px; text-align: center; }
+.asc .ai img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.asc .ap { padding: 10px 12px 0; font-size: 22px; font-weight: 800; color: var(--green); }
+.asc .at { padding: 2px 12px 12px; font-size: 15px; font-weight: 700; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.asc .ap:empty { display: none; }
+.ainv { margin-top: 12px; padding: 14px 16px; border: 2px dashed var(--line); border-radius: 16px; background: var(--white); }
+.ainv b { display: block; font-size: 17px; font-weight: 800; }
+.ainv span { display: block; margin: 4px 0 10px; font-size: 14px; color: var(--muted); }
 .fpick { position: relative; display: inline-flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; box-sizing: border-box; }
 .fpick input { position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; font-size: 200px; }
 .inapp { margin: 8px 0; padding: 10px 12px; border-radius: 12px; background: #FFF4D6; color: #6B4A00; font-size: 14px; font-weight: 700; line-height: 1.35; }
@@ -934,6 +949,7 @@ function viewHome() {
     searchBox("Что ищете? Шиномонтаж, торт…", "Поиск по городу") +
     '<div id="srw">' + srwHtml() + "</div>" +
     '<button type="button" class="urg" data-go="urgent">' + ico('<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>', 26, "#B42318") + '<span class="ut"><b>Срочно</b><span>Скорая, газ, свет, аварийные номера</span></span><span class="ua">→</span></button>' +
+    '<div id="adstrip">' + adsStripHtml() + '</div>' +
     novHtml() +
     chipsHtml() +
     '<div class="list" id="results"></div>' +
@@ -1409,12 +1425,13 @@ function homeResults(q) {
   if (sug.length) out += '<div class="sugs">' + sug.slice(0, 4).map(function (c) { return '<button type="button" class="sug" data-go="cat-' + c.id + '">' + esc(c.name) + " (" + catCount(c.id) + ") →</button>"; }).join("") + "</div>";
   var ug = URG.filter(function (u) { return hasAll(norm(u.name + " " + (u.note || "") + " " + (u.kw || "") + " " + (u.addr || "") + " " + (u.phones || []).join(" ")), ws); }).slice(0, 6);
   if (ug.length) out += "<h2>Срочно</h2>" + ug.map(urgCard).join("");
+  var adh = adsFound(ws);
   var gm = GOODS.filter(function (g) { return hasAll(norm(g.name + " " + (g.about || "")), ws); }).slice(0, 12);
   var gh = gm.length ? "<h2>Товары: " + gm.length + '</h2><div class="gg">' + gm.map(function (g) { return goodCard(g, true); }).join("") + "</div>" : "";
-  if (!found.length) return ug.length || gh ? out + gh : out + emptyBlock("Ничего не нашли", "Попробуйте другое слово или выберите раздел.") + "<h2>Разделы</h2>" + tiles(popularCats());
+  if (!found.length) return ug.length || gh || adh ? out + adh + gh : out + emptyBlock("Ничего не нашли", "Попробуйте другое слово или выберите раздел.") + "<h2>Разделы</h2>" + tiles(popularCats());
   var shown = found.filter(passF);
   out += "<h2>Найдено: " + shown.length + "</h2>";
-  return out + (shown.length ? shown.map(function (it) { return orgCard(it, true); }).join("") : emptyBlock("Ничего не подошло", "Снимите фильтр, чтобы увидеть остальные.")) + gh;
+  return out + (shown.length ? shown.map(function (it) { return orgCard(it, true); }).join("") : emptyBlock("Ничего не подошло", "Снимите фильтр, чтобы увидеть остальные.")) + adh + gh;
 }
 
 function viewCat(c) {
@@ -1546,6 +1563,41 @@ function adCard(a) {
     ((a.photos && a.photos.length) ? '<div class="ph">' + a.photos.map(function (u) { return '<img src="' + esc(u) + '" alt="" loading="lazy">'; }).join("") + "</div>" : "") +
     adContact(a.contact) + '<div class="meta">' + (a.name ? esc(a.name) + " · " : "") + (fmtDate(a.date) ? "от " + fmtDate(a.date) : "") + (fmtDate(a.till) ? " · до " + fmtDate(a.till) : "") + "</div></div>";
 }
+/* ---------- свежие объявления на главной, значок новых, поиск ---------- */
+function adTs(d) { var t = new Date(Date.now() - d * 864e5), z = function (n) { return (n < 10 ? "0" : "") + n; }; return String(t.getFullYear()) + z(t.getMonth() + 1) + z(t.getDate()) + z(t.getHours()) + z(t.getMinutes()) + z(t.getSeconds()) + "00"; }
+function adsNewCount() {
+  if (!BOARD_OPEN || !ADS.length) return 0;
+  var seen = sget("b56_adseen") || adTs(7), mine = {};
+  myAds().forEach(function (m) { mine[m.code] = 1; });
+  return ADS.filter(function (a) { return String(a.id) > seen && !mine[a.id]; }).length;
+}
+function adsMarkSeen() {
+  if (!ADS.length) return;
+  var mx = ""; ADS.forEach(function (a) { if (String(a.id) > mx) mx = String(a.id); });
+  if (mx && mx > (sget("b56_adseen") || "")) sset("b56_adseen", mx);
+}
+function adsStripHtml() {
+  if (!BOARD_OPEN) return "";
+  var l = ADS.slice(0, 8);
+  if (!l.length) {
+    if (!adLoaded) return "";
+    return '<div class="ainv"><b>Продаёте или ищете?</b><span>Подайте объявление — его увидит весь город.</span><button type="button" class="btn2" data-go="adnew">Подать объявление</button></div>';
+  }
+  return '<div class="fads"><h2>Свежие объявления<button type="button" data-tab="board">Все →</button></h2><div class="arow' + (l.length === 1 ? " one" : "") + '">' + l.map(function (a) {
+    var im = a.photos && a.photos[0];
+    return '<button type="button" class="asc" data-tab="board"><span class="ai">' + (im ? '<img src="' + esc(thumb(im)) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : esc(adCatName(a.cat))) + '</span><span class="ap">' + esc(a.price || "") + '</span><span class="at">' + esc(a.title) + "</span></button>";
+  }).join("") + "</div></div>";
+}
+function adsFound(ws) {
+  if (!BOARD_OPEN || !ADS.length) return "";
+  var m = ADS.filter(function (a) { return hasAll(norm(a.title + " " + a.text + " " + (a.price || "") + " " + adCatName(a.cat)), ws); }).slice(0, 6);
+  return m.length ? "<h2>Объявления: " + m.length + "</h2>" + m.map(adCard).join("") + '<button type="button" class="qrlink" data-tab="board">Все объявления →</button>' : "";
+}
+function adsRefreshUi() {
+  var h = document.getElementById("adstrip"); if (h) h.innerHTML = adsStripHtml();
+  var q = document.getElementById("q"); if (q && q.value.trim()) { try { rerunResults(); } catch (e) {} }
+  renderTabs();
+}
 function adListHtml() {
   var list = ADS.filter(function (a) { return !adCat || a.cat === adCat; });
   if (!list.length) return '<div class="note">' + (adLoaded ? "В этом разделе пока нет объявлений. Подайте своё первым." : "Загружаем объявления…") + "</div>";
@@ -1574,11 +1626,13 @@ function adCatsHtml() {
 function loadAds() {
   if (DEMO) { ADS = []; adLoaded = true; return; }
   try { var c = JSON.parse(sget("b56_ads") || "null"); if (c) { ADS = c; adLoaded = true; } } catch (e) {}
+  adsRefreshUi();
   apiGet("ads").then(function (r) {
     if (!r || !r.ok || !r.items) return;
     ADS = r.items; adLoaded = true; sset("b56_ads", JSON.stringify(r.items));
-    var l = document.getElementById("adlist"); if (l && parse(state.route).v === "board") l.innerHTML = adListHtml();
-  }, function () { adLoaded = true; var l = document.getElementById("adlist"); if (l && !ADS.length) l.innerHTML = adListHtml(); });
+    var l = document.getElementById("adlist"); if (l && parse(state.route).v === "board") { l.innerHTML = adListHtml(); adsMarkSeen(); }
+    adsRefreshUi();
+  }, function () { adLoaded = true; var l = document.getElementById("adlist"); if (l && !ADS.length) l.innerHTML = adListHtml(); adsRefreshUi(); });
 }
 function adSumHtml() {
   var cat = (document.getElementById("ad_cat") || {}).value, n = adPh.length, free = cat === "darom";
@@ -2692,7 +2746,7 @@ function renderTabs() {
   var cur = tabOf(parse(state.route).v), unseen = false;
   try { unseen = hasUnseen(); } catch (e) {}
   el.innerHTML = '<div class="in">' + TABS.map(function (t) {
-    return '<button type="button" data-tab="' + t[0] + '" class="' + (t[0] === cur ? "on" : "") + '"' + (t[0] === cur ? ' aria-current="page"' : "") + ">" + ico(t[2], 24, "currentColor") + "<span>" + t[1] + "</span>" + (t[0] === "news" && unseen && cur !== "news" ? '<i class="nd" aria-label="Есть новое"></i>' : "") + "</button>";
+    return '<button type="button" data-tab="' + t[0] + '" class="' + (t[0] === cur ? "on" : "") + '"' + (t[0] === cur ? ' aria-current="page"' : "") + ">" + ico(t[2], 24, "currentColor") + "<span>" + t[1] + "</span>" + (t[0] === "news" && unseen && cur !== "news" ? '<i class="nd" aria-label="Есть новое"></i>' : "") + (t[0] === "board" && cur !== "board" && adsNewCount() ? '<i class="nb" aria-label="Новых объявлений: ' + adsNewCount() + '">' + (adsNewCount() > 9 ? "9+" : adsNewCount()) + "</i>" : "") + "</button>";
   }).join("") + "</div>";
 }
 var RES = null;
@@ -2730,9 +2784,10 @@ function render() {
     var box = document.getElementById("results"), q = document.getElementById("q");
     RES = results;
     box.innerHTML = results("");
-    q.addEventListener("input", function () { box.innerHTML = results(q.value); var tp = document.getElementById("top"); if (tp) tp.hidden = !!q.value.trim(); var nv = document.getElementById("nov"); if (nv) nv.hidden = !!q.value.trim(); var sw = document.getElementById("srw"); if (sw) sw.hidden = !!q.value.trim(); });
+    q.addEventListener("input", function () { box.innerHTML = results(q.value); var tp = document.getElementById("top"); if (tp) tp.hidden = !!q.value.trim(); var nv = document.getElementById("nov"); if (nv) nv.hidden = !!q.value.trim(); var sw = document.getElementById("srw"); if (sw) sw.hidden = !!q.value.trim(); var as0 = document.getElementById("adstrip"); if (as0) as0.hidden = !!q.value.trim(); });
   }
   document.title = "Бугуруслан всё в одном месте";
+  if (r.v === "board") adsMarkSeen();
   bindGallery();
   carSetup();
   renderTabs();
