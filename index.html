@@ -322,6 +322,14 @@ button.soon { width: 100%; text-align: left; font: inherit; cursor: pointer; }
 .adsum { padding: 12px 14px; border-radius: 14px; background: #F1F7F3; font-size: 15px; line-height: 1.4; }
 .adsum b { font-size: 18px; }
 .btn2 { min-height: 48px; padding: 10px 16px; border-radius: 14px; border: 2px solid var(--green); background: var(--white); color: var(--green); font: inherit; font-size: 15px; font-weight: 800; }
+.hsug { margin: 6px 0 0; padding: 8px 12px 10px; border: 1px solid var(--line); border-radius: 14px; background: var(--white); }
+.hsug[hidden] { display: none; }
+.hsug .hl { display: block; font-size: 13px; color: var(--muted); font-weight: 700; margin-bottom: 6px; }
+.hsug .hr { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.hsug button { min-height: 38px; padding: 0 12px; border: 1px solid var(--line); border-radius: 19px; background: var(--bg); color: var(--ink); font: inherit; font-size: 14px; font-weight: 700; }
+.hsug button.hx { border: 0; background: none; color: var(--muted); font-size: 13px; }
+.asc .abtn { margin: 0 12px 12px; padding: 12px 10px; border-radius: 12px; background: var(--green); color: #fff; text-align: center; font-size: 15px; font-weight: 800; }
+.ad.hlt { outline: 3px solid #FFD166; transition: outline-color .6s; }
 .tabbar .nb { position: absolute; top: 4px; left: calc(50% + 4px); min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: #D93025; color: #fff; font: 800 11px/18px Manrope, system-ui, sans-serif; text-align: center; border: 2px solid var(--white); box-sizing: content-box; font-style: normal; }
 .fads h2 { display: flex; align-items: baseline; justify-content: space-between; }
 .fads h2 button { border: 0; background: none; color: var(--green); font: inherit; font-size: 14px; font-weight: 800; cursor: pointer; }
@@ -753,11 +761,18 @@ function heartBtn(it, cls) {
   return '<button type="button" class="heart' + (on ? " on" : "") + (cls ? " " + cls : "") + '" data-fav="' + it.id + '" aria-pressed="' + on + '" aria-label="' + (on ? "Убрать из избранного" : "В избранное") + ": " + esc(it.name) + '">' + ico(HEART, 24, "currentColor") + "</button>";
 }
 function histGet() { try { var a = JSON.parse(sget("b56_hist") || "[]"); return a instanceof Array ? a : []; } catch (e) { return []; } }
+function histBox() {
+  var b = document.getElementById("hsug"), q = document.getElementById("q"); if (!b || !q) return;
+  var h = histGet().slice(0, 3);
+  if (q.value.trim() || !h.length) { b.hidden = true; return; }
+  b.innerHTML = '<span class="hl">Вы искали</span><div class="hr">' + h.map(function (x) { return '<button type="button" data-hist="' + esc(x) + '">' + esc(x) + "</button>"; }).join("") + '<button type="button" class="hx" data-histclear="1">Очистить ✕</button></div>';
+  b.hidden = false;
+}
 function histAdd(q) {
   q = String(q || "").trim().slice(0, 40);
   if (q.length < 2) return;
-  var a = histGet().filter(function (x) { return norm(x) !== norm(q); });
-  a.unshift(q); sset("b56_hist", JSON.stringify(a.slice(0, 5)));
+  var nq = norm(q), a = histGet().filter(function (x) { var nx = norm(x); return nx !== nq && nx.indexOf(nq) !== 0 && nq.indexOf(nx) !== 0; });
+  a.unshift(q); sset("b56_hist", JSON.stringify(a.slice(0, 3)));
 }
 var flt = { open: false, deliv: false, rec: false, high: false }, fltRoute = "";
 function isDeliv(it) { return [].concat(it.cat).indexOf("gruz") !== -1 || /достав/.test(norm((it.name || "") + " " + (it.about || "") + " " + (it.note || ""))); }
@@ -946,7 +961,7 @@ function viewHome() {
     '<circle cx="32" cy="29" r="19" fill="#FFFFFF" stroke="#FFD166" stroke-width="3"></circle>' +
     '<text x="32" y="34" text-anchor="middle" font-family="Manrope, system-ui, sans-serif" font-size="14" font-weight="800" fill="#14532D">Б-56</text></svg>' +
     '<h1>Бугуруслан всё в одном месте</h1><button type="button" class="hq" data-go="help">Помощь</button></div>' +
-    searchBox("Что ищете? Шиномонтаж, торт…", "Поиск по городу") +
+    searchBox("Что ищете? Шиномонтаж, торт…", "Поиск по городу") + '<div class="hsug" id="hsug" hidden></div>' +
     '<div id="srw">' + srwHtml() + "</div>" +
     '<button type="button" class="urg" data-go="urgent">' + ico('<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>', 26, "#B42318") + '<span class="ut"><b>Срочно</b><span>Скорая, газ, свет, аварийные номера</span></span><span class="ua">→</span></button>' +
     '<div id="adstrip">' + adsStripHtml() + '</div>' +
@@ -1409,8 +1424,7 @@ function homeDefault() {
     var l = ITEMS.filter(passF);
     return "<h2>Найдено: " + l.length + "</h2>" + (l.length ? l.map(function (it) { return orgCard(it, true); }).join("") : emptyBlock("Ничего не подошло", "Снимите фильтр, чтобы увидеть остальные."));
   }
-  var h = histGet(), out = "";
-  if (h.length) out += '<div class="hist"><span class="hl">Вы искали:</span>' + h.map(function (x) { return '<button type="button" data-hist="' + esc(x) + '">' + esc(x) + "</button>"; }).join("") + "</div>";
+  var out = "";
   out += "<h2>Популярное</h2>" + (liveCats().length ? popularTiles() : emptyBlock("Разделы скоро появятся", "Заведения добавляются каждый день."));
   out += freshStrip();
   return out;
@@ -1558,7 +1572,7 @@ function adContact(c) {
   return '<span class="meta">Связь: ' + esc(c) + "</span>";
 }
 function adCard(a) {
-  return '<div class="ad"><div class="tags"><span class="tag mint">' + esc(adCatName(a.cat)) + "</span></div><h3>" + esc(a.title) + "</h3>" +
+  return '<div class="ad" id="ad-' + esc(a.id) + '"><div class="tags"><span class="tag mint">' + esc(adCatName(a.cat)) + "</span></div><h3>" + esc(a.title) + "</h3>" +
     (a.price ? '<div class="pr">' + esc(a.price) + "</div>" : "") + "<p>" + esc(a.text) + "</p>" +
     ((a.photos && a.photos.length) ? '<div class="ph">' + a.photos.map(function (u) { return '<img src="' + esc(u) + '" alt="" loading="lazy">'; }).join("") + "</div>" : "") +
     adContact(a.contact) + '<div class="meta">' + (a.name ? esc(a.name) + " · " : "") + (fmtDate(a.date) ? "от " + fmtDate(a.date) : "") + (fmtDate(a.till) ? " · до " + fmtDate(a.till) : "") + "</div></div>";
@@ -1585,7 +1599,7 @@ function adsStripHtml() {
   }
   return '<div class="fads"><h2>Свежие объявления<button type="button" data-tab="board">Все →</button></h2><div class="arow' + (l.length === 1 ? " one" : "") + '">' + l.map(function (a) {
     var im = a.photos && a.photos[0];
-    return '<button type="button" class="asc" data-tab="board"><span class="ai">' + (im ? '<img src="' + esc(thumb(im)) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : esc(adCatName(a.cat))) + '</span><span class="ap">' + esc(a.price || "") + '</span><span class="at">' + esc(a.title) + "</span></button>";
+    return '<button type="button" class="asc" data-adopen="' + esc(a.id) + '"><span class="ai">' + (im ? '<img src="' + esc(thumb(im)) + '" alt="" loading="lazy" referrerpolicy="no-referrer">' : esc(adCatName(a.cat))) + '</span><span class="ap">' + esc(a.price || "") + '</span><span class="at">' + esc(a.title) + '</span><span class="abtn">Открыть объявление</span></button>';
   }).join("") + "</div></div>";
 }
 function adsFound(ws) {
@@ -1598,6 +1612,21 @@ function adsRefreshUi() {
   var q = document.getElementById("q"); if (q && q.value.trim()) { try { rerunResults(); } catch (e) {} }
   renderTabs();
 }
+var HSUG_T = 0;
+document.addEventListener("focusin", function (e) { if (e.target && e.target.id === "q") { clearTimeout(HSUG_T); histBox(); } });
+document.addEventListener("input", function (e) { if (e.target && e.target.id === "q") histBox(); });
+document.addEventListener("focusout", function (e) { if (e.target && e.target.id === "q") { clearTimeout(HSUG_T); HSUG_T = setTimeout(function () { var b = document.getElementById("hsug"); if (b) b.hidden = true; }, 300); } });
+document.addEventListener("click", function (e) {
+  var t = e.target; if (!t || !t.closest) return;
+  if (t.closest("#results")) { var qq = document.getElementById("q"); if (qq && qq.value.trim()) { try { histAdd(qq.value); } catch (x) {} } }
+  if (t.closest("[data-histclear]")) { sset("b56_hist", "[]"); var b = document.getElementById("hsug"); if (b) b.hidden = true; }
+  var ao = t.closest("[data-adopen]");
+  if (ao) {
+    adCat = ""; var id = ao.getAttribute("data-adopen");
+    trackRoute("board"); state.stack = ["home"]; state.route = "board"; setHash("board"); render();
+    setTimeout(function () { var el = document.getElementById("ad-" + id); if (el) { try { el.scrollIntoView({ block: "center" }); } catch (x) { el.scrollIntoView(); } el.className += " hlt"; setTimeout(function () { el.className = el.className.replace(" hlt", ""); }, 2500); } }, 80);
+  }
+}, true);
 function adListHtml() {
   var list = ADS.filter(function (a) { return !adCat || a.cat === adCat; });
   if (!list.length) return '<div class="note">' + (adLoaded ? "В этом разделе пока нет объявлений. Подайте своё первым." : "Загружаем объявления…") + "</div>";
@@ -2851,7 +2880,7 @@ document.addEventListener("click", function (e) {
     rerunResults(); return;
   }
   var hb = e.target.closest("[data-hist]");
-  if (hb) { var hq = document.getElementById("q"); if (hq) { hq.value = hb.getAttribute("data-hist"); rerunResults(); var tp0 = document.getElementById("top"); if (tp0) tp0.hidden = true; var nv0 = document.getElementById("nov"); if (nv0) nv0.hidden = true; var sw0 = document.getElementById("srw"); if (sw0) sw0.hidden = true; } return; }
+  if (hb) { var hs0 = document.getElementById("hsug"); if (hs0) hs0.hidden = true; var hq = document.getElementById("q"); if (hq) { hq.value = hb.getAttribute("data-hist"); rerunResults(); var tp0 = document.getElementById("top"); if (tp0) tp0.hidden = true; var nv0 = document.getElementById("nov"); if (nv0) nv0.hidden = true; var sw0 = document.getElementById("srw"); if (sw0) sw0.hidden = true; } return; }
   var tb = e.target.closest("[data-tab]");
   if (tb) {
     e.preventDefault();
@@ -2941,7 +2970,7 @@ document.addEventListener("click", function (e) {
   }
 });
 document.addEventListener("change", function (e) {
-  if (e.target.id === "q") { histAdd(e.target.value); return; }
+  if (e.target.id === "q") return;
   if (e.target.id === "ad_cat") { adRefresh(); return; }
   if (e.target.id === "cs_file") { var cf = e.target.files[0]; e.target.value = ""; if (cf) cstFile(cf); return; }
   if (e.target.id === "cs_vfile") { var vf1 = e.target.files[0]; e.target.value = ""; if (vf1) cstVideo(vf1); return; }
