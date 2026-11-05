@@ -322,6 +322,9 @@ button.soon { width: 100%; text-align: left; font: inherit; cursor: pointer; }
 .adsum { padding: 12px 14px; border-radius: 14px; background: #F1F7F3; font-size: 15px; line-height: 1.4; }
 .adsum b { font-size: 18px; }
 .btn2 { min-height: 48px; padding: 10px 16px; border-radius: 14px; border: 2px solid var(--green); background: var(--white); color: var(--green); font: inherit; font-size: 15px; font-weight: 800; }
+.fpick { position: relative; display: inline-flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; box-sizing: border-box; }
+.fpick input { position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; font-size: 200px; }
+.inapp { margin: 8px 0; padding: 10px 12px; border-radius: 12px; background: #FFF4D6; color: #6B4A00; font-size: 14px; font-weight: 700; line-height: 1.35; }
 
 .qrbox { margin-top: 12px; padding: 16px; background: #fff; border: 2px solid var(--line); border-radius: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
 .qrbox svg { width: 100%; max-width: 320px; height: auto; display: block; }
@@ -1582,6 +1585,16 @@ function adSumHtml() {
   var sum = (free ? 0 : 100) + n * 50;
   return sum ? 'К оплате: <b>' + sum + " ₽</b><br>" + (free ? "" : "Объявление на 5 дней — 100 ₽") + (n ? (free ? "" : "<br>") + "Фото: " + n + " × 50 ₽" : "") : "Объявление в разделе «Отдам даром» — без оплаты.";
 }
+var INAPP = /VKAndroid|VKClient|VKApp|vkclient|Telegram|WhatsApp|FBAN|FBAV|Instagram|; wv\)/i.test(navigator.userAgent || "");
+function inappHint() { return INAPP ? '<div class="inapp">Чтобы добавить фото или видео, откройте ссылку в Chrome или Safari.</div>' : ""; }
+function fileLbl(id, text, cls, accept, multi, pre) { return '<label class="' + cls + ' fpick">' + text + '<input type="file" id="' + id + '" accept="' + accept + '"' + (multi ? " multiple" : "") + ' data-pre="' + pre + '"></label>'; }
+document.addEventListener("click", function (e) {
+  var t = e.target; if (!t || t.type !== "file" || !t.getAttribute) return;
+  var pre = t.getAttribute("data-pre");
+  if (pre === "ad" && adPh.length >= 3) { e.preventDefault(); var fr = document.getElementById("f_res"); if (fr) { fr.className = "formmsg err"; fr.textContent = "Можно не больше 3 фото."; } return; }
+  if (pre === "csh") { try { cshRead(); } catch (x) {} }
+  if (pre === "cst") { try { cstRead(); } catch (x) {} }
+}, true);
 function adPhHtml() {
   return adPh.map(function (b, i) { return '<div class="it"><img alt="" src="data:image/jpeg;base64,' + b + '"><button type="button" data-adrm="' + i + '" aria-label="Убрать фото">×</button></div>'; }).join("");
 }
@@ -1595,7 +1608,7 @@ function viewAdNew() {
     field("ad_price", "Цена", "можно не писать", "input", "Например: 5 000 ₽") +
     field("ad_contact", "Телефон или Telegram", "будет виден всем в объявлении", "input", "8 9.. или @имя") +
     field("ad_name", "Ваше имя", "можно не писать", "input", "") +
-    '<div class="fld"><b>Фото</b><span>до 3 штук, каждое фото — 50 ₽</span><div class="adph" id="adph">' + adPhHtml() + '</div><input type="file" id="ad_file" accept="image/*" multiple style="display:none"><button type="button" class="btn2" data-adpick="1">Добавить фото</button></div>' +
+    '<div class="fld"><b>Фото</b><span>до 3 штук, каждое фото — 50 ₽</span><div class="adph" id="adph">' + adPhHtml() + '</div></div>' + inappHint() + fileLbl("ad_file", "Добавить фото", "btn2", "image/*", true, "ad") +
     '<div class="adsum" id="adsum">' + adSumHtml() + "</div>" +
     '<div id="f_res" role="status"></div>' +
     '<button type="button" class="bigbtn" data-adsend="1">Отправить на проверку</button></div>' +
@@ -2079,8 +2092,7 @@ function cabPhotos(p) {
     (n ? '<div class="adph">' + ph.map(function (x) { return cabPhItem(x, false); }).join("") + pe.map(function (x) { return cabPhItem(x, true); }).join("") + "</div>" : "") + "</div>" +
     (CABRM ? '<div class="formmsg err">Удалить это фото?</div><div style="display:flex;gap:8px"><button type="button" class="btn2" data-cphyes="1">Да</button><button type="button" class="btn2" data-cphno="1">Нет</button></div>' : "") +
     '<div id="cph_res" role="status" hidden></div>' +
-    (n < 6 ? '<button type="button" class="btn2" data-cphpick="1">Добавить фото</button>' : "") +
-    '<input type="file" id="cp_file" accept="image/*" multiple style="display:none"></div>';
+    (n < 6 ? inappHint() + fileLbl("cp_file", "Добавить фото", "btn2", "image/*", true, "") : "") + "</div>";
 }
 function cabPhRedraw() { var w = document.getElementById("cph_wrap"); if (w && CAB.me && CAB.me.place) w.outerHTML = cabPhotos(CAB.me.place); }
 function cabPhMsg(t, err) { var e = document.getElementById("cph_res"); if (e) { e.className = "formmsg" + (err ? " err" : ""); e.textContent = t; e.hidden = !t; } }
@@ -2139,8 +2151,7 @@ function cshForm() {
     cabF("csh_video", "Ссылка на видео", "Выложите видео в клипы ВК и вставьте сюда ссылку", "input", e.video, "https://vk.com/clip-...", 200) +
     '<label class="fld" for="csh_st"><b>Статус</b><select id="csh_st">' + CSH_ST.map(function (x) { return '<option' + (e.st === x ? " selected" : "") + ">" + x + "</option>"; }).join("") + "</select></label>" +
     '<div class="fld"><b>Фото (от 1 до 5)</b><span>первое фото будет главным</span>' + (ph.length ? '<div class="adph">' + ph.map(function (x, i) { return '<div class="it"><img alt="" src="' + esc(x.url) + '"><button type="button" data-csh="rmph" data-i="' + i + '" aria-label="Убрать фото">×</button></div>'; }).join("") + "</div>" : "") + "</div>" +
-    (ph.length < 5 ? '<button type="button" class="btn2" data-csh="pick">Добавить фото</button>' : "") +
-    '<input type="file" id="csh_file" accept="image/*" multiple style="display:none">' +
+    (ph.length < 5 ? inappHint() + fileLbl("csh_file", "Добавить фото", "btn2", "image/*", true, "csh") : "") +
     (CSH.msg ? '<div class="formmsg' + (CSH.err ? " err" : "") + '" role="status">' + esc(CSH.msg) + "</div>" : "") +
     '<button type="button" class="bigbtn" data-csh="save"' + (CSH.busy ? " disabled" : "") + ">" + (CSH.busy ? "Сохраняем…" : "Сохранить товар") + '</button><button type="button" class="btn2" data-csh="cancel">Отмена</button>';
 }
@@ -2241,18 +2252,15 @@ function cstLogoHtml(p) {
   return '<div class="fld"><b>Логотип для историй</b><span>Логотип показывается в списке и в историях — с ним карточку замечают чаще. Если логотипа нет, возьмём первое фото карточки</span>' +
     (p.logoUrl ? '<img class="lg" alt="" src="' + esc(p.logoUrl) + '" referrerpolicy="no-referrer">' : "") + "</div>" +
     (CST.lmsg ? '<div class="formmsg" role="status">' + esc(CST.lmsg) + "</div>" : "") +
-    '<div class="ca"><button type="button" class="sb" data-cst="logopick">' + (p.logoUrl ? "Заменить логотип" : "Загрузить логотип") + "</button>" + (p.logoUrl ? '<button type="button" class="sb" data-cst="logoclear">Убрать</button>' : "") + "</div>" +
-    '<input type="file" id="cs_logo" accept="image/*" style="display:none">';
+    '<div class="ca">' + fileLbl("cs_logo", (p.logoUrl ? "Заменить логотип" : "Загрузить логотип"), "sb", "image/*", false, "") + (p.logoUrl ? '<button type="button" class="sb" data-cst="logoclear">Убрать</button>' : "") + "</div>" + inappHint();
 }
 function cstForm(p) {
   var e = CST.edit, cfg = CST.data.cfg, paid = !cfg.free && cfg.used >= cfg.limit;
   return '<div class="fld"><b>Новая история</b><span>' + (cfg.free ? "Для вас истории без ограничений. " : "Историй на этой неделе: " + cfg.used + " из " + cfg.limit + ". ") + (paid ? "Дальше каждая история платная: " + cfg.price + " ₽ за сутки." : "Эта история будет без оплаты.") + "</span></div>" +
     '<div class="fld"><b>Фото</b><span>Вертикальное смотрится лучше. Если добавите видео файлом, фото можно не добавлять: возьмём первый кадр</span>' + (e.photo ? '<div class="adph"><div class="it"><img alt="" src="data:image/jpeg;base64,' + e.photo + '"><button type="button" data-cst="rmph" aria-label="Убрать фото">×</button></div></div>' : "") + "</div>" +
-    (e.photo ? "" : '<button type="button" class="btn2" data-cst="pick">Добавить фото</button>') +
-    '<input type="file" id="cs_file" accept="image/*" style="display:none">' +
+    (e.photo ? "" : inappHint() + fileLbl("cs_file", "Добавить фото", "btn2", "image/*", false, "cst")) +
     '<div class="fld"><b>Видео файлом</b><span>MP4 до 20 МБ и до 60 секунд, лучше вертикальное. Звук включится после нажатия на историю</span>' +
-    (e.vid ? '<div class="adph"><span>Видео добавлено: ' + esc(e.vname || "") + " (" + (e.vmb || "") + ' МБ)</span><button type="button" class="sb" data-cst="rmv">Убрать</button></div>' : '<button type="button" class="btn2" data-cst="pickv">Добавить видео</button>') + "</div>" +
-    '<input type="file" id="cs_vfile" accept="video/mp4,video/*" style="display:none">' +
+    (e.vid ? '<div class="adph"><span>Видео добавлено: ' + esc(e.vname || "") + " (" + (e.vmb || "") + ' МБ)</span><button type="button" class="sb" data-cst="rmv">Убрать</button></div>' : '' + fileLbl("cs_vfile", "Добавить видео", "btn2", "video/mp4,video/*", false, "cst")) + "</div>" +
     cabF("cs_video", "Ссылка на видео", "необязательно. В видео из ВК может показываться реклама ВК. Лучше загрузите файл", "input", e.video, "https://vk.com/clip-...", 200) +
     cabF("cs_text", "Текст на картинке", "до 120 знаков", "input", e.text, "Свежая выпечка до 18:00", 120) +
     '<label class="fld" for="cs_btn"><b>Кнопка внизу</b><select id="cs_btn">' + ST_BTNS.map(function (x) { return '<option value="' + x[0] + '"' + (e.btn === x[0] ? " selected" : "") + ">" + x[1] + "</option>"; }).join("") + "</select></label>" +
